@@ -6,6 +6,8 @@ public class Bullet : MonoBehaviour {
 
     public GameObject bulletHitExplosion;
 
+    public float damage = 1.0f;
+
     void OnCollisionEnter2D(Collision2D other) {
         if(other.gameObject.CompareTag("Enemy"))
         {

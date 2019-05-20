@@ -15,14 +15,15 @@ public class Rocket : MonoBehaviour {
 	public float damage = 1.0f;
 
 	public float blastRadius = 1.0f;
-	private Rigidbody2D rb2d;
-	
-	private bool damaged = false;
 
+	private Rigidbody2D rb2d;
+
+	private Health health;
 	
 	void Awake () 
 	{
 		rb2d = GetComponent<Rigidbody2D>();
+		health = GetComponent<Health>();
 	}
 	
 	// Update is called once per frame
@@ -31,7 +32,7 @@ public class Rocket : MonoBehaviour {
 
 	void FixedUpdate() 
 	{
-		if(!damaged)
+		if(!health.IsDestroyed())
 		{
     		rb2d.AddForce( Vector2.up * (rb2d.mass * Mathf.Abs(Physics2D.gravity.y) ) );   
 			
@@ -42,16 +43,14 @@ public class Rocket : MonoBehaviour {
 		}
 	}
 
-	public void Damaged()
-	{
-		damaged = true;
-	}
-
+	
 	void OnCollisionEnter2D(Collision2D other)
 	{
 		if(other.gameObject.CompareTag("Bullet") || other.gameObject.CompareTag("Enemy"))
 		{
-			Damaged();
+			Bullet b = other.gameObject.GetComponent<Bullet>();
+			//TODO make common Damage script for al enemies, to work in similar fashion to Health script
+			health.TakeDamage(b.damage);
 		}
 
 		if(other.gameObject.CompareTag("ground"))
@@ -62,4 +61,5 @@ public class Rocket : MonoBehaviour {
 			Instantiate(explosion, transform.position, transform.rotation);
 		}
 	}
+
 }

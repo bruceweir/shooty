@@ -20,10 +20,14 @@ public class ControlGun : MonoBehaviour {
 	private GameObject currentTarget = null;
 	private Rigidbody2D rb2d;
 
+	private Health currentTargetHealth = null;
 	private Vector3 lastPositionMeasurement;
 
+	private GameObject aimPointMarker;
 	void Start () {
 		sideTerrain = terrain.GetComponent<SideTerrain>();
+
+		aimPointMarker = GameObject.Find("Aimpoint");
 	}
 	
 	// Update is called once per frame
@@ -35,7 +39,23 @@ public class ControlGun : MonoBehaviour {
 
 		if(trackTarget)
 		{
-			RotateTowardsCurrentTarget();
+			if(currentTargetHealth != null && currentTargetHealth.IsDestroyed())
+			{
+				currentTarget = AcquireTarget();
+			}
+			
+			if(currentTarget == null)
+			{
+				currentTarget = AcquireTarget();
+			}
+
+			if(currentTarget == null)
+			{
+				return;
+			}
+
+			Vector3 aimPoint = CalculateAimPoint(currentTarget);
+			RotateTowardsAimPoint(aimPoint);
 		}
 
 		float terrainHeight = sideTerrain.GetHeight(transform.position.x); 
@@ -62,36 +82,46 @@ public class ControlGun : MonoBehaviour {
 		p.transform.Rotate(270f, 0, 0, Space.Self);	
 	}
 
-	void RotateTowardsCurrentTarget()
+	Vector3 CalculateAimPoint(GameObject target)
 	{
-		if(currentTarget == null)
-		{
+		Rigidbody2D targetRb = target.GetComponent<Rigidbody2D>();
 
-			currentTarget = AcquireTarget();
+		if(targetRb == null) {
+			return target.transform.position;
 		}
 
-		if(currentTarget == null)
-		{
-			return;
+		double a = Math.Pow(targetRb.velocity.x,2) + Math.Pow(targetRb.velocity.y, 2) - Math.Pow(39, 2);
+
+	 	double b = 2 * (targetRb.velocity.x * (target.transform.position.x - gameObject.transform.position.x) + targetRb.velocity.y * (target.transform.position.y - gameObject.transform.position.y));
+		
+		double c = Math.Pow(target.transform.position.x - gameObject.transform.position.x, 2) + Math.Pow(target.transform.position.y - gameObject.transform.position.y, 2);
+
+		double discriminant = Math.Pow(b, 2) - 4 * a * c;
+
+		double t1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
+		double t2 = (-b - Math.Sqrt(discriminant)) / (2 * a);
+		//Debug.Log("" + t1 + "    " + t2);
+		float t = (float)Math.Max(t1, t2);
+
+		if(t < 0) {
+			return target.transform.position;
 		}
 
-		Vector3 currentTargetPosition = currentTarget.transform.position;
+		float aimX = t * targetRb.velocity.x + target.transform.position.x;
+		float aimY = t * targetRb.velocity.y + target.transform.position.y;
 
-		Vector3 directionToTarget = currentTarget.transform.position - transform.position;
+		aimPointMarker.transform.SetPositionAndRotation(new Vector3(aimX, aimY, 0), Quaternion.identity);
+		return new Vector3(aimX,  aimY, 0.0f);		
 
-		float distanceToTarget = directionToTarget.magnitude;
+	}
+
+	void RotateTowardsAimPoint(Vector3 aimPoint)
+	{
+		
+
+		Vector3 directionToTarget = aimPoint - transform.position;
 
 		double angleFromGunDirection = Vector3.Angle(directionToTarget, endOfBarrel.transform.up);
-
-		float verticalComponent = endOfBarrel.transform.up.y;
-
-		double verticalDistance = currentTarget.transform.position.y - transform.position.y;
-
-		double initialVerticalSpeed = power * verticalComponent;
-
-		double bulletSpeedAtTargetHeight = Math.Sqrt(Math.Pow(initialVerticalSpeed, 2.0) + (2 * -9.81 * verticalDistance));
-
-		Debug.Log(verticalDistance);
 		
 		Vector3 directionToTargetNorm = Vector3.Normalize(directionToTarget);
 
@@ -127,9 +157,12 @@ public class ControlGun : MonoBehaviour {
 
 	GameObject AcquireTarget()
 	{
-		Debug.Log("AcquireTarget");
-
 		GameObject closestEnemy = FindClosestEnemy();
+
+		if(closestEnemy != null)
+		{
+			currentTargetHealth = closestEnemy.GetComponent<Health>();
+		}
 
 		return closestEnemy;
 	}
@@ -149,6 +182,12 @@ public class ControlGun : MonoBehaviour {
         Vector3 position = transform.position;
         foreach (GameObject go in gos)
         {
+			Health health = go.GetComponent<Health>();
+			if(health.IsDestroyed())
+			{
+				continue;
+			}
+
             Vector3 diff = go.transform.position - position;
             float curDistance = diff.sqrMagnitude;
             if (curDistance < distance)
@@ -158,5 +197,13 @@ public class ControlGun : MonoBehaviour {
             }
         }
         return closest;
+	}
+
+	void LateUpdate()
+	{
+		//if(rb2d != null)
+		//{	
+		//	Debug.Log(rb2d.velocity.magnitude);
+		//}
 	}
 }
