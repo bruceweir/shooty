@@ -6,6 +6,8 @@ public class Health : MonoBehaviour {
 
 	// Use this for initialization
 	public float startingHealth = 1.0f;
+
+	public int scoreValue = 1;
 	
 	private float currentHealth;
 	void Start()
@@ -15,6 +17,10 @@ public class Health : MonoBehaviour {
 	public void TakeDamage(float amount)
 	{
 		currentHealth -= amount;
+
+		if(IsDestroyed()) {
+			GameManager.Instance.UpdateScoreBy(scoreValue);
+		}
 	}
 
 	public bool IsDamaged()

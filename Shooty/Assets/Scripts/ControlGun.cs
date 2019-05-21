@@ -7,6 +7,7 @@ public class ControlGun : MonoBehaviour {
 
 	// Use this for initialization
 	public GameObject bullet;
+	public Rigidbody2D bulletRigidBody;
 	public GameObject endOfBarrel;
 	public GameObject particles;
 	public GameObject terrain;
@@ -16,6 +17,7 @@ public class ControlGun : MonoBehaviour {
 
 	public float rotationSpeed = 1f;
 
+	public float fireRate = 2f;
 	public bool trackTarget = false;
 	private GameObject currentTarget = null;
 	private Rigidbody2D rb2d;
@@ -23,11 +25,15 @@ public class ControlGun : MonoBehaviour {
 	private Health currentTargetHealth = null;
 	private Vector3 lastPositionMeasurement;
 
+	private float lastFiringTime = 0;
+	private float initialBulletSpeed = 0;
 	private GameObject aimPointMarker;
 	void Start () {
 		sideTerrain = terrain.GetComponent<SideTerrain>();
 
 		aimPointMarker = GameObject.Find("Aimpoint");
+
+		initialBulletSpeed = (power/bulletRigidBody.mass)*Time.fixedDeltaTime;
 	}
 	
 	// Update is called once per frame
@@ -70,6 +76,12 @@ public class ControlGun : MonoBehaviour {
 
 	public void Fire()
 	{
+
+		if(Time.time - lastFiringTime < 1.0/fireRate)
+		{
+			return;
+		}
+
 		GameObject b = Instantiate(bullet, endOfBarrel.transform.position, Quaternion.identity);
 		
 		rb2d = b.GetComponent<Rigidbody2D>();
@@ -80,6 +92,9 @@ public class ControlGun : MonoBehaviour {
 
 		GameObject p = Instantiate(particles, endOfBarrel.transform.position, endOfBarrel.transform.rotation);
 		p.transform.Rotate(270f, 0, 0, Space.Self);	
+
+		lastFiringTime =  Time.time;
+
 	}
 
 	Vector3 CalculateAimPoint(GameObject target)
@@ -90,7 +105,7 @@ public class ControlGun : MonoBehaviour {
 			return target.transform.position;
 		}
 
-		double a = Math.Pow(targetRb.velocity.x,2) + Math.Pow(targetRb.velocity.y, 2) - Math.Pow(39, 2);
+		double a = Math.Pow(targetRb.velocity.x,2) + Math.Pow(targetRb.velocity.y, 2) - Math.Pow(initialBulletSpeed, 2);
 
 	 	double b = 2 * (targetRb.velocity.x * (target.transform.position.x - gameObject.transform.position.x) + targetRb.velocity.y * (target.transform.position.y - gameObject.transform.position.y));
 		
@@ -148,6 +163,11 @@ public class ControlGun : MonoBehaviour {
 			{
 				transform.Rotate(0f, 0f, -correctionAngle);
 			}
+		}
+
+		if(correctionAngle < 1f)
+		{
+			Fire();
 		}
 
 		lastPositionMeasurement = currentTarget.transform.position;

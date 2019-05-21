@@ -105,7 +105,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &58584467529487834
 CircleCollider2D:
@@ -230,3 +230,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletHitExplosion: {fileID: 1514648413362834, guid: ab0259b507e35cf43abfaac296409963,
     type: 2}
+  damage: 1

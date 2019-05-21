@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 70960252915338982}
   - component: {fileID: 50563956919605030}
   - component: {fileID: 114134406991233366}
+  - component: {fileID: 114843103096905078}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Enemy
@@ -96,6 +97,18 @@ MonoBehaviour:
   explosion: {fileID: 100000, guid: 42404bf7d14c342f69690c9961a7530d, type: 2}
   damage: 1
   blastRadius: 2
+--- !u!114 &114843103096905078
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1499348135338916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 423d58bb591714f4cbee3a68046abecd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingHealth: 1
 --- !u!212 &212474446449167250
 SpriteRenderer:
   m_ObjectHideFlags: 1

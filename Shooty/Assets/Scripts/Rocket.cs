@@ -46,11 +46,17 @@ public class Rocket : MonoBehaviour {
 	
 	void OnCollisionEnter2D(Collision2D other)
 	{
-		if(other.gameObject.CompareTag("Bullet") || other.gameObject.CompareTag("Enemy"))
+		if(other.gameObject.CompareTag("Bullet"))
 		{
 			Bullet b = other.gameObject.GetComponent<Bullet>();
 			//TODO make common Damage script for al enemies, to work in similar fashion to Health script
 			health.TakeDamage(b.damage);
+
+		}
+
+		if(other.gameObject.CompareTag("Enemy"))
+		{
+			health.TakeDamage(1.0f);
 		}
 
 		if(other.gameObject.CompareTag("ground"))
