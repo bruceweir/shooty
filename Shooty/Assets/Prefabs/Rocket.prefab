@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingHealth: 1
+  scoreValue: 1
 --- !u!212 &212474446449167250
 SpriteRenderer:
   m_ObjectHideFlags: 1

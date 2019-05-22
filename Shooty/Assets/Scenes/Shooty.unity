@@ -376,7 +376,7 @@ MonoBehaviour:
   endOfBarrel: {fileID: 1233694048}
   particles: {fileID: 1511747813014132, guid: feb5d2320bdb0af42a11fd683eb5f11e, type: 2}
   terrain: {fileID: 795327951}
-  power: 3000
+  power: 4000
   rotationSpeed: 5
   fireRate: 2
   trackTarget: 1
@@ -429,7 +429,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 359311197}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 11.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1858134826}
@@ -587,8 +587,8 @@ MonoBehaviour:
   meshFilter: {fileID: 795327954}
   mesh: {fileID: 0}
   smoothingPasses: 3
-  minHeight: 1
-  maxHeight: 10
+  minHeight: 2
+  maxHeight: 4
   terrainLength: 40
   terrainSmoothingRadius: 4
   verticesPerMeter: 5
@@ -1040,7 +1040,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1415514365}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10, z: -10}
+  m_LocalPosition: {x: 0, y: 11, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
