@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2dd93ce5eb2da34db45a22c405d2433, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 5
+  acceleration: 10
   maxSpeed: 10
   destructionParticles: {fileID: 1502888191936152, guid: 257d3ebeadf0851489bf2421dfec7e61,
     type: 2}

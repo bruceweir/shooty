@@ -23,6 +23,7 @@ public class ControlGun : MonoBehaviour {
 	private GameObject previousTarget = null;
 	private Vector3 previousTargetStartPosition;
 	private float previousTargetStartTime;
+	private float previousTime = 0;
 	private Vector3 targetPositionEstimate = new Vector3();
 	private float bulletSpeedEstimate;
 	private float targetHitTime;
@@ -34,6 +35,8 @@ public class ControlGun : MonoBehaviour {
 	private float lastFiringTime = 0;
 	private float initialBulletSpeed = 0;
 	private GameObject aimPointMarker;
+
+	private float XChange = 0;
 	void Start () {
 		sideTerrain = terrain.GetComponent<SideTerrain>();
 
@@ -151,6 +154,7 @@ public class ControlGun : MonoBehaviour {
 			previousTargetStartTime = Time.time;
 			targetPositionEstimate = previousTargetStartPosition;
 			previousTarget = target;
+			previousTime = Time.time;
 		}
 
 		Rigidbody2D targetRb = target.GetComponent<Rigidbody2D>();
@@ -161,8 +165,11 @@ public class ControlGun : MonoBehaviour {
 		targetPositionEstimate.x = previousTargetStartPosition.x + (Time.time - previousTargetStartTime) * targetRb.velocity.x;
 		targetPositionEstimate.y = previousTargetStartPosition.y + (Time.time - previousTargetStartTime) * targetRb.velocity.y;
 		
+		
 		aimPointMarker.transform.SetPositionAndRotation(new Vector3(targetPositionEstimate.x + (targetHitTime * targetRb.velocity.x), targetPositionEstimate.y + (targetHitTime*targetRb.velocity.y), 0), Quaternion.identity);
-		Debug.Log(targetHitTime);
+		
+		previousTime = Time.time;
+
 		return new Vector3(aimPointMarker.transform.position.x, aimPointMarker.transform.position.y, 0f);
 	}
 	Vector3 CalculateAimPointIterativeG(GameObject target)
@@ -179,17 +186,22 @@ public class ControlGun : MonoBehaviour {
 			targetPositionEstimate = previousTargetStartPosition;
 			previousTarget = target;
 			bulletSpeedEstimate = initialBulletSpeed;
+			previousTime = Time.time;
 		}
 
 		Rigidbody2D targetRb = target.GetComponent<Rigidbody2D>();
 	
 		targetHitTime = Math.Abs(Vector3.Magnitude(targetPositionEstimate - gameObject.transform.position))/bulletSpeedEstimate; 
 
-		targetPositionEstimate.x = previousTargetStartPosition.x + (Time.time - previousTargetStartTime) * targetRb.velocity.x;
-		targetPositionEstimate.y = previousTargetStartPosition.y + (Time.time - previousTargetStartTime) * targetRb.velocity.y;
+		//targetPositionEstimate.x = previousTargetStartPosition.x + (Time.time - previousTargetStartTime) * targetRb.velocity.x;
+		//targetPositionEstimate.y = previousTargetStartPosition.y + (Time.time - previousTargetStartTime) * targetRb.velocity.y;
 
-		float xDistance = targetPositionEstimate.x - gameObject.transform.position.x;
-		float yDistance = targetPositionEstimate.y - gameObject.transform.position.y;
+		targetPositionEstimate.x = targetPositionEstimate.x + (Time.time - previousTime) * targetRb.velocity.x;
+		targetPositionEstimate.y = targetPositionEstimate.y + (Time.time - previousTime) * targetRb.velocity.y;
+		
+		//Debug.Log(targetRb.velocity.x);
+		//float xDistance = targetPositionEstimate.x - gameObject.transform.position.x;
+		//float yDistance = targetPositionEstimate.y - gameObject.transform.position.y;
 
 
 		Vector3 normalisedGunUpVector = endOfBarrel.transform.up.normalized;
@@ -198,6 +210,8 @@ public class ControlGun : MonoBehaviour {
 
 		aimPointMarker.transform.SetPositionAndRotation(new Vector3(targetPositionEstimate.x + (targetHitTime * targetRb.velocity.x), targetPositionEstimate.y + (targetHitTime*targetRb.velocity.y), 0), Quaternion.identity);
 		
+		previousTime = Time.time;
+
 		return new Vector3(aimPointMarker.transform.position.x, aimPointMarker.transform.position.y, 0f);
 	}
 	void RotateTowardsAimPoint(Vector3 aimPoint)

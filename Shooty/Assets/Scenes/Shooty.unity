@@ -376,7 +376,7 @@ MonoBehaviour:
   endOfBarrel: {fileID: 1233694048}
   particles: {fileID: 1511747813014132, guid: feb5d2320bdb0af42a11fd683eb5f11e, type: 2}
   terrain: {fileID: 795327951}
-  power: 4000
+  power: 6000
   rotationSpeed: 5
   fireRate: 2
   trackTarget: 1
@@ -592,6 +592,7 @@ MonoBehaviour:
   terrainLength: 40
   terrainSmoothingRadius: 4
   verticesPerMeter: 5
+  destructableTerrain: 0
 --- !u!33 &795327954
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -674,7 +675,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -11.1, y: 34.6}
+  m_Offset: {x: -58.2, y: 34.6}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -685,7 +686,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 59.92, y: 88.97}
+  m_Size: {x: 161.91, y: 88.97}
   m_EdgeRadius: 0
 --- !u!4 &904908918
 Transform:

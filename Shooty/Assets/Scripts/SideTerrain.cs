@@ -16,6 +16,7 @@ public class SideTerrain : MonoBehaviour {
 	public int terrainSmoothingRadius = 2;
 
 	public int verticesPerMeter = 1;
+	public bool destructableTerrain = false;
 
 	float[] heightmap;
 
@@ -138,6 +139,11 @@ public class SideTerrain : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D other)
 	{
+		if(!destructableTerrain)
+		{
+			return;
+		}
+		
 		if(other.gameObject.CompareTag("Enemy"))
 		{
 			Rocket rocket = other.gameObject.GetComponent<Rocket>();
