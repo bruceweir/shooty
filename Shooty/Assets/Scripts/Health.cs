@@ -20,6 +20,7 @@ public class Health : MonoBehaviour {
 
 		if(IsDestroyed()) {
 			GameManager.Instance.UpdateScoreBy(scoreValue);
+			gameObject.SendMessage("InitiateDestruction", SendMessageOptions.DontRequireReceiver);			
 		}
 	}
 

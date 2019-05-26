@@ -19,17 +19,18 @@ public class Rocket : MonoBehaviour {
 	private Rigidbody2D rb2d;
 
 	private Health health;
+
+	
+	private LayerMask destructableMask;
 	
 	void Awake () 
 	{
 		rb2d = GetComponent<Rigidbody2D>();
 		health = GetComponent<Health>();
+
+		destructableMask = LayerMask.GetMask("Destructable");
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	}
-
 	void FixedUpdate() 
 	{
 		if(!health.IsDestroyed())
@@ -51,21 +52,32 @@ public class Rocket : MonoBehaviour {
 			Bullet b = other.gameObject.GetComponent<Bullet>();
 			//TODO make common Damage script for al enemies, to work in similar fashion to Health script
 			health.TakeDamage(b.damage);
-
+			return;
 		}
 
 		if(other.gameObject.CompareTag("Enemy"))
 		{
-			health.TakeDamage(1.0f);
+			health.TakeDamage(damage);
+			return;
 		}
 
-		if(other.gameObject.CompareTag("ground"))
+		
+		GameObject p = Instantiate(destructionParticles, transform.position, Quaternion.identity);
+		Destroy(gameObject);
+
+		Instantiate(explosion, transform.position, transform.rotation);
+
+		Debug.Log("Checking blastRadius");
+
+		Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, blastRadius, destructableMask);
+
+		foreach(Collider2D c in collisions)
 		{
-			GameObject p = Instantiate(destructionParticles, transform.position, Quaternion.identity);
-			Destroy(gameObject);
-
-			Instantiate(explosion, transform.position, transform.rotation);
+			Debug.Log(c.gameObject.name);
+			
+			c.SendMessage("TakeDamage", damage);
 		}
+	
 	}
 
 }
