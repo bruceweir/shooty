@@ -19,6 +19,7 @@ public class ControlGun : MonoBehaviour {
 
 	public float fireRate = 2f;
 	public bool trackTarget = false;
+	public float minimumAccuracyToFire = 1f;
 	private GameObject currentTarget = null;
 	private GameObject previousTarget = null;
 	private Vector3 previousTargetStartPosition;
@@ -36,21 +37,40 @@ public class ControlGun : MonoBehaviour {
 	private float initialBulletSpeed = 0;
 	private GameObject aimPointMarker;
 
+	private LayerMask mask;
+
+	private AudioSource audio;
+
+
 	private float XChange = 0;
-	void Start () {
-		sideTerrain = terrain.GetComponent<SideTerrain>();
+	void Awake () {
+		sideTerrain = GameObject.Find("Terrain").GetComponent<SideTerrain>();
 
 		aimPointMarker = GameObject.Find("Aimpoint");
 
 		initialBulletSpeed = (power/bulletRigidBody.mass)*Time.fixedDeltaTime;
+		
+		mask = LayerMask.GetMask("Ground");
+
+		audio = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		if(sideTerrain == null)
+		{
+			sideTerrain = GameObject.Find("Terrain").GetComponent<SideTerrain>();
+		}
+
+		float terrainHeight = sideTerrain.GetHeight(transform.position.x); 
+		gameObject.transform.SetPositionAndRotation(new Vector3(transform.position.x, sideTerrain.GetHeight(transform.position.x) + transform.localScale.y/2, 0.0f), gameObject.transform.rotation);
+
 		if(Input.GetButtonDown("Jump"))
 		{
 			Fire();
 		}	
+
 
 		if(trackTarget)
 		{
@@ -66,17 +86,22 @@ public class ControlGun : MonoBehaviour {
 
 			if(currentTarget == null)
 			{
+				audio.Stop();
 				return;
 			}
 
-			//Vector3 aimPoint = CalculateAimPoint(currentTarget);
-			//Vector3 aimPoint = CalculateAimPointIterativeNoG(currentTarget);
+			if(!targetLineOfSightOK(currentTarget))
+			{
+				currentTarget = null;
+				audio.Stop();
+				return;
+			}
+
 			Vector3 aimPoint = CalculateAimPointIterativeG(currentTarget);
 			RotateTowardsAimPoint(aimPoint);
 		}
 
-		float terrainHeight = sideTerrain.GetHeight(transform.position.x); 
-		gameObject.transform.SetPositionAndRotation(new Vector3(transform.position.x, sideTerrain.GetHeight(transform.position.x), 0.0f), gameObject.transform.rotation);
+		
 	}
 
 	void FixedUpdate()
@@ -108,70 +133,7 @@ public class ControlGun : MonoBehaviour {
 
 	}
 
-	Vector3 CalculateAimPoint(GameObject target)
-	{
-		Rigidbody2D targetRb = target.GetComponent<Rigidbody2D>();
-
-		if(targetRb == null) {
-			return target.transform.position;
-		}
-
-		double a = Math.Pow(targetRb.velocity.x,2) + Math.Pow(targetRb.velocity.y, 2) - Math.Pow(initialBulletSpeed, 2);
-
-	 	double b = 2 * (targetRb.velocity.x * (target.transform.position.x - gameObject.transform.position.x) + targetRb.velocity.y * (target.transform.position.y - gameObject.transform.position.y));
-		
-		double c = Math.Pow(target.transform.position.x - gameObject.transform.position.x, 2) + Math.Pow(target.transform.position.y - gameObject.transform.position.y, 2);
-
-		double discriminant = Math.Pow(b, 2) - 4 * a * c;
-
-		double t1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
-		double t2 = (-b - Math.Sqrt(discriminant)) / (2 * a);
-		//Debug.Log("" + t1 + "    " + t2);
-		float t = (float)Math.Max(t1, t2);
-
-		if(t < 0) {
-			return target.transform.position;
-		}
-
-		float aimX = t * targetRb.velocity.x + target.transform.position.x;
-		float aimY = t * targetRb.velocity.y + target.transform.position.y;
-
-		aimPointMarker.transform.SetPositionAndRotation(new Vector3(aimX, aimY, 0), Quaternion.identity);
-		return new Vector3(aimX,  aimY, 0.0f);		
-
-	}
-
-	Vector3 CalculateAimPointIterativeNoG(GameObject target)
-	{
-		if(target == null)
-		{
-			return new Vector3(0f, 0f, 0f);
-		}
-
-		if(previousTarget != target)
-		{
-			previousTargetStartPosition = new Vector3(target.transform.position.x, target.transform.position.y, target.transform.position.z);
-			previousTargetStartTime = Time.time;
-			targetPositionEstimate = previousTargetStartPosition;
-			previousTarget = target;
-			previousTime = Time.time;
-		}
-
-		Rigidbody2D targetRb = target.GetComponent<Rigidbody2D>();
-
-		
-		targetHitTime = Math.Abs(Vector3.Magnitude(targetPositionEstimate - gameObject.transform.position))/initialBulletSpeed; 
-
-		targetPositionEstimate.x = previousTargetStartPosition.x + (Time.time - previousTargetStartTime) * targetRb.velocity.x;
-		targetPositionEstimate.y = previousTargetStartPosition.y + (Time.time - previousTargetStartTime) * targetRb.velocity.y;
-		
-		
-		aimPointMarker.transform.SetPositionAndRotation(new Vector3(targetPositionEstimate.x + (targetHitTime * targetRb.velocity.x), targetPositionEstimate.y + (targetHitTime*targetRb.velocity.y), 0), Quaternion.identity);
-		
-		previousTime = Time.time;
-
-		return new Vector3(aimPointMarker.transform.position.x, aimPointMarker.transform.position.y, 0f);
-	}
+	
 	Vector3 CalculateAimPointIterativeG(GameObject target)
 	{
 		if(target == null)
@@ -193,16 +155,10 @@ public class ControlGun : MonoBehaviour {
 	
 		targetHitTime = Math.Abs(Vector3.Magnitude(targetPositionEstimate - gameObject.transform.position))/bulletSpeedEstimate; 
 
-		//targetPositionEstimate.x = previousTargetStartPosition.x + (Time.time - previousTargetStartTime) * targetRb.velocity.x;
-		//targetPositionEstimate.y = previousTargetStartPosition.y + (Time.time - previousTargetStartTime) * targetRb.velocity.y;
 
 		targetPositionEstimate.x = targetPositionEstimate.x + (Time.time - previousTime) * targetRb.velocity.x;
 		targetPositionEstimate.y = targetPositionEstimate.y + (Time.time - previousTime) * targetRb.velocity.y;
 		
-		//Debug.Log(targetRb.velocity.x);
-		//float xDistance = targetPositionEstimate.x - gameObject.transform.position.x;
-		//float yDistance = targetPositionEstimate.y - gameObject.transform.position.y;
-
 
 		Vector3 normalisedGunUpVector = endOfBarrel.transform.up.normalized;
 
@@ -240,23 +196,36 @@ public class ControlGun : MonoBehaviour {
 		{
 			
 			transform.Rotate(0f, 0f, correctionAngle);
+
+			if(!audio.isPlaying)
+			{
+				audio.Play();
+			}
 		}
 		else 
 		{
 			if(dotProductFromGunDirection > 0)
 			{
 				transform.Rotate(0f, 0f, -correctionAngle);
+
+				if(!audio.isPlaying)
+				{
+					audio.Play();
+				}
+			}
+			else
+			{
+				audio.Stop();
 			}
 		}
 
-		if(correctionAngle < 1f)
+		//Debug.Log(correctionAngle);
+
+		if(Math.Abs(correctionAngle) < minimumAccuracyToFire)
 		{
 			Fire();
 		}
 
-		lastPositionMeasurement = currentTarget.transform.position;
-
-	//	Debug.Log(angleFromGunDirection + " " + dotProductFromGunDirection);
 	}
 
 	GameObject AcquireTarget()
@@ -292,8 +261,28 @@ public class ControlGun : MonoBehaviour {
 				continue;
 			}
 
-            Vector3 diff = go.transform.position - position;
-            float curDistance = diff.sqrMagnitude;
+            Vector3 directionToTarget = go.transform.position - position;
+
+			//check that target is in range
+			Vector3 directionNormalised = directionToTarget.normalized;
+
+			double upComponent = directionNormalised.y;
+			double verticalProjectileSpeed = initialBulletSpeed * upComponent;
+			double maxAttainableProjectileHeight = gameObject.transform.position.y + -Math.Pow(verticalProjectileSpeed, 2) / (2 *-9.81);
+
+			if(maxAttainableProjectileHeight < go.transform.position.y)
+			{
+				continue;
+			}
+
+			//check that the ground (layer #12) is not in the way
+
+			if(!targetLineOfSightOK(directionToTarget))
+			{
+				continue;
+			}
+
+            float curDistance = directionToTarget.sqrMagnitude;
             if (curDistance < distance)
             {
                 closest = go;
@@ -302,6 +291,27 @@ public class ControlGun : MonoBehaviour {
         }
         return closest;
 	}
+
+	private bool targetLineOfSightOK(Vector3 directionToTarget)
+	{
+		
+		RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToTarget, Mathf.Infinity, mask);
+
+		if(hit.collider == null)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	private bool targetLineOfSightOK(GameObject target)
+	{
+		Vector3 directionToTarget = target.transform.position - gameObject.transform.position;
+
+		return targetLineOfSightOK(directionToTarget);
+	}
+
+
 
 	void LateUpdate()
 	{

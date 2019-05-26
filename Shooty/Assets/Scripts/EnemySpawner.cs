@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour {
 	public GameObject[] enemyTypes;
 
 	public GameObject[] spawnPoints;
+	public double spawnPropability = 0.02;
 	void Start () {
 		
 	}
@@ -20,7 +21,7 @@ public class EnemySpawner : MonoBehaviour {
 	void SpawnEnemy() {
 		for(int i=0; i < enemyTypes.Length; i++)
 		{
-			if(Random.Range(0f, 1f) < 0.02)
+			if(Random.Range(0f, 1f) < spawnPropability)
 			{
 				int spawnPointIndex = Random.Range(0, spawnPoints.Length);
 				SpawnChecker sC = spawnPoints[spawnPointIndex].GetComponent<SpawnChecker>();
