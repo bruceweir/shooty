@@ -26,15 +26,13 @@ public class ControlGun : MonoBehaviour {
 	private TargetTracker targetTracker;
 	private Rigidbody2D rb2d;
 
-	private Health currentTargetHealth = null;
-	
 	private float lastFiringTime = 0;
 	private float initialAmmoSpeed = 0;
 	private GameObject aimPointMarker;
 
 	private LayerMask mask;
 
-	private AudioSource audio;
+	private AudioSource movementAudio;
 
 	void Awake () {
 		sideTerrain = GameObject.Find("Terrain").GetComponent<SideTerrain>();
@@ -45,7 +43,7 @@ public class ControlGun : MonoBehaviour {
 		
 		mask = LayerMask.GetMask("Ground");
 
-		audio = GetComponent<AudioSource>();
+		movementAudio = GetComponent<AudioSource>();
 
 		targetTracker = GetComponent<TargetTracker>();
 
@@ -77,24 +75,7 @@ public class ControlGun : MonoBehaviour {
 		}
 
 
-		if(trackTarget)
-		{
-			bool trackOK;
-
-			Vector3 aimPoint = targetTracker.GetAimPoint(out trackOK);
-			
 		
-			if(!trackOK || !targetLineOfSightOK(aimPoint))
-			{
-				audio.Stop();
-			}
-			else
-			{	
-				aimPointMarker.transform.SetPositionAndRotation(aimPoint, Quaternion.identity);
-				RotateTowardsAimPoint(aimPoint);
-			}
-			
-		}
 
 		
 	}
@@ -109,7 +90,26 @@ public class ControlGun : MonoBehaviour {
 		}
 		if(!trackTarget && h==0)
 		{
-			audio.Stop();
+			movementAudio.Stop();
+		}
+
+		if(trackTarget)
+		{
+			bool trackOK;
+
+			Vector3 aimPoint = targetTracker.GetAimPoint(out trackOK);
+			
+		
+			if(!trackOK || !targetLineOfSightOK(aimPoint))
+			{
+				movementAudio.Stop();
+			}
+			else
+			{	
+				aimPointMarker.transform.SetPositionAndRotation(aimPoint, Quaternion.identity);
+				RotateTowardsAimPoint(aimPoint);
+			}
+			
 		}
 	}
 
@@ -171,7 +171,7 @@ public class ControlGun : MonoBehaviour {
 			}
 			else
 			{
-				audio.Stop();
+				movementAudio.Stop();
 			}
 		}
 
@@ -187,9 +187,9 @@ public class ControlGun : MonoBehaviour {
 	{
 		transform.Rotate(0f, 0f, amount);
 
-		if(!audio.isPlaying)
+		if(!movementAudio.isPlaying)
 		{
-			audio.Play();
+			movementAudio.Play();
 		}
 	}
 

@@ -16,7 +16,7 @@ public class Destroyer : MonoBehaviour
 		{
 			if(findChild)
 			{
-				Destroy (transform.Find(namedChild).gameObject);
+				Destroy (transform.Find(namedChild).gameObject, awakeDestroyDelay);
 			}
 			else
 			{

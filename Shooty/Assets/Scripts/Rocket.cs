@@ -11,17 +11,19 @@ public class Rocket : MonoBehaviour {
 	public GameObject destructionParticles;
 
 	public GameObject explosion;
+	public GameObject smokeTrail;
 
 	public float damage = 1.0f;
 
 	public float blastRadius = 1.0f;
 
+	public float blowUpDelay = 1.0f;
 	private Rigidbody2D rb2d;
 
 	private Health health;
 
-	
 	private LayerMask destructableMask;
+	private GameObject smokeReference;
 	
 	void Awake () 
 	{
@@ -29,6 +31,8 @@ public class Rocket : MonoBehaviour {
 		health = GetComponent<Health>();
 
 		destructableMask = LayerMask.GetMask("Destructable");
+
+		smokeReference = Instantiate(smokeTrail, gameObject.transform.position, Quaternion.identity);
 	}
 	
 	void FixedUpdate() 
@@ -42,6 +46,13 @@ public class Rocket : MonoBehaviour {
 				rb2d.AddForce( Vector2.right * acceleration);
 			}
 		}
+		else
+		{
+			Invoke("BlowUp", blowUpDelay);
+		}
+
+		smokeReference.transform.position = gameObject.transform.position;
+
 	}
 
 	
@@ -61,23 +72,30 @@ public class Rocket : MonoBehaviour {
 			return;
 		}
 
-		
-		GameObject p = Instantiate(destructionParticles, transform.position, Quaternion.identity);
-		Destroy(gameObject);
+		BlowUp();
+	
+	}
 
+	void BlowUp()
+	{
+
+		GameObject p = Instantiate(destructionParticles, transform.position, Quaternion.identity);
+		
 		Instantiate(explosion, transform.position, transform.rotation);
 
-		Debug.Log("Checking blastRadius");
+		//Debug.Log("Checking blastRadius");
 
 		Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, blastRadius, destructableMask);
 
 		foreach(Collider2D c in collisions)
-		{
-			Debug.Log(c.gameObject.name);
-			
+		{		
 			c.SendMessage("TakeDamage", damage);
 		}
-	
+
+		smokeReference.GetComponent<ParticleSystem>().Stop();
+		Destroy(gameObject);
+
+
 	}
 
 }
