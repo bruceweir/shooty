@@ -23,6 +23,12 @@ public class ControlCamera : MonoBehaviour
         previousPosition = targetGameObject.transform.position;
     }
 
+    void Update()
+    {
+        Vector3 screenPos = activeCamera.WorldToScreenPoint(targetGameObject.transform.position);
+
+        Debug.Log("screenPos: " + screenPos);
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -38,7 +44,7 @@ public class ControlCamera : MonoBehaviour
 
         float height = terrain.GetHeightOfTerrain(desiredCameraPosition);
 
-        if(height != -1f)
+        if(false)//height != -1f)
         {
             if((desiredCameraPosition.y - height) < minimumHeightAboveGround)
             {
