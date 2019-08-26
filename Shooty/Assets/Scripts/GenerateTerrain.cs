@@ -15,9 +15,6 @@ public class GenerateTerrain : MonoBehaviour
     public bool showVertices = false;
     private float xOffset;
     private float zOffset;
-
-    private float[,] perlinSamples;
-
     private MeshFilter mf;
 
     private Vector3[] terrainCoordinates;
@@ -77,56 +74,32 @@ public class GenerateTerrain : MonoBehaviour
         Mesh mesh = new Mesh();
         mesh.name = "TerrainRing";
 
-        Vector3[] vertices = new Vector3[16 * ringCircumferenceCoordinates.Length];
+        Vector3[] vertices = new Vector3[8 * ringCircumferenceCoordinates.Length];
 
         Debug.Log("vertices: " + vertices.Length);
 
         
-        for(int s=0; s < ringCircumferenceCoordinates.Length-1; s++)
+        for(int s=0; s < ringCircumferenceCoordinates.Length; s++)
         {
-            int sOff = 16 *s;
+            int sOff = 8 *s;
             //near face
             //inner vertices
             float distanceFromOriginInnerNear = ringCircumferenceCoordinates[s].magnitude - ringThickness/2f;
             Vector3 innerVertexNear = ringCircumferenceCoordinates[s].normalized * distanceFromOriginInnerNear;
             vertices[sOff] = new Vector3(innerVertexNear.x, ringCircumferenceCoordinates[s].y, innerVertexNear.z);
-            vertices[sOff+1] = new Vector3(innerVertexNear.x, -1f, innerVertexNear.z);
-
+            vertices[sOff+1] = new Vector3(innerVertexNear.x, ringCircumferenceCoordinates[s].y, innerVertexNear.z);
+            
+            vertices[sOff+2] = new Vector3(innerVertexNear.x, -1f, innerVertexNear.z);
+            vertices[sOff+3] = new Vector3(innerVertexNear.x, -1f, innerVertexNear.z);
+            
             //outer vertices
             float distanceFromOriginOuterNear = ringCircumferenceCoordinates[s].magnitude + ringThickness/2f;
             Vector3 outerVertexNear = ringCircumferenceCoordinates[s].normalized * distanceFromOriginOuterNear;
-            vertices[sOff+2] = new Vector3(outerVertexNear.x, ringCircumferenceCoordinates[s].y, outerVertexNear.z);
-            vertices[sOff+3] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
-
-            //far
-            //inner vertices
-            float distanceFromOriginInnerFar = ringCircumferenceCoordinates[s+1].magnitude - ringThickness/2f;
-            Vector3 innerVertexFar = ringCircumferenceCoordinates[s+1].normalized * distanceFromOriginInnerFar;
-            vertices[sOff+4] = new Vector3(innerVertexFar.x, ringCircumferenceCoordinates[s+1].y, innerVertexFar.z);
-            vertices[sOff+5] = new Vector3(innerVertexFar.x, -1f, innerVertexFar.z);
-
-            //outer vertices
-            float distanceFromOriginOuterFar = ringCircumferenceCoordinates[s+1].magnitude + ringThickness/2f;
-            Vector3 outerVertexFar = ringCircumferenceCoordinates[s+1].normalized * distanceFromOriginOuterFar;
-            vertices[sOff+6] = new Vector3(outerVertexFar.x, ringCircumferenceCoordinates[s+1].y, outerVertexFar.z);
-            vertices[sOff+7] = new Vector3(outerVertexFar.x, -1f, outerVertexFar.z);
-
-            //near
-            //inner face vertices
-
-            vertices[sOff+8] = new Vector3(innerVertexNear.x, ringCircumferenceCoordinates[s].y, innerVertexNear.z);
-            vertices[sOff+9] = new Vector3(innerVertexNear.x, -1f, innerVertexNear.z);
-            vertices[sOff+10] = new Vector3(outerVertexNear.x, ringCircumferenceCoordinates[s].y, outerVertexNear.z);
-            vertices[sOff+11] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
+            vertices[sOff+4] = new Vector3(outerVertexNear.x, ringCircumferenceCoordinates[s].y, outerVertexNear.z);
+            vertices[sOff+5] = new Vector3(outerVertexNear.x, ringCircumferenceCoordinates[s].y, outerVertexNear.z);
             
-            //far
-            //outer face vertices
-
-            vertices[sOff+12] = new Vector3(innerVertexFar.x, ringCircumferenceCoordinates[s+1].y, innerVertexFar.z);
-            vertices[sOff+13] = new Vector3(innerVertexFar.x, -1f, innerVertexFar.z);
-            vertices[sOff+14] = new Vector3(outerVertexFar.x, ringCircumferenceCoordinates[s+1].y, outerVertexFar.z);
-            vertices[sOff+15] = new Vector3(outerVertexFar.x, -1f, outerVertexFar.z);
-            
+            vertices[sOff+6] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
+            vertices[sOff+7] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
 
         }
 
@@ -134,7 +107,14 @@ public class GenerateTerrain : MonoBehaviour
         {
             for(int v=0; v < vertices.Length; v++)
             {
+                GameObject[] debugSpheres = GameObject.FindGameObjectsWithTag("_debugSphere");
+                foreach(GameObject ds in debugSpheres)
+                {
+                    Destroy(ds);
+                }
+
                 GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.tag = "_debugSphere";
                 sphere.transform.position = vertices[v];    
             }
         }
@@ -145,64 +125,88 @@ public class GenerateTerrain : MonoBehaviour
 
         int tOff = 0;
 
-        for(int v=0; v < vertices.Length; v+=16)
+        for(int v=0; v < vertices.Length-8; v+=8)
         {
             //upper surface
             triangles[tOff++] = v;
+            triangles[tOff++] = v+8;
             triangles[tOff++] = v+4;
-            triangles[tOff++] = v+2;
             
-            triangles[tOff++] = v+2;
             triangles[tOff++] = v+4;
-            triangles[tOff++] = v+6;
+            triangles[tOff++] = v+8;
+            triangles[tOff++] = v+12;
 
             //lower surface
-            triangles[tOff++] = v+1;
-            triangles[tOff++] = v+3;
-            triangles[tOff++] = v+5;
+            triangles[tOff++] = v+2;
+            triangles[tOff++] = v+6;
+            triangles[tOff++] = v+10;
 
-            triangles[tOff++] = v+3;
-            triangles[tOff++] = v+7;
-            triangles[tOff++] = v+5;
+            triangles[tOff++] = v+6;
+            triangles[tOff++] = v+14;
+            triangles[tOff++] = v+10;
 
             //inner face
 
-            triangles[tOff++] = v+8;
-            triangles[tOff++] = v+9;
-            triangles[tOff++] = v+12;
+            triangles[tOff++] = v+1;
+            triangles[tOff++] = v+3;
+            triangles[tOff++] = v+11;
 
+            triangles[tOff++] = v+1;
+            triangles[tOff++] = v+11;
             triangles[tOff++] = v+9;
-            triangles[tOff++] = v+13;
-            triangles[tOff++] = v+12;
-
+ 
             //outer face
-            triangles[tOff++] = v+10;
-            triangles[tOff++] = v+14;
-            triangles[tOff++] = v+11;
+            triangles[tOff++] = v+5;
+            triangles[tOff++] = v+13;
+            triangles[tOff++] = v+7;
            
-            triangles[tOff++] = v+11;
-            triangles[tOff++] = v+14;
+            triangles[tOff++] = v+7;
+            triangles[tOff++] = v+13;
             triangles[tOff++] = v+15;
 
 
         }
 
-        //close ring
-    ///////////////////////////////////////s
+            //close ring
+        ///////////////////////////////////////s
         int vOff = vertices.Length - 16;
-        //upper surface
-        triangles[tOff++] = vOff+12;
+            
+        //upper
+        triangles[tOff++] = vOff+8;
         triangles[tOff++] = 0;
+        triangles[tOff++] = vOff+12;
+
+        triangles[tOff++] = 0;
+        triangles[tOff++] = 4;
+        triangles[tOff++] = vOff+12;
+
+        //lower
         triangles[tOff++] = vOff+14;
-        Debug.Log("" + vertices[vOff+12] + vertices[0] + vertices[vOff+14]);
+        triangles[tOff++] = 2;
+        triangles[tOff++] = vOff+10;
+
+        triangles[tOff++] = 6;
+        triangles[tOff++] = 2;
+        triangles[tOff++] = vOff+14;
+
+        //inner
+        triangles[tOff++] = vOff+11;
+        triangles[tOff++] = 1;
+        triangles[tOff++] = vOff+9;
+
+        triangles[tOff++] = vOff+11;
+        triangles[tOff++] = 3;
+        triangles[tOff++] = 1;
+
+        //outer
+        triangles[tOff++] = vOff+13;
+        triangles[tOff++] = 5;
+        triangles[tOff++] = vOff+15;
+
+        triangles[tOff++] = vOff+15;
+        triangles[tOff++] = 5;
+        triangles[tOff++] = 7;
         
-//        triangles[tOff++] = 2;
-//        triangles[tOff++] = vOff+4;
-//        triangles[tOff++] = 2;
-
-
-
-
         mesh.vertices = vertices;
         mesh.triangles = triangles;
 
@@ -280,8 +284,8 @@ public class GenerateTerrain : MonoBehaviour
 
             //upper surface
             triangles[tOff++] = v;
-            triangles[tOff++] = v+4;
             triangles[tOff++] = v+2;
+            triangles[tOff++] = v+4;
 
             triangles[tOff++] = v+2;
             triangles[tOff++] = v+4;
