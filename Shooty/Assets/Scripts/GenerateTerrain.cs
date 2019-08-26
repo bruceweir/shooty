@@ -73,8 +73,6 @@ public class GenerateTerrain : MonoBehaviour
         float zPos = Mathf.Sin(angle) * terrainRadius;
         float height = GetHeightOfTerrain(xPos, zPos);
 
-        Debug.Log("" + xPos + " " + height + " " + zPos);
-
         return new Vector3(xPos, height, zPos);
     }
 
@@ -85,11 +83,25 @@ public class GenerateTerrain : MonoBehaviour
         return height;
     }
 
+    public float GetHeightOfTerrain(Vector3 position)
+    {
+        return GetHeightOfTerrain(position.x, position.z);
+    }
+
+    public float GetHeightOfTerrain(float angle)
+    {
+        Vector3 position = GetPosition(angle);
+
+        return position.y;
+    }
     public float GetHeightOfTerrain(float xPos, float zPos)
     {
+        int layerMask = 1 << 12;
         RaycastHit hit;
         // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity))
+        Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.red);
+
+        if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
         {
             return 10000 - hit.distance;
         }
