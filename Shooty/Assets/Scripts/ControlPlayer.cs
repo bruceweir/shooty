@@ -7,9 +7,12 @@ public class ControlPlayer : MonoBehaviour
     // Start is called before the first frame update
 
     public GenerateTerrain terrain;
-    public float angularVelocity = 0.01f;
+    public float angularVelocity = 1f;
+    private Vector3 playerVelocity;
     void Start()
     {
+        playerVelocity = Vector3.zero;
+
         SetChildPositions();
     }
 
@@ -26,8 +29,30 @@ public class ControlPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            angularVelocity *= -1;
+        }
         
-        gameObject.transform.Rotate(0, angularVelocity, 0, Space.World);
+    }
+    void FixedUpdate()
+    {
+        if(Input.GetKey(KeyCode.D))
+        {
+            
+            angularVelocity -= 0.01f;
+        }
+        if(Input.GetKey(KeyCode.A))
+        {
+            angularVelocity += 0.01f;
+        }
+        
+
+        gameObject.transform.Rotate(0, angularVelocity * Time.fixedDeltaTime, 0, Space.World);
         
         float height = terrain.GetHeightOfTerrain(Mathf.Deg2Rad * -gameObject.transform.rotation.eulerAngles.y);
         

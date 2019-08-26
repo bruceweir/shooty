@@ -9,16 +9,28 @@ public class ControlCamera : MonoBehaviour
     public GenerateTerrain terrain;
     public float minimumHeightAboveGround;
     public float distanceFromTarget;
-    Camera camera;
+    private Vector3 predictedTargetPosition;
+    private Vector3 positionChange;
+    private Vector3 previousPosition;
+    public float framesOfPrediction = 1f; 
+    public float predictionFilterCoeff = 0.9f;
+    Camera activeCamera;
     void Start()
     {
-        camera = Camera.main;
+        activeCamera = Camera.main;
+
+        positionChange = Vector3.zero;
+        previousPosition = targetGameObject.transform.position;
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
-        Vector3 targetDirection = targetGameObject.transform.position.normalized;
+        positionChange = targetGameObject.transform.position - previousPosition;
+
+        predictedTargetPosition = targetGameObject.transform.position + (positionChange * framesOfPrediction);
+
+        Vector3 targetDirection = predictedTargetPosition.normalized;// targetGameObject.transform.position.normalized;
 
         float requiredDistance = terrain.terrainRadius + distanceFromTarget;
 
@@ -34,8 +46,10 @@ public class ControlCamera : MonoBehaviour
             }
         }
 
-        camera.transform.position = desiredCameraPosition;
+        activeCamera.transform.position = desiredCameraPosition;
 
-        camera.transform.LookAt(targetGameObject.transform);
+        activeCamera.transform.LookAt(Vector3.zero);// targetGameObject.transform);
+
+        previousPosition = (predictionFilterCoeff * previousPosition) + ((1 - predictionFilterCoeff) * targetGameObject.transform.position);
     }
 }

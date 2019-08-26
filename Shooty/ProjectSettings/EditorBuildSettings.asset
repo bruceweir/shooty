@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Development/TerrainCreationTest.unity
+    guid: 306bced7098117243a61c860ed2d51dc
   m_configObjects: {}
