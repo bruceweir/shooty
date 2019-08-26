@@ -12,10 +12,11 @@ public class GenerateTerrain : MonoBehaviour
     public float perlinScale = 1f;
     public float heightScale = 10;
     public float ringThickness = 5f;
-    public bool showVertices = false;
     private float xOffset;
     private float zOffset;
     private MeshFilter mf;
+
+    private MeshCollider meshCollider;
 
     private Vector3[] terrainCoordinates;
     void Start()
@@ -32,7 +33,12 @@ public class GenerateTerrain : MonoBehaviour
 
         mf = gameObject.GetComponent<MeshFilter>();
         
-        mf.mesh = CreateFlatShadingMeshFromRingCoordinates(terrainCoordinates);
+        mf.sharedMesh = CreateFlatShadingMeshFromRingCoordinates(terrainCoordinates);
+
+        meshCollider = gameObject.GetComponent<MeshCollider>();
+        meshCollider.sharedMesh = null;
+        meshCollider.sharedMesh = mf.sharedMesh;
+        
     }
 
     
@@ -51,22 +57,44 @@ public class GenerateTerrain : MonoBehaviour
             float xPos = (Mathf.Cos(angle));
             float zPos = (Mathf.Sin(angle));
 
-            float height = GetHeight(xPos, zPos);
-
+            float height = GetPerlinValue(xPos, zPos);
+            
             terrainRingCoordinates[s] = new Vector3(xPos*terrainRadius, height, zPos*terrainRadius);
 
             angle += angleStep;
-
         }
 
         return terrainRingCoordinates;
     }
 
-    public float GetHeight(float xPos, float zPos)
+    public Vector3 GetPosition(float angle)
+    {
+        float xPos = Mathf.Cos(angle) * terrainRadius;
+        float zPos = Mathf.Sin(angle) * terrainRadius;
+        float height = GetHeightOfTerrain(xPos, zPos);
+
+        Debug.Log("" + xPos + " " + height + " " + zPos);
+
+        return new Vector3(xPos, height, zPos);
+    }
+
+    public float GetPerlinValue(float xPos, float zPos)
     {
         float height = Mathf.PerlinNoise((xPos + xOffset)*perlinScale, (zPos + zOffset)*perlinScale) * heightScale;
 
         return height;
+    }
+
+    public float GetHeightOfTerrain(float xPos, float zPos)
+    {
+        RaycastHit hit;
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity))
+        {
+            return 10000 - hit.distance;
+        }
+
+        return -1f;
     }
 
     Mesh CreateFlatShadingMeshFromRingCoordinates(Vector3[] ringCircumferenceCoordinates)
@@ -101,22 +129,6 @@ public class GenerateTerrain : MonoBehaviour
             vertices[sOff+6] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
             vertices[sOff+7] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
 
-        }
-
-        if(showVertices)
-        {
-            for(int v=0; v < vertices.Length; v++)
-            {
-                GameObject[] debugSpheres = GameObject.FindGameObjectsWithTag("_debugSphere");
-                foreach(GameObject ds in debugSpheres)
-                {
-                    Destroy(ds);
-                }
-
-                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                sphere.tag = "_debugSphere";
-                sphere.transform.position = vertices[v];    
-            }
         }
 
         int[] triangles = new int[vertices.Length/2 * 24 + 24];
@@ -211,6 +223,9 @@ public class GenerateTerrain : MonoBehaviour
         mesh.triangles = triangles;
 
         mesh.RecalculateNormals();
+        mesh.RecalculateTangents();
+        mesh.RecalculateBounds();
+
         return mesh;
     }
 
@@ -260,28 +275,14 @@ public class GenerateTerrain : MonoBehaviour
             colors[sOff+3] = Color.yellow;//Color.Lerp(Color.green, Color.white, ringCircumferenceCoordinates[s].y/heightScale);
         }
 
-        if(showVertices)
-        {
-            for(int v=0; v < vertices.Length; v++)
-            {
-                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                sphere.transform.position = vertices[v];    
-            }
-        }
-
-        Debug.Log("vertices array: " + vertices.Length);
-
         int[] triangles = new int[(3 * 8 * vertices.Length/4) + 24]; //8 triangles per 4 vertices and another 8 triangles to close the ring
 
-        
-        Debug.Log("triangle array: " + triangles.Length);
 
         int tOff=0;
 
         for (int v=0; v < vertices.Length-4; v+=4)
         {
-            Debug.Log("v:" + v + " tOff: " + tOff);
-
+  
             //upper surface
             triangles[tOff++] = v;
             triangles[tOff++] = v+2;
