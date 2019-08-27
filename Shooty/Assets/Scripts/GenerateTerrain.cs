@@ -73,13 +73,18 @@ public class GenerateTerrain : MonoBehaviour
         return terrainRingCoordinates;
     }
 
-    public Vector3 GetPosition(float angle)
+    public Vector3 GetPosition(float angleAroundTerrain)
     {
-        float xPos = Mathf.Cos(angle) * terrainRadius;
-        float zPos = Mathf.Sin(angle) * terrainRadius;
+        float xPos = Mathf.Cos(angleAroundTerrain) * terrainRadius;
+        float zPos = Mathf.Sin(angleAroundTerrain) * terrainRadius;
         float height = GetHeightOfTerrain(xPos, zPos);
 
         return new Vector3(xPos, height, zPos);
+    }
+
+    public float GetAngleRoundTerrain(Vector3 position)
+    {
+        return Mathf.Atan2(position.z, position.x);
     }
 
     public float GetPerlinValue(float xPos, float zPos)
@@ -104,12 +109,18 @@ public class GenerateTerrain : MonoBehaviour
     {
         int layerMask = 1 << 12;
         RaycastHit hit;
-        // Does the ray intersect any objects excluding the player layer
-        Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.red);
-
+        // Does the ray intersect the ground
+        
         if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
         {
+            Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.green);
+
             return 10000 - hit.distance;
+        }
+        else
+        {
+            Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.red);
+
         }
 
         return -1f;

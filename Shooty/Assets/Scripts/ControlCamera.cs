@@ -62,7 +62,9 @@ public class ControlCamera : MonoBehaviour
 
         Vector3 desiredCameraPosition = targetDirection * requiredDistance;
 
-        float height = terrain.GetHeightOfTerrain(desiredCameraPosition);
+        float cameraAngleAroundTerrain = terrain.GetAngleRoundTerrain(desiredCameraPosition);
+
+        float height = terrain.GetHeightOfTerrain(cameraAngleAroundTerrain);
 
         if(height != -1f)
         {
@@ -71,7 +73,7 @@ public class ControlCamera : MonoBehaviour
                 desiredCameraPosition.y = minimumHeightAboveGround + height;
             }
         }
-
+       
         activeCamera.transform.position = desiredCameraPosition;
 
         activeCamera.transform.LookAt(Vector3.zero);
