@@ -19,7 +19,7 @@ public class ControlCamera : MonoBehaviour
     void Start()
     {
         activeCamera = Camera.main;
-
+        activeCamera.farClipPlane = (terrain.terrainRadius * 2.1f) + distanceFromTarget;
         positionChange = Vector3.zero;
         previousPosition = targetGameObject.transform.position;
     }
@@ -27,7 +27,6 @@ public class ControlCamera : MonoBehaviour
     void Update()
     {
         SetCameraFoV();
-        
     }
 
     void SetCameraFoV()
@@ -57,7 +56,7 @@ public class ControlCamera : MonoBehaviour
 
         predictedTargetPosition = targetGameObject.transform.position + (positionChange * framesOfPrediction);
 
-        Vector3 targetDirection = predictedTargetPosition.normalized;// targetGameObject.transform.position.normalized;
+        Vector3 targetDirection = predictedTargetPosition.normalized;
 
         float requiredDistance = targetGameObject.transform.position.magnitude + distanceFromTarget;
 
@@ -65,7 +64,7 @@ public class ControlCamera : MonoBehaviour
 
         float height = terrain.GetHeightOfTerrain(desiredCameraPosition);
 
-        if(false)//height != -1f)
+        if(height != -1f)
         {
             if((desiredCameraPosition.y - height) < minimumHeightAboveGround)
             {
@@ -75,7 +74,7 @@ public class ControlCamera : MonoBehaviour
 
         activeCamera.transform.position = desiredCameraPosition;
 
-        activeCamera.transform.LookAt(Vector3.zero);// targetGameObject.transform);
+        activeCamera.transform.LookAt(Vector3.zero);
 
         previousPosition = (predictionFilterCoeff * previousPosition) + ((1 - predictionFilterCoeff) * targetGameObject.transform.position);
     }

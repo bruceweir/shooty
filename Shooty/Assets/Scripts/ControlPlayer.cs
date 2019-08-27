@@ -11,25 +11,25 @@ public class ControlPlayer : MonoBehaviour
     public float acceleration = .1f;
     public float maxSpeed = 5.0f;
     public float turnRate = 1.0f;
-    private Vector2 playerVelocity;
-    private float lastAngle = 0f;
+    private float playerSpeed;
+    private float currentAngle = 0f;
     private GameObject child;
 
     void Start()
     {
-        playerVelocity = new Vector2(0.01f, 0f);
-        lastAngle = Mathf.Atan2(playerVelocity.y, playerVelocity.x);
-
+        playerSpeed = 0;
+        
         SetChildPositions();
 
         child = gameObject.transform.GetChild(0).gameObject;
+        Debug.Log("child: " + child.name);
     }
 
     void SetChildPositions()
     {
         
         Vector3 position = terrain.GetPosition(-gameObject.transform.rotation.eulerAngles.y);
-        position.y = 0.0f;
+    //    position.y = 0.0f;
         foreach(Transform child in transform)
         {
             child.position = position;
@@ -47,19 +47,15 @@ public class ControlPlayer : MonoBehaviour
     }
     void FixedUpdate()
     {
-
-        float currentAngle = Mathf.Atan2(playerVelocity.y, playerVelocity.x);
-        //Debug.Log(currentAngle);
-                
+          
         if(Input.GetKey(KeyCode.D))
         {
             float angleChange = turnRate * Time.fixedDeltaTime;
+
             currentAngle += angleChange;
-
-            playerVelocity.x = Mathf.Cos(currentAngle) * playerVelocity.magnitude;
-            playerVelocity.y = Mathf.Sin(currentAngle) * playerVelocity.magnitude;
-
-            child.transform.Rotate(Vector3.right, Mathf.Rad2Deg * angleChange);
+            
+            child.transform.Rotate(Vector3.right, angleChange);
+            
         }
         if(Input.GetKey(KeyCode.A))
         {
@@ -67,64 +63,41 @@ public class ControlPlayer : MonoBehaviour
             
             currentAngle -= angleChange;
 
-            playerVelocity.x = Mathf.Cos(currentAngle) * playerVelocity.magnitude;
-            playerVelocity.y = Mathf.Sin(currentAngle) * playerVelocity.magnitude;
-
-            child.transform.Rotate(-Vector3.right, Mathf.Rad2Deg * angleChange);
+            child.transform.Rotate(Vector3.right, -angleChange);            
         }
 
-    
-        lastAngle = currentAngle;
+        currentAngle = currentAngle % 360f;
 
-        float currentSpeed = playerVelocity.magnitude;
         
         if(Input.GetKey(KeyCode.W)) //accelerate
         {
-            currentSpeed += (acceleration * Time.fixedDeltaTime);
-            //Debug.Log("W " + acceleration + " " + Time.fixedDeltaTime + " " + currentSpeed);      
+            playerSpeed += (acceleration * Time.fixedDeltaTime);
         }
         if(Input.GetKey(KeyCode.S)) //Decelerate
         {
-            currentSpeed -= (acceleration * Time.fixedDeltaTime);
+            playerSpeed -= (acceleration * Time.fixedDeltaTime);
         }
 
-        currentSpeed = Mathf.Clamp(currentSpeed, 0.00000f, maxSpeed);
-        
-        if(currentSpeed > 0.00f)
-        {
-            if(playerVelocity.normalized.magnitude < 0.0001f)
-            {
-                playerVelocity.x = Mathf.Cos(lastAngle) * 0.001f;
-                playerVelocity.y = Mathf.Sin(lastAngle) * 0.001f;
-            }
-            else
-            {
-                
-            }
-
-            playerVelocity = playerVelocity.normalized * currentSpeed;  
-           
-        }
-        else
-        {
-            playerVelocity.x = 0;
-            playerVelocity.y = 0;
-        }
+        playerSpeed = Mathf.Clamp(playerSpeed, 0.00000f, maxSpeed);
+      
+        Vector2 playerVelocity;
+      
+        playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAngle) * playerSpeed;
+        playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAngle) * playerSpeed;
 
         //angular velocity is horizontal projection of playerVelocity
 
-        angularVelocity = playerVelocity.x;
+        angularVelocity = -playerVelocity.x;
         
+        //rotate the pivot
         gameObject.transform.Rotate(0, angularVelocity * Time.fixedDeltaTime, 0, Space.World);
         
         //vertical motion is the vertical component of the playerVelocity 
+        //move the pivot vertically        
 
-        float height = terrain.GetHeightOfTerrain(Mathf.Deg2Rad * -gameObject.transform.rotation.eulerAngles.y);
-        
         Vector3 position = gameObject.transform.position;
-        position.y += playerVelocity.y * Time.fixedDeltaTime * terrain.terrainRadius * Mathf.Deg2Rad;//height;
+        position.y -= playerVelocity.y * Time.fixedDeltaTime * terrain.terrainRadius * Mathf.Deg2Rad;//height;
         
         gameObject.transform.position = position;
-        //Debug.Log("" + playerVelocity.y * Time.fixedDeltaTime + " " + gameObject.transform.position.y);
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class GenerateTerrain : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -15,6 +15,7 @@ public class GenerateTerrain : MonoBehaviour
     public GameObject[] DecorativeGameObjects;
     public float decorationProbability = .3f;
     public float minDecorationDistance = 10f;
+    public float minDecorationDistanceFromCentre = 2.0f;
     private float xOffset;
     private float zOffset;
     private MeshFilter mf;
@@ -405,7 +406,7 @@ public class GenerateTerrain : MonoBehaviour
             if(Random.Range(0f, 1f) < decorationProbability)
             {
                 //select a decoration
-                int decorationIndex = Random.Range(0, DecorativeGameObjects.Length-1);
+                int decorationIndex = Random.Range(0, DecorativeGameObjects.Length);
 
                 Vector3 decorationPosition = GetSuitableDecorationPosition(angle);
 
@@ -424,9 +425,8 @@ public class GenerateTerrain : MonoBehaviour
         Vector3 directionToCentre = (ringPosition - new Vector3(0, ringPosition.y, 0)).normalized;
 
         float edgeDistance = ringThickness/2;
-        float forbiddenDistanceAroundCentre = 1.0f;
-
-        float distanceToEdge = Random.Range(forbiddenDistanceAroundCentre, edgeDistance);
+        
+        float distanceToEdge = Random.Range(minDecorationDistanceFromCentre, edgeDistance);
 
         if(Random.Range(0f, 1f) >= 0.5)
         {
