@@ -12,6 +12,9 @@ public class GenerateTerrain : MonoBehaviour
     public float perlinScale = 1f;
     public float heightScale = 10;
     public float ringThickness = 5f;
+    public GameObject[] DecorativeGameObjects;
+    public float decorationProbability = .3f;
+    public float minDecorationDistance = 10f;
     private float xOffset;
     private float zOffset;
     private MeshFilter mf;
@@ -38,6 +41,8 @@ public class GenerateTerrain : MonoBehaviour
         meshCollider = gameObject.GetComponent<MeshCollider>();
         meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = mf.sharedMesh;
+
+        AddDecorations();
         
     }
 
@@ -385,10 +390,57 @@ public class GenerateTerrain : MonoBehaviour
         return mesh;
     }
 
-    
-    // Update is called once per frame
-    void Update()
+    void AddDecorations()
     {
-        
+        float terrainCircumference = 2 * Mathf.PI * terrainRadius;
+
+        float maxNumberOfDecorations = terrainCircumference / minDecorationDistance;
+
+        float angleStep = 2 * Mathf.PI / maxNumberOfDecorations;
+
+        float angle = 0.0f;
+
+        while(angle < 2*Mathf.PI)
+        {
+            if(Random.Range(0f, 1f) < decorationProbability)
+            {
+                //select a decoration
+                int decorationIndex = Random.Range(0, DecorativeGameObjects.Length-1);
+
+                Vector3 decorationPosition = GetSuitableDecorationPosition(angle);
+
+                Instantiate(DecorativeGameObjects[decorationIndex], decorationPosition, Quaternion.identity);
+            }
+
+            angle += angleStep;
+        }
+
+    }
+
+    Vector3 GetSuitableDecorationPosition(float angle)
+    {
+        Vector3 ringPosition = GetPosition(angle);
+
+        Vector3 directionToCentre = (ringPosition - new Vector3(0, ringPosition.y, 0)).normalized;
+
+        float edgeDistance = ringThickness/2;
+        float forbiddenDistanceAroundCentre = 1.0f;
+
+        float distanceToEdge = Random.Range(forbiddenDistanceAroundCentre, edgeDistance);
+
+        if(Random.Range(0f, 1f) >= 0.5)
+        {
+            //inner
+            ringPosition -= directionToCentre * distanceToEdge;
+
+        }
+        else
+        {
+            //outer
+            ringPosition += directionToCentre * distanceToEdge;
+
+        }
+
+        return ringPosition;
     }
 }

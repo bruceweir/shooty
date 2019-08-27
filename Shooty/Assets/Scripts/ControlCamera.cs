@@ -35,22 +35,17 @@ public class ControlCamera : MonoBehaviour
         Vector3 screenPos = activeCamera.WorldToScreenPoint(targetGameObject.transform.position);
         Vector3 viewPortCoords = activeCamera.ScreenToViewportPoint(screenPos);
 
-        Debug.Log("vpc: " + viewPortCoords);
-
         viewPortCoords.z = 0;
         float distanceFromScreenCentre = (viewPortCoords - new Vector3(0.5f, 0.5f, 0)).magnitude;
 
-        Debug.Log(distanceFromScreenCentre);
         if(distanceFromScreenCentre > 0.45f)
            {
-              // Debug.Log("Increasing fov: " + activeCamera.fieldOfView);
                activeCamera.fieldOfView += 0.4f;
                return;
            }
         
         if(distanceFromScreenCentre < 0.2f && activeCamera.fieldOfView > minFov)
            {
-               //Debug.Log("Decreasing fov: " + activeCamera.fieldOfView);
                activeCamera.fieldOfView -= 0.4f;
            }
 
