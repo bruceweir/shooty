@@ -9,27 +9,28 @@ public class ControlCamera : MonoBehaviour
     public GenerateTerrain terrain;
     public float minimumHeightAboveGround;
     public float distanceFromTarget;
+    public float minimumDistanceFromTarget = 10;
     private Vector3 predictedTargetPosition;
     private Vector3 positionChange;
     private Vector3 previousPosition;
     public float framesOfPrediction = 1f; 
     public float predictionFilterCoeff = 0.9f;
-    public float minFov = 45f;
     Camera activeCamera;
     void Start()
     {
         activeCamera = Camera.main;
-        activeCamera.farClipPlane = (terrain.terrainRadius * 2.1f) + distanceFromTarget;
         positionChange = Vector3.zero;
         previousPosition = targetGameObject.transform.position;
     }
 
     void Update()
     {
-        SetCameraFoV();
+        SetCameraFraming();
+        activeCamera.farClipPlane = (terrain.terrainRadius * 2.1f) + distanceFromTarget;
+        
     }
 
-    void SetCameraFoV()
+    void SetCameraFraming()
     {
         Vector3 screenPos = activeCamera.WorldToScreenPoint(targetGameObject.transform.position);
         Vector3 viewPortCoords = activeCamera.ScreenToViewportPoint(screenPos);
@@ -37,16 +38,23 @@ public class ControlCamera : MonoBehaviour
         viewPortCoords.z = 0;
         float distanceFromScreenCentre = (viewPortCoords - new Vector3(0.5f, 0.5f, 0)).magnitude;
 
+        if(distanceFromScreenCentre > .5f)
+        {
+            distanceFromTarget += 0.8f;
+            return;
+        }
+
         if(distanceFromScreenCentre > 0.45f)
-           {
-               activeCamera.fieldOfView += 0.4f;
-               return;
-           }
+        {
+            distanceFromTarget += 0.2f;
+            return;
+        }
+    
+        if(distanceFromScreenCentre < 0.2f && distanceFromTarget > minimumDistanceFromTarget)
+        {
+            distanceFromTarget -= 0.2f;
+        }
         
-        if(distanceFromScreenCentre < 0.2f && activeCamera.fieldOfView > minFov)
-           {
-               activeCamera.fieldOfView -= 0.4f;
-           }
 
     }
     // Update is called once per frame
