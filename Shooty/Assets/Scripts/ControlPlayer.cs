@@ -10,11 +10,9 @@ public class ControlPlayer : MonoBehaviour
     public float angularVelocity = 1f;
     public float acceleration = .1f;
     public float maxSpeed = 5.0f;
-
     public float turnRate = 1.0f;
     private Vector2 playerVelocity;
     private float lastAngle = 0f;
-
     private GameObject child;
 
     void Start()
@@ -55,21 +53,24 @@ public class ControlPlayer : MonoBehaviour
                 
         if(Input.GetKey(KeyCode.D))
         {
-            currentAngle += turnRate * Time.fixedDeltaTime;
+            float angleChange = turnRate * Time.fixedDeltaTime;
+            currentAngle += angleChange;
 
             playerVelocity.x = Mathf.Cos(currentAngle) * playerVelocity.magnitude;
             playerVelocity.y = Mathf.Sin(currentAngle) * playerVelocity.magnitude;
 
-            child.transform.Rotate(Vector3.right, Mathf.Rad2Deg * turnRate * Time.fixedDeltaTime);
+            child.transform.Rotate(Vector3.right, Mathf.Rad2Deg * angleChange);
         }
         if(Input.GetKey(KeyCode.A))
         {
-            currentAngle -= turnRate * Time.fixedDeltaTime;
+            float angleChange = turnRate * Time.fixedDeltaTime;
+            
+            currentAngle -= angleChange;
 
             playerVelocity.x = Mathf.Cos(currentAngle) * playerVelocity.magnitude;
             playerVelocity.y = Mathf.Sin(currentAngle) * playerVelocity.magnitude;
 
-            child.transform.Rotate(-Vector3.right, Mathf.Rad2Deg * turnRate * Time.fixedDeltaTime);
+            child.transform.Rotate(-Vector3.right, Mathf.Rad2Deg * angleChange);
         }
 
     
