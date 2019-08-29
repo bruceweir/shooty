@@ -653,6 +653,9 @@ MonoBehaviour:
   acceleration: 1
   maxSpeed: 10
   turnRate: 45
+  landingSpeed: 3
+  stallSpeed: 2
+  minSpeed: 1
 --- !u!1 &1711356108
 GameObject:
   m_ObjectHideFlags: 0
