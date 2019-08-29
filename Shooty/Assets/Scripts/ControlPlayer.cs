@@ -15,6 +15,7 @@ public class ControlPlayer : MonoBehaviour
     public float landingSpeed = 2.0f;
     public float stallSpeed = 1.0f;
     public float minSpeed = 1.0f;
+    public float landingDescentRate = 0.75f;
     private float currentAttackAngle = 0f;
     private GameObject player;
     private GameObject playerRoll;
@@ -26,21 +27,16 @@ public class ControlPlayer : MonoBehaviour
     
     void Start()
     {
-
         playerSpeed = 5;
         
         player = gameObject.transform.GetChild(0).gameObject;
         playerRoll = gameObject.transform.GetChild(0).GetChild(0).gameObject;
 
-        Debug.Log(playerRoll.name);
-
         SetPlayerStartPositions();
-
     }
 
     void SetPlayerStartPositions()
-    {
-        
+    {  
         Vector3 position = terrain.GetPosition(-gameObject.transform.rotation.eulerAngles.y);
         position.y = 0;
         player.transform.position = position;
@@ -48,8 +44,7 @@ public class ControlPlayer : MonoBehaviour
         //player height is determined by height of the pivot arm to which it is apparently attached. 
         float startHeight = terrain.heightScale + 3;
 
-        gameObject.transform.position = new Vector3(0, startHeight, 0);
-        
+        gameObject.transform.position = new Vector3(0, startHeight, 0);   
     }
 
     // Update is called once per frame
@@ -62,7 +57,6 @@ public class ControlPlayer : MonoBehaviour
     }
     void FixedUpdate()
     {
-        
         FlightState flightState = GetFlightState();
         
         float attackAngleChange = 0;
@@ -93,15 +87,12 @@ public class ControlPlayer : MonoBehaviour
         }
 
         if(Input.GetKey(KeyCode.A))
-        {
-           
+        {   
             if(flightState != FlightState.Stall)
             {
                 attackAngleChange = turnRate * Time.fixedDeltaTime;
                 attackAngleChange *= -1;
-            }
-
-            
+            }   
         }
 
         currentAttackAngle += attackAngleChange;
@@ -116,7 +107,6 @@ public class ControlPlayer : MonoBehaviour
             currentAttackAngle += 360;
         }
 
-        
         if(performingRoll)
         {
             float rollAmount = rollSpeed * Time.fixedDeltaTime;
@@ -144,31 +134,25 @@ public class ControlPlayer : MonoBehaviour
 
         playerSpeed = Mathf.Clamp(playerSpeed, minSpeed, maxSpeed);
       
-
         Vector2 playerVelocity;
 
-        Debug.Log(Vector3.Dot(player.transform.forward, Vector3.down));
-      
         if(flightState == FlightState.Stall)
         {
-            Debug.Log("stall");
-            
             playerSpeed += Mathf.Clamp(Vector3.Dot(player.transform.forward, Vector3.down), 0, 1) * 1f * Time.fixedDeltaTime;
 
-            //Debug.Log(playerSpeed);
             playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
             playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
         }
         else if(flightState == FlightState.Landing)
         {
-            Debug.Log("Landing");
             
             playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
             playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+
+            playerVelocity.y = Mathf.Clamp(playerVelocity.y, landingDescentRate, playerVelocity.y);
         }
         else
         {
-            Debug.Log("OK");
             playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
             playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
         }
