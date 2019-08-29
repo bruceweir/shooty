@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum FlightState {Stall, Landing, Landed, OK};
 public class ControlPlayer : MonoBehaviour
 {
-    
     public GenerateTerrain terrain;
     public float angularVelocity = 1f;
     public float acceleration = .1f;
     public float maxSpeed = 5.0f;
     public float turnRate = 1.0f;
     private float playerSpeed;
-    private float currentAngle = 0f;
+    public float landingSpeed = 2.0f;
+    public float stallSpeed = 1.0f;
+    public float minSpeed = 1.0f;
+    private float currentAttackAngle = 0f;
     private GameObject player;
     private GameObject playerRoll;
     float inversionCountdownValue;
@@ -31,8 +35,6 @@ public class ControlPlayer : MonoBehaviour
         Debug.Log(playerRoll.name);
 
         SetPlayerStartPositions();
-
-      //  StartCoroutine(InversionCountdown());
 
     }
 
@@ -61,34 +63,60 @@ public class ControlPlayer : MonoBehaviour
     void FixedUpdate()
     {
         
+        FlightState flightState = GetFlightState();
+        
+        float attackAngleChange = 0;
+
         if(PlayerUpsideDown() && performingRoll == false)
         {
             performingRoll = true;
             totalRollRotation = 0.0f;
             targetRollRotation = (playerRoll.transform.localEulerAngles.z + 180) % 360.0f;
         }
+
+        if(flightState == FlightState.Stall)
+        {
+            attackAngleChange = (1 - Vector3.Dot(player.transform.forward, Vector3.down)) * Time.fixedDeltaTime * 20;
+
+            if(!FlyingToTheRight())
+            {
+                attackAngleChange *= -1;
+            }
+        }
         
         if(Input.GetKey(KeyCode.D))
         {
-            float angleChange = turnRate * Time.fixedDeltaTime;
-
-            currentAngle += angleChange;
-            
-            player.transform.Rotate(Vector3.right, angleChange);
-
+            if(flightState != FlightState.Stall)
+            {
+                attackAngleChange = turnRate * Time.fixedDeltaTime;
+            }
         }
+
         if(Input.GetKey(KeyCode.A))
         {
-            float angleChange = turnRate * Time.fixedDeltaTime;
-            
-            currentAngle -= angleChange;
+           
+            if(flightState != FlightState.Stall)
+            {
+                attackAngleChange = turnRate * Time.fixedDeltaTime;
+                attackAngleChange *= -1;
+            }
 
-            player.transform.Rotate(Vector3.right, -angleChange);     
-    
+            
         }
 
-        currentAngle = currentAngle % 360f;
+        currentAttackAngle += attackAngleChange;
 
+        player.transform.Rotate(Vector3.right, attackAngleChange);     
+
+
+        currentAttackAngle = currentAttackAngle % 360f;
+
+        if(currentAttackAngle < 0 )
+        {
+            currentAttackAngle += 360;
+        }
+
+        
         if(performingRoll)
         {
             float rollAmount = rollSpeed * Time.fixedDeltaTime;
@@ -114,13 +142,36 @@ public class ControlPlayer : MonoBehaviour
             playerSpeed -= (acceleration * Time.fixedDeltaTime);
         }
 
-        playerSpeed = Mathf.Clamp(playerSpeed, 0.00000f, maxSpeed);
+        playerSpeed = Mathf.Clamp(playerSpeed, minSpeed, maxSpeed);
       
-        Vector2 playerVelocity;
-      
-        playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAngle) * playerSpeed;
-        playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAngle) * playerSpeed;
 
+        Vector2 playerVelocity;
+
+        Debug.Log(Vector3.Dot(player.transform.forward, Vector3.down));
+      
+        if(flightState == FlightState.Stall)
+        {
+            Debug.Log("stall");
+            
+            playerSpeed += Mathf.Clamp(Vector3.Dot(player.transform.forward, Vector3.down), 0, 1) * 1f * Time.fixedDeltaTime;
+
+            //Debug.Log(playerSpeed);
+            playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+            playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+        }
+        else if(flightState == FlightState.Landing)
+        {
+            Debug.Log("Landing");
+            
+            playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+            playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+        }
+        else
+        {
+            Debug.Log("OK");
+            playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+            playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+        }
         //angular velocity is horizontal projection of playerVelocity
 
         angularVelocity = -playerVelocity.x;
@@ -132,6 +183,8 @@ public class ControlPlayer : MonoBehaviour
         //move the pivot vertically        
 
         Vector3 position = gameObject.transform.position;
+
+        
         position.y -= playerVelocity.y * Time.fixedDeltaTime * terrain.terrainRadius * Mathf.Deg2Rad;//height;
         
         gameObject.transform.position = position;
@@ -144,6 +197,26 @@ public class ControlPlayer : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    private bool FlyingToTheRight()
+    {
+        return currentAttackAngle < 90 || currentAttackAngle > 270;
+    }
+
+    public FlightState GetFlightState()
+    {
+
+        if(playerSpeed < stallSpeed)
+        {
+            return FlightState.Stall;
+        }
+        if(playerSpeed < landingSpeed)
+        {
+            return FlightState.Landing;
+        }
+
+        return FlightState.OK;
     }
 
 }
