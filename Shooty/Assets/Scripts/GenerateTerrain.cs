@@ -16,13 +16,15 @@ public class GenerateTerrain : MonoBehaviour
     public float decorationProbability = .3f;
     public float minDecorationDistance = 10f;
     public float minDecorationDistanceFromCentre = 2.0f;
+    public float runwayLength = 50f;
+    public float runwayWidth = 5f;
     private float xOffset;
     private float zOffset;
     private MeshFilter mf;
 
     private MeshCollider meshCollider;
 
-    private Vector3[] terrainCoordinates;
+    //private Vector3[] terrainCoordinates;
     void Start()
     {
         xOffset = Random.Range(-1000f, 1000f);
@@ -33,7 +35,9 @@ public class GenerateTerrain : MonoBehaviour
             terrainSegments = 3;
         }
 
-        terrainCoordinates = GenerateTerrainRingCoordinates();
+        Vector3[] terrainCoordinates = GenerateTerrainRingCoordinates();
+
+        terrainCoordinates = FlattenTerrainForRunways(terrainCoordinates);
 
         mf = gameObject.GetComponent<MeshFilter>();
         
@@ -43,7 +47,10 @@ public class GenerateTerrain : MonoBehaviour
         meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = mf.sharedMesh;
 
+        AddRunways();
+        
         AddDecorations();
+        
         
     }
 
@@ -73,6 +80,54 @@ public class GenerateTerrain : MonoBehaviour
         return terrainRingCoordinates;
     }
 
+    Vector3[] FlattenTerrainForRunways(Vector3[] terrainCoordinates)
+    {
+
+        float totalTerrainLength = terrainRadius * 2 * Mathf.PI;
+        float proportion = runwayLength / totalTerrainLength;
+
+        int nTerrainSegmentsForRunway = Mathf.CeilToInt(Mathf.Max(1.0f, terrainSegments * proportion));
+
+        int startOfPlayerRunway = Mathf.CeilToInt(0.25f * terrainSegments);
+        int startOfEnemyRunway = Mathf.CeilToInt(0.75f * terrainSegments);
+
+        float heightOfPlayerRunway = terrainCoordinates[startOfPlayerRunway].y;
+        float heightOfEnemyRunway = terrainCoordinates[startOfEnemyRunway].y;
+
+        for(int s=0; s < nTerrainSegmentsForRunway; s++)
+        {
+            terrainCoordinates[startOfPlayerRunway + s].y = heightOfPlayerRunway;
+            terrainCoordinates[startOfEnemyRunway + s].y = heightOfEnemyRunway;
+        }
+
+        //apply filter to avoid large discontinuities due to runways
+        float filterCoeff = 0.5f;
+
+        ApplyFilter(0, terrainSegments, 1);
+
+        return terrainCoordinates;
+
+
+        //////////Local method//////////////////
+        void ApplyFilter(int filterStartIndex, int filterSteps, int step)
+        {
+            float previousSample = terrainCoordinates[filterStartIndex].y;
+
+            for(int s = 0; s < filterSteps; s+=step)
+            {
+                int offset = (filterStartIndex + s + 1) % terrainSegments;
+                float currentSample = terrainCoordinates[offset].y;
+
+                terrainCoordinates[offset].y = (filterCoeff * previousSample) + ((1-filterCoeff)*currentSample);
+
+                previousSample = terrainCoordinates[offset].y;
+            }
+
+            return;
+        }
+
+    }
+
     public Vector3 GetPosition(float angleAroundTerrain)
     {
         float xPos = Mathf.Cos(angleAroundTerrain) * terrainRadius;
@@ -91,6 +146,7 @@ public class GenerateTerrain : MonoBehaviour
     {
         float height = Mathf.PerlinNoise((xPos + xOffset)*perlinScale, (zPos + zOffset)*perlinScale) * heightScale;
 
+        height = Mathf.Max(0, height);
         return height;
     }
 
@@ -453,5 +509,10 @@ public class GenerateTerrain : MonoBehaviour
         }
 
         return ringPosition;
+    }
+
+    private void AddRunways()
+    {
+
     }
 }
