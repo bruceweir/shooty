@@ -18,6 +18,10 @@ public class GenerateTerrain : MonoBehaviour
     public float minDecorationDistanceFromCentre = 2.0f;
     public float runwayLength = 50f;
     public float runwayWidth = 5f;
+    public GameObject RunwayPrefab;
+    private int startOfPlayerRunway;
+    private int startOfEnemyRunway;
+    private int nTerrainSegmentsForRunway;
     private float xOffset;
     private float zOffset;
     private MeshFilter mf;
@@ -86,10 +90,10 @@ public class GenerateTerrain : MonoBehaviour
         float totalTerrainLength = terrainRadius * 2 * Mathf.PI;
         float proportion = runwayLength / totalTerrainLength;
 
-        int nTerrainSegmentsForRunway = Mathf.CeilToInt(Mathf.Max(1.0f, terrainSegments * proportion));
+        nTerrainSegmentsForRunway = Mathf.CeilToInt(Mathf.Max(1.0f, terrainSegments * proportion));
 
-        int startOfPlayerRunway = Mathf.CeilToInt(0.25f * terrainSegments);
-        int startOfEnemyRunway = Mathf.CeilToInt(0.75f * terrainSegments);
+        startOfPlayerRunway = Mathf.CeilToInt(0.25f * terrainSegments);
+        startOfEnemyRunway = Mathf.CeilToInt(0.75f * terrainSegments);
 
         float heightOfPlayerRunway = terrainCoordinates[startOfPlayerRunway].y;
         float heightOfEnemyRunway = terrainCoordinates[startOfEnemyRunway].y;
@@ -513,6 +517,14 @@ public class GenerateTerrain : MonoBehaviour
 
     private void AddRunways()
     {
+        GameObject playerRunway = Instantiate(RunwayPrefab, Vector3.zero, Quaternion.identity);
 
+        Mesh playerRunwayMesh = new Mesh();
+
+        Vector3[] playerRunwayVertices = new Vector3[nTerrainSegmentsForRunway * 4];
+        int[] playerRunwayTriangles = new int[nTerrainSegmentsForRunway * 8];
+        MeshFilter playerMF = playerRunway.GetComponent<MeshFilter>();
+
+        playerMF.sharedMesh = playerRunwayMesh;
     }
 }
