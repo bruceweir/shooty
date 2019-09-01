@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,8 +34,8 @@ public class GenerateTerrain : MonoBehaviour
         Vector3 test = GetOffRingCoordinate(new Vector3(0, 34.7f, 1000f), 10);
         Debug.Log("test " + test);
 
-        xOffset = Random.Range(-1000f, 1000f);
-        zOffset = Random.Range(-1000f, 1000f);
+        xOffset = UnityEngine.Random.Range(-1000f, 1000f);
+        zOffset = UnityEngine.Random.Range(-1000f, 1000f);
 
         if(terrainSegments < 3)
         {
@@ -506,10 +506,10 @@ public class GenerateTerrain : MonoBehaviour
 
         while(angle < 2*Mathf.PI)
         {
-            if(Random.Range(0f, 1f) < decorationProbability)
+            if(UnityEngine.Random.Range(0f, 1f) < decorationProbability)
             {
                 //select a decoration
-                int decorationIndex = Random.Range(0, DecorativeGameObjects.Length);
+                int decorationIndex = UnityEngine.Random.Range(0, DecorativeGameObjects.Length);
 
                 Vector3 decorationPosition = GetSuitableDecorationPosition(angle);
 
@@ -529,9 +529,9 @@ public class GenerateTerrain : MonoBehaviour
 
         float edgeDistance = ringThickness/2;
         
-        float distanceToEdge = Random.Range(minDecorationDistanceFromCentre, edgeDistance);
+        float distanceToEdge = UnityEngine.Random.Range(minDecorationDistanceFromCentre, edgeDistance);
 
-        if(Random.Range(0f, 1f) >= 0.5)
+        if(UnityEngine.Random.Range(0f, 1f) >= 0.5)
         {
             //inner
             ringPosition -= directionToCentre * distanceToEdge;
@@ -553,43 +553,25 @@ public class GenerateTerrain : MonoBehaviour
 
         Mesh playerRunwayMesh = new Mesh();
 
-        Vector3[] playerRunwayVertices = new Vector3[nTerrainSegmentsForRunway * 4];
-        int[] playerRunwayTriangles = new int[nTerrainSegmentsForRunway * 8];
+        Vector3[] playerRunwayCoordinates = new Vector3[nTerrainSegmentsForRunway];
+
+        for(int s = 0; s < nTerrainSegmentsForRunway; s++)
+        {
+            Vector3 playerRunwayVector = terrainCoordinates[startSegmentOfPlayerRunway+s];
+
+            playerRunwayCoordinates[s] = new Vector3(playerRunwayVector.x, playerRunwayVector.y, playerRunwayVector.z);
+        }
+
+        Vector3[] playerRunwayVertices = GetVertexArrayForFlatShading(playerRunwayCoordinates);
+ 
+        int[] playerRunwayTriangles = GetTrianglesFromVerticesForFlatShading(playerRunwayVertices);
+
+
         MeshFilter playerMF = playerRunway.GetComponent<MeshFilter>();
 
-        int vec=0;
-
-        for(int s=startSegmentOfPlayerRunway; s < startSegmentOfPlayerRunway + nTerrainSegmentsForRunway; s++)
-        {
-            //inner vertices
-            Vector3 innerVertex = GetOffRingCoordinate(terrainCoordinates[s], runwayWidth/2);
-
-            playerRunwayVertices[vec++] = new Vector3(innerVertex.x, innerVertex.y, innerVertex.z);
-            playerRunwayVertices[vec++] = new Vector3(innerVertex.x, innerVertex.y + 0.5f, innerVertex.z);
-
-            //outer vertices
-            Vector3 outerVertex = GetOffRingCoordinate(terrainCoordinates[s], -runwayWidth/2);
-
-            playerRunwayVertices[vec++] = new Vector3(outerVertex.x, outerVertex.y, outerVertex.z);
-            playerRunwayVertices[vec++] = new Vector3(outerVertex.x, outerVertex.y+0.5f, outerVertex.z);
-        }
- 
-        int[] triangles = new int[6];//playerRunwayVertices.Length * 8 + 4];
-
-        //triangulate ends
-
-        int tOff = 0;
-
-        triangles[tOff++] = 0;
-        triangles[tOff++] = 1;
-        triangles[tOff++] = 2;
-        triangles[tOff++] = 2;
-        triangles[tOff++] = 1;
-        triangles[tOff++] = 3;
-        
         
         playerRunwayMesh.vertices = playerRunwayVertices;
-        playerRunwayMesh.triangles = triangles;
+        playerRunwayMesh.triangles = playerRunwayTriangles;
 
         playerRunwayMesh.RecalculateNormals();
 
