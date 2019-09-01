@@ -1,6 +1,8 @@
-﻿using System;
+﻿using System.Linq;
+
 using System.Collections.Generic;
 using UnityEngine;
+
 
 //[ExecuteInEditMode]
 public class GenerateTerrain : MonoBehaviour
@@ -101,10 +103,13 @@ public class GenerateTerrain : MonoBehaviour
         float heightOfPlayerRunway = terrainCoordinates[startSegmentOfPlayerRunway].y;
         float heightOfEnemyRunway = terrainCoordinates[startSegmentOfEnemyRunway].y;
 
-        for(int s=0; s < nTerrainSegmentsForRunway; s++)
+        int landClearanceSegments = Mathf.CeilToInt(nTerrainSegmentsForRunway * 1.5f);
+
+        Debug.Log(nTerrainSegmentsForRunway + " " + landClearanceSegments);
+        for(int s=0; s < landClearanceSegments; s++)
         {
-            terrainCoordinates[startSegmentOfPlayerRunway + s].y = heightOfPlayerRunway;
-            terrainCoordinates[startSegmentOfEnemyRunway + s].y = heightOfEnemyRunway;
+            terrainCoordinates[startSegmentOfPlayerRunway + s - (int)(landClearanceSegments-nTerrainSegmentsForRunway)/2].y = heightOfPlayerRunway;
+            terrainCoordinates[startSegmentOfEnemyRunway + s - (int)(landClearanceSegments-nTerrainSegmentsForRunway)/2].y = heightOfEnemyRunway;
         }
 
         //apply filter to avoid large discontinuities due to runways
@@ -189,7 +194,7 @@ public class GenerateTerrain : MonoBehaviour
         return -1f;
     }
 
-    Vector3[] GetVertexArrayForFlatShading(Vector3[] ringCircumferenceCoordinates)
+    Vector3[] GetVertexArrayForFlatShading(Vector3[] ringCircumferenceCoordinates, float ringWidth, float lowerlevelHeight, bool relative)
     {
 
         Vector3[] vertices = new Vector3[8 * ringCircumferenceCoordinates.Length];
@@ -201,24 +206,38 @@ public class GenerateTerrain : MonoBehaviour
             //near face
             //inner vertices
             
-            Vector3 innerVertexNear = GetOffRingCoordinate(ringCircumferenceCoordinates[s], ringThickness/2f);
+            Vector3 innerVertexNear = GetOffRingCoordinate(ringCircumferenceCoordinates[s], ringWidth/2f);
 
             vertices[sOff] = new Vector3(innerVertexNear.x, innerVertexNear.y, innerVertexNear.z);
             vertices[sOff+1] = new Vector3(innerVertexNear.x, innerVertexNear.y, innerVertexNear.z);
             
-            vertices[sOff+2] = new Vector3(innerVertexNear.x, -1f, innerVertexNear.z);
-            vertices[sOff+3] = new Vector3(innerVertexNear.x, -1f, innerVertexNear.z);
-            
+            if(relative)
+            {
+                vertices[sOff+2] = new Vector3(innerVertexNear.x, innerVertexNear.y - lowerlevelHeight, innerVertexNear.z);
+                vertices[sOff+3] = new Vector3(innerVertexNear.x, innerVertexNear.y - lowerlevelHeight, innerVertexNear.z);
+            }
+            else
+            {
+                vertices[sOff+2] = new Vector3(innerVertexNear.x, lowerlevelHeight, innerVertexNear.z);
+                vertices[sOff+3] = new Vector3(innerVertexNear.x, lowerlevelHeight, innerVertexNear.z);
+            }
             //outer vertices
        
-            Vector3 outerVertexNear = GetOffRingCoordinate(ringCircumferenceCoordinates[s], -ringThickness/2f);
+            Vector3 outerVertexNear = GetOffRingCoordinate(ringCircumferenceCoordinates[s], -ringWidth/2f);
 
             vertices[sOff+4] = new Vector3(outerVertexNear.x, outerVertexNear.y, outerVertexNear.z);
             vertices[sOff+5] = new Vector3(outerVertexNear.x, outerVertexNear.y, outerVertexNear.z);
             
-            vertices[sOff+6] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
-            vertices[sOff+7] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
-
+            if(relative)
+            {
+                vertices[sOff+6] = new Vector3(outerVertexNear.x, outerVertexNear.y - lowerlevelHeight, outerVertexNear.z);
+                vertices[sOff+7] = new Vector3(outerVertexNear.x, outerVertexNear.y - lowerlevelHeight, outerVertexNear.z);
+            }
+            else
+            {
+                vertices[sOff+6] = new Vector3(outerVertexNear.x, lowerlevelHeight, outerVertexNear.z);
+                vertices[sOff+7] = new Vector3(outerVertexNear.x, lowerlevelHeight, outerVertexNear.z);
+            }
         }
 
         return vertices;
@@ -277,7 +296,7 @@ public class GenerateTerrain : MonoBehaviour
         Mesh mesh = new Mesh();
         mesh.name = "TerrainRing";
 
-        Vector3[] vertices = GetVertexArrayForFlatShading(ringCircumferenceCoordinates);
+        Vector3[] vertices = GetVertexArrayForFlatShading(ringCircumferenceCoordinates, ringThickness, -1f, false);
 
         int[] uncappedTriangles = GetTrianglesFromVerticesForFlatShading(vertices);
 
@@ -559,21 +578,71 @@ public class GenerateTerrain : MonoBehaviour
         {
             Vector3 playerRunwayVector = terrainCoordinates[startSegmentOfPlayerRunway+s];
 
-            playerRunwayCoordinates[s] = new Vector3(playerRunwayVector.x, playerRunwayVector.y, playerRunwayVector.z);
+            playerRunwayCoordinates[s] = new Vector3(playerRunwayVector.x, playerRunwayVector.y+1, playerRunwayVector.z);
         }
 
-        Vector3[] playerRunwayVertices = GetVertexArrayForFlatShading(playerRunwayCoordinates);
+        Vector3[] uncappedPlayerRunwayVertices = GetVertexArrayForFlatShading(playerRunwayCoordinates, runwayWidth, -1f, false);
  
-        int[] playerRunwayTriangles = GetTrianglesFromVerticesForFlatShading(playerRunwayVertices);
+        Vector3[] cappedPlayerRunwayVertices = new Vector3[uncappedPlayerRunwayVertices.Length + 8];
+        uncappedPlayerRunwayVertices.CopyTo(cappedPlayerRunwayVertices, 0);
 
+        int cappedVoff = uncappedPlayerRunwayVertices.Length;
+        
+        //copy the cap end vectors and replicate them
+        Vector3 vectorToCopy = Vector3.zero;
+
+        vectorToCopy = uncappedPlayerRunwayVertices[0];
+        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedPlayerRunwayVertices[2];
+        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedPlayerRunwayVertices[4];
+        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedPlayerRunwayVertices[6];
+        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        
+        vectorToCopy = uncappedPlayerRunwayVertices[uncappedPlayerRunwayVertices.Length-8];
+        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedPlayerRunwayVertices[uncappedPlayerRunwayVertices.Length-6];
+        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedPlayerRunwayVertices[uncappedPlayerRunwayVertices.Length-4];
+        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedPlayerRunwayVertices[uncappedPlayerRunwayVertices.Length-2];
+        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        
+
+        int[] uncappedPlayerRunwayTriangles = GetTrianglesFromVerticesForFlatShading(uncappedPlayerRunwayVertices);
+        int[] playerRunwayTriangles = new int[uncappedPlayerRunwayTriangles.Length + 12];
+
+        uncappedPlayerRunwayTriangles.CopyTo(playerRunwayTriangles, 0);
+
+        int tOff = uncappedPlayerRunwayTriangles.Length;
+        int vOff = cappedPlayerRunwayVertices.Length-8;
+
+        playerRunwayTriangles[tOff++] = vOff;
+        playerRunwayTriangles[tOff++] = vOff+2;
+        playerRunwayTriangles[tOff++] = vOff+1;
+        
+        playerRunwayTriangles[tOff++] = vOff+1;
+        playerRunwayTriangles[tOff++] = vOff+2;
+        playerRunwayTriangles[tOff++] = vOff+3;
+        
+        playerRunwayTriangles[tOff++] = vOff+4;
+        playerRunwayTriangles[tOff++] = vOff+5;
+        playerRunwayTriangles[tOff++] = vOff+6;
+        
+        playerRunwayTriangles[tOff++] = vOff+5;
+        playerRunwayTriangles[tOff++] = vOff+7;
+        playerRunwayTriangles[tOff++] = vOff+6;
+        
 
         MeshFilter playerMF = playerRunway.GetComponent<MeshFilter>();
-
         
-        playerRunwayMesh.vertices = playerRunwayVertices;
+        playerRunwayMesh.vertices = cappedPlayerRunwayVertices;
         playerRunwayMesh.triangles = playerRunwayTriangles;
 
         playerRunwayMesh.RecalculateNormals();
+        playerRunwayMesh.RecalculateTangents();
+        playerRunwayMesh.RecalculateBounds();
 
         playerMF.sharedMesh = playerRunwayMesh;
     }

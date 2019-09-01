@@ -586,6 +586,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1929886612248850579, guid: 38ebab9612ed81c4eafa9bf2b3b347b0,
         type: 3}
+    - target: {fileID: 4314390454813890619, guid: 93108bea98f9321428519aa4ba6fea25,
+        type: 3}
+      propertyPath: runwayWidth
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4314390454813890623, guid: 93108bea98f9321428519aa4ba6fea25,
         type: 3}
       propertyPath: m_LocalPosition.x
