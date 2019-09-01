@@ -19,8 +19,8 @@ public class GenerateTerrain : MonoBehaviour
     public float runwayLength = 50f;
     public float runwayWidth = 5f;
     public GameObject RunwayPrefab;
-    private int startOfPlayerRunway;
-    private int startOfEnemyRunway;
+    private int startSegmentOfPlayerRunway;
+    private int startSegmentOfEnemyRunway;
     private int nTerrainSegmentsForRunway;
     private float xOffset;
     private float zOffset;
@@ -31,6 +31,9 @@ public class GenerateTerrain : MonoBehaviour
     //private Vector3[] terrainCoordinates;
     void Start()
     {
+        Vector3 test = GetOffRingCoordinate(new Vector3(0, 34.7f, 1000f), 10);
+        Debug.Log("test " + test);
+
         xOffset = Random.Range(-1000f, 1000f);
         zOffset = Random.Range(-1000f, 1000f);
 
@@ -51,7 +54,7 @@ public class GenerateTerrain : MonoBehaviour
         meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = mf.sharedMesh;
 
-        AddRunways();
+        AddRunways(terrainCoordinates);
         
         AddDecorations();
         
@@ -92,16 +95,16 @@ public class GenerateTerrain : MonoBehaviour
 
         nTerrainSegmentsForRunway = Mathf.CeilToInt(Mathf.Max(1.0f, terrainSegments * proportion));
 
-        startOfPlayerRunway = Mathf.CeilToInt(0.25f * terrainSegments);
-        startOfEnemyRunway = Mathf.CeilToInt(0.75f * terrainSegments);
+        startSegmentOfPlayerRunway = Mathf.CeilToInt(0.25f * terrainSegments);
+        startSegmentOfEnemyRunway = Mathf.CeilToInt(0.75f * terrainSegments);
 
-        float heightOfPlayerRunway = terrainCoordinates[startOfPlayerRunway].y;
-        float heightOfEnemyRunway = terrainCoordinates[startOfEnemyRunway].y;
+        float heightOfPlayerRunway = terrainCoordinates[startSegmentOfPlayerRunway].y;
+        float heightOfEnemyRunway = terrainCoordinates[startSegmentOfEnemyRunway].y;
 
         for(int s=0; s < nTerrainSegmentsForRunway; s++)
         {
-            terrainCoordinates[startOfPlayerRunway + s].y = heightOfPlayerRunway;
-            terrainCoordinates[startOfEnemyRunway + s].y = heightOfEnemyRunway;
+            terrainCoordinates[startSegmentOfPlayerRunway + s].y = heightOfPlayerRunway;
+            terrainCoordinates[startSegmentOfEnemyRunway + s].y = heightOfEnemyRunway;
         }
 
         //apply filter to avoid large discontinuities due to runways
@@ -186,14 +189,10 @@ public class GenerateTerrain : MonoBehaviour
         return -1f;
     }
 
-    Mesh CreateFlatShadingMeshFromRingCoordinates(Vector3[] ringCircumferenceCoordinates)
+    Vector3[] GetVertexArrayForFlatShading(Vector3[] ringCircumferenceCoordinates)
     {
-        Mesh mesh = new Mesh();
-        mesh.name = "TerrainRing";
 
         Vector3[] vertices = new Vector3[8 * ringCircumferenceCoordinates.Length];
-
-        Debug.Log("vertices: " + vertices.Length);
 
         
         for(int s=0; s < ringCircumferenceCoordinates.Length; s++)
@@ -201,29 +200,33 @@ public class GenerateTerrain : MonoBehaviour
             int sOff = 8 *s;
             //near face
             //inner vertices
-            float distanceFromOriginInnerNear = ringCircumferenceCoordinates[s].magnitude - ringThickness/2f;
-            Vector3 innerVertexNear = ringCircumferenceCoordinates[s].normalized * distanceFromOriginInnerNear;
-            vertices[sOff] = new Vector3(innerVertexNear.x, ringCircumferenceCoordinates[s].y, innerVertexNear.z);
-            vertices[sOff+1] = new Vector3(innerVertexNear.x, ringCircumferenceCoordinates[s].y, innerVertexNear.z);
+            
+            Vector3 innerVertexNear = GetOffRingCoordinate(ringCircumferenceCoordinates[s], ringThickness/2f);
+
+            vertices[sOff] = new Vector3(innerVertexNear.x, innerVertexNear.y, innerVertexNear.z);
+            vertices[sOff+1] = new Vector3(innerVertexNear.x, innerVertexNear.y, innerVertexNear.z);
             
             vertices[sOff+2] = new Vector3(innerVertexNear.x, -1f, innerVertexNear.z);
             vertices[sOff+3] = new Vector3(innerVertexNear.x, -1f, innerVertexNear.z);
             
             //outer vertices
-            float distanceFromOriginOuterNear = ringCircumferenceCoordinates[s].magnitude + ringThickness/2f;
-            Vector3 outerVertexNear = ringCircumferenceCoordinates[s].normalized * distanceFromOriginOuterNear;
-            vertices[sOff+4] = new Vector3(outerVertexNear.x, ringCircumferenceCoordinates[s].y, outerVertexNear.z);
-            vertices[sOff+5] = new Vector3(outerVertexNear.x, ringCircumferenceCoordinates[s].y, outerVertexNear.z);
+       
+            Vector3 outerVertexNear = GetOffRingCoordinate(ringCircumferenceCoordinates[s], -ringThickness/2f);
+
+            vertices[sOff+4] = new Vector3(outerVertexNear.x, outerVertexNear.y, outerVertexNear.z);
+            vertices[sOff+5] = new Vector3(outerVertexNear.x, outerVertexNear.y, outerVertexNear.z);
             
             vertices[sOff+6] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
             vertices[sOff+7] = new Vector3(outerVertexNear.x, -1f, outerVertexNear.z);
 
         }
 
-        int[] triangles = new int[vertices.Length/2 * 24 + 24];
+        return vertices;
+    }
 
-        Debug.Log("triangles: " + triangles.Length);
-
+    int[] GetTrianglesFromVerticesForFlatShading(Vector3[] vertices)
+    {
+        int[] triangles = new int[vertices.Length/8 * 24];
         int tOff = 0;
 
         for(int v=0; v < vertices.Length-8; v+=8)
@@ -264,9 +267,25 @@ public class GenerateTerrain : MonoBehaviour
             triangles[tOff++] = v+7;
             triangles[tOff++] = v+13;
             triangles[tOff++] = v+15;
-
-
         }
+
+        return triangles;
+    }
+
+    Mesh CreateFlatShadingMeshFromRingCoordinates(Vector3[] ringCircumferenceCoordinates)
+    {
+        Mesh mesh = new Mesh();
+        mesh.name = "TerrainRing";
+
+        Vector3[] vertices = GetVertexArrayForFlatShading(ringCircumferenceCoordinates);
+
+        int[] uncappedTriangles = GetTrianglesFromVerticesForFlatShading(vertices);
+
+        int[] triangles = new int[uncappedTriangles.Length + 24];
+
+        uncappedTriangles.CopyTo(triangles, 0);
+
+        int tOff = uncappedTriangles.Length;
 
             //close ring
         ///////////////////////////////////////s
@@ -318,6 +337,19 @@ public class GenerateTerrain : MonoBehaviour
         return mesh;
     }
 
+    Vector3 GetOffRingCoordinate(Vector3 ringCoordinate, float distanceTowardsCentre)
+    {
+        Vector3 raisedVectorAtOrigin = new Vector3(0, ringCoordinate.y, 0);
+
+        float distanceFromOrigin = (ringCoordinate-raisedVectorAtOrigin).magnitude - distanceTowardsCentre;
+
+        Vector3 offRingCoordinate = (ringCoordinate-raisedVectorAtOrigin).normalized * distanceFromOrigin;
+        
+        offRingCoordinate.y = ringCoordinate.y;
+        
+        return offRingCoordinate;
+    }
+    
     Mesh CreateMeshFromRingCoordinates(Vector3[] ringCircumferenceCoordinates)
     {
         Mesh mesh = new Mesh();
@@ -515,7 +547,7 @@ public class GenerateTerrain : MonoBehaviour
         return ringPosition;
     }
 
-    private void AddRunways()
+    private void AddRunways(Vector3[] terrainCoordinates)
     {
         GameObject playerRunway = Instantiate(RunwayPrefab, Vector3.zero, Quaternion.identity);
 
@@ -524,6 +556,42 @@ public class GenerateTerrain : MonoBehaviour
         Vector3[] playerRunwayVertices = new Vector3[nTerrainSegmentsForRunway * 4];
         int[] playerRunwayTriangles = new int[nTerrainSegmentsForRunway * 8];
         MeshFilter playerMF = playerRunway.GetComponent<MeshFilter>();
+
+        int vec=0;
+
+        for(int s=startSegmentOfPlayerRunway; s < startSegmentOfPlayerRunway + nTerrainSegmentsForRunway; s++)
+        {
+            //inner vertices
+            Vector3 innerVertex = GetOffRingCoordinate(terrainCoordinates[s], runwayWidth/2);
+
+            playerRunwayVertices[vec++] = new Vector3(innerVertex.x, innerVertex.y, innerVertex.z);
+            playerRunwayVertices[vec++] = new Vector3(innerVertex.x, innerVertex.y + 0.5f, innerVertex.z);
+
+            //outer vertices
+            Vector3 outerVertex = GetOffRingCoordinate(terrainCoordinates[s], -runwayWidth/2);
+
+            playerRunwayVertices[vec++] = new Vector3(outerVertex.x, outerVertex.y, outerVertex.z);
+            playerRunwayVertices[vec++] = new Vector3(outerVertex.x, outerVertex.y+0.5f, outerVertex.z);
+        }
+ 
+        int[] triangles = new int[6];//playerRunwayVertices.Length * 8 + 4];
+
+        //triangulate ends
+
+        int tOff = 0;
+
+        triangles[tOff++] = 0;
+        triangles[tOff++] = 1;
+        triangles[tOff++] = 2;
+        triangles[tOff++] = 2;
+        triangles[tOff++] = 1;
+        triangles[tOff++] = 3;
+        
+        
+        playerRunwayMesh.vertices = playerRunwayVertices;
+        playerRunwayMesh.triangles = triangles;
+
+        playerRunwayMesh.RecalculateNormals();
 
         playerMF.sharedMesh = playerRunwayMesh;
     }
