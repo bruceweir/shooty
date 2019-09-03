@@ -602,7 +602,9 @@ public class GenerateTerrain : MonoBehaviour
             playerRunwayRingCoordinates[s] = new Vector3(playerRunwayVector.x, playerRunwayVector.y+1, playerRunwayVector.z);
         }
 
-        AddRunwayMesh(playerRunwayRingCoordinates);
+        GameObject playerRunway = MakeRunwayMesh(playerRunwayRingCoordinates);
+        playerRunway.name = "PlayerRunway";
+        playerRunway.tag = "Runway";
 
         Vector3[] enemyRunwayRingCoordinates = new Vector3[nTerrainSegmentsForRunway];
 
@@ -613,12 +615,15 @@ public class GenerateTerrain : MonoBehaviour
             enemyRunwayRingCoordinates[s] = new Vector3(enemyRunwayVector.x, enemyRunwayVector.y+1, enemyRunwayVector.z);
         }
 
-        AddRunwayMesh(enemyRunwayRingCoordinates);
+        GameObject enemyRunway = MakeRunwayMesh(enemyRunwayRingCoordinates);
+        enemyRunway.name = "EnemyRunway";
+        enemyRunway.tag = "Runway";
         
     }
 
-    void AddRunwayMesh(Vector3[] runwayRingCoordinates)
+    GameObject MakeRunwayMesh(Vector3[] runwayRingCoordinates)
     {
+        
         VerticesAndUVs runwayVerticesAndUVs = GetVertexArrayForFlatShading(runwayRingCoordinates, runwayWidth, -1f, false);
 
         Vector3[] uncappedRunwayVertices = runwayVerticesAndUVs.vertices;
@@ -722,5 +727,9 @@ public class GenerateTerrain : MonoBehaviour
         runwayMesh.RecalculateBounds();
 
         meshFilter.sharedMesh = runwayMesh;
+
+        return runway;
+
+        
     }
 }
