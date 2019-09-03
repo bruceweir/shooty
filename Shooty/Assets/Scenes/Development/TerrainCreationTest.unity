@@ -591,6 +591,11 @@ PrefabInstance:
       propertyPath: runwayWidth
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 4314390454813890619, guid: 93108bea98f9321428519aa4ba6fea25,
+        type: 3}
+      propertyPath: terrainRadius
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 4314390454813890623, guid: 93108bea98f9321428519aa4ba6fea25,
         type: 3}
       propertyPath: m_LocalPosition.x
