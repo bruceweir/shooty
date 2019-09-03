@@ -15,7 +15,6 @@ public class ControlPlayer : MonoBehaviour
     public float landingSpeed = 2.0f;
     public float stallSpeed = 1.0f;
     public float minSpeed = 1.0f;
-    public float landingDescentRate = 0.75f;
     private float currentAttackAngle = 0f;
     private GameObject player;
     private GameObject playerRoll;
@@ -136,26 +135,17 @@ public class ControlPlayer : MonoBehaviour
       
         Vector2 playerVelocity;
 
-        if(flightState == FlightState.Stall)
+        playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+        playerVelocity.y = -Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+        
+        float maxVerticalSpeed = GetMaxVerticalSpeed();
+        
+        if(playerVelocity.y > maxVerticalSpeed)
         {
-            playerSpeed += Mathf.Clamp(Vector3.Dot(player.transform.forward, Vector3.down), 0, 1) * 1f * Time.fixedDeltaTime;
+            playerVelocity.y = maxVerticalSpeed;
+        }
 
-            playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
-            playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
-        }
-        else if(flightState == FlightState.Landing)
-        {
-            
-            playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
-            playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
-
-            playerVelocity.y = Mathf.Clamp(playerVelocity.y, landingDescentRate, playerVelocity.y);
-        }
-        else
-        {
-            playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
-            playerVelocity.y = Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
-        }
+        Debug.Log(playerVelocity.y + " " + maxVerticalSpeed);
         //angular velocity is horizontal projection of playerVelocity
 
         angularVelocity = -playerVelocity.x;
@@ -169,9 +159,21 @@ public class ControlPlayer : MonoBehaviour
         Vector3 position = gameObject.transform.position;
 
         
-        position.y -= playerVelocity.y * Time.fixedDeltaTime * terrain.terrainRadius * Mathf.Deg2Rad;//height;
+        position.y += playerVelocity.y * Time.fixedDeltaTime * terrain.terrainRadius * Mathf.Deg2Rad;//height;
         
         gameObject.transform.position = position;
+    }
+
+    private float GetMaxVerticalSpeed()
+    {
+        if(playerSpeed > landingSpeed)
+        {
+            return maxSpeed;
+        }
+        else
+        {
+            return (10/landingSpeed) * playerSpeed + -10;
+        }
     }
 
     private bool PlayerUpsideDown()
