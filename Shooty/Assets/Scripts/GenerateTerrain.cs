@@ -592,55 +592,69 @@ public class GenerateTerrain : MonoBehaviour
 
     private void AddRunways(Vector3[] terrainCoordinates)
     {
-        GameObject playerRunway = Instantiate(RunwayPrefab, Vector3.zero, Quaternion.identity);
-
-        Mesh playerRunwayMesh = new Mesh();
-
-        Vector3[] playerRunwayCoordinates = new Vector3[nTerrainSegmentsForRunway];
+        
+        Vector3[] playerRunwayRingCoordinates = new Vector3[nTerrainSegmentsForRunway];
 
         for(int s = 0; s < nTerrainSegmentsForRunway; s++)
         {
             Vector3 playerRunwayVector = terrainCoordinates[startSegmentOfPlayerRunway+s];
 
-            playerRunwayCoordinates[s] = new Vector3(playerRunwayVector.x, playerRunwayVector.y+1, playerRunwayVector.z);
+            playerRunwayRingCoordinates[s] = new Vector3(playerRunwayVector.x, playerRunwayVector.y+1, playerRunwayVector.z);
         }
 
-        VerticesAndUVs runwayVerticesAndUVs = GetVertexArrayForFlatShading(playerRunwayCoordinates, runwayWidth, -1f, false);
+        AddRunwayMesh(playerRunwayRingCoordinates);
 
-        Vector3[] uncappedPlayerRunwayVertices = runwayVerticesAndUVs.vertices;
+        Vector3[] enemyRunwayRingCoordinates = new Vector3[nTerrainSegmentsForRunway];
+
+
+        for(int s = 0; s < nTerrainSegmentsForRunway; s++)
+        {
+            Vector3 enemyRunwayVector = terrainCoordinates[startSegmentOfEnemyRunway+s];
+            enemyRunwayRingCoordinates[s] = new Vector3(enemyRunwayVector.x, enemyRunwayVector.y+1, enemyRunwayVector.z);
+        }
+
+        AddRunwayMesh(enemyRunwayRingCoordinates);
+        
+    }
+
+    void AddRunwayMesh(Vector3[] runwayRingCoordinates)
+    {
+        VerticesAndUVs runwayVerticesAndUVs = GetVertexArrayForFlatShading(runwayRingCoordinates, runwayWidth, -1f, false);
+
+        Vector3[] uncappedRunwayVertices = runwayVerticesAndUVs.vertices;
  
-        Vector3[] cappedPlayerRunwayVertices = new Vector3[uncappedPlayerRunwayVertices.Length + 8];
-        uncappedPlayerRunwayVertices.CopyTo(cappedPlayerRunwayVertices, 0);
+        Vector3[] cappedRunwayVertices = new Vector3[uncappedRunwayVertices.Length + 8];
+        uncappedRunwayVertices.CopyTo(cappedRunwayVertices, 0);
 
-        int cappedVoff = uncappedPlayerRunwayVertices.Length;
+        int cappedVoff = uncappedRunwayVertices.Length;
         
         //copy the cap end vectors and replicate them
         Vector3 vectorToCopy = Vector3.zero;
 
-        vectorToCopy = uncappedPlayerRunwayVertices[0];
-        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
-        vectorToCopy = uncappedPlayerRunwayVertices[2];
-        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
-        vectorToCopy = uncappedPlayerRunwayVertices[4];
-        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
-        vectorToCopy = uncappedPlayerRunwayVertices[6];
-        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedRunwayVertices[0];
+        cappedRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedRunwayVertices[2];
+        cappedRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedRunwayVertices[4];
+        cappedRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedRunwayVertices[6];
+        cappedRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
         
-        vectorToCopy = uncappedPlayerRunwayVertices[uncappedPlayerRunwayVertices.Length-8];
-        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
-        vectorToCopy = uncappedPlayerRunwayVertices[uncappedPlayerRunwayVertices.Length-6];
-        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
-        vectorToCopy = uncappedPlayerRunwayVertices[uncappedPlayerRunwayVertices.Length-4];
-        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
-        vectorToCopy = uncappedPlayerRunwayVertices[uncappedPlayerRunwayVertices.Length-2];
-        cappedPlayerRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedRunwayVertices[uncappedRunwayVertices.Length-8];
+        cappedRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedRunwayVertices[uncappedRunwayVertices.Length-6];
+        cappedRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedRunwayVertices[uncappedRunwayVertices.Length-4];
+        cappedRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
+        vectorToCopy = uncappedRunwayVertices[uncappedRunwayVertices.Length-2];
+        cappedRunwayVertices[cappedVoff++] = new Vector3(vectorToCopy.x, vectorToCopy.y, vectorToCopy.z);
         
 
         //copy the uv coords too.
         Vector2[] uncappedRunwayUvs = runwayVerticesAndUVs.uvs;
         Vector2[] cappedRunwayUvs = new Vector2[uncappedRunwayUvs.Length + 8];
 
-        Debug.Log(cappedPlayerRunwayVertices.Length + " " + cappedRunwayUvs.Length + " " + uncappedRunwayUvs.Length);
+        Debug.Log(cappedRunwayVertices.Length + " " + cappedRunwayUvs.Length + " " + uncappedRunwayUvs.Length);
         Vector2 vector2ToCopy = Vector2.zero;
 
         runwayVerticesAndUVs.uvs.CopyTo(cappedRunwayUvs, 0);
@@ -669,41 +683,44 @@ public class GenerateTerrain : MonoBehaviour
         
 
 
-        int[] uncappedPlayerRunwayTriangles = GetTrianglesFromVerticesForFlatShading(uncappedPlayerRunwayVertices);
-        int[] playerRunwayTriangles = new int[uncappedPlayerRunwayTriangles.Length + 12];
+        int[] uncappedRunwayTriangles = GetTrianglesFromVerticesForFlatShading(uncappedRunwayVertices);
+        int[] runwayTriangles = new int[uncappedRunwayTriangles.Length + 12];
 
-        uncappedPlayerRunwayTriangles.CopyTo(playerRunwayTriangles, 0);
+        uncappedRunwayTriangles.CopyTo(runwayTriangles, 0);
 
-        int tOff = uncappedPlayerRunwayTriangles.Length;
-        int vOff = cappedPlayerRunwayVertices.Length-8;
+        int tOff = uncappedRunwayTriangles.Length;
+        int vOff = cappedRunwayVertices.Length-8;
 
-        playerRunwayTriangles[tOff++] = vOff;
-        playerRunwayTriangles[tOff++] = vOff+2;
-        playerRunwayTriangles[tOff++] = vOff+1;
+        runwayTriangles[tOff++] = vOff;
+        runwayTriangles[tOff++] = vOff+2;
+        runwayTriangles[tOff++] = vOff+1;
         
-        playerRunwayTriangles[tOff++] = vOff+1;
-        playerRunwayTriangles[tOff++] = vOff+2;
-        playerRunwayTriangles[tOff++] = vOff+3;
+        runwayTriangles[tOff++] = vOff+1;
+        runwayTriangles[tOff++] = vOff+2;
+        runwayTriangles[tOff++] = vOff+3;
         
-        playerRunwayTriangles[tOff++] = vOff+4;
-        playerRunwayTriangles[tOff++] = vOff+5;
-        playerRunwayTriangles[tOff++] = vOff+6;
+        runwayTriangles[tOff++] = vOff+4;
+        runwayTriangles[tOff++] = vOff+5;
+        runwayTriangles[tOff++] = vOff+6;
         
-        playerRunwayTriangles[tOff++] = vOff+5;
-        playerRunwayTriangles[tOff++] = vOff+7;
-        playerRunwayTriangles[tOff++] = vOff+6;
-        
+        runwayTriangles[tOff++] = vOff+5;
+        runwayTriangles[tOff++] = vOff+7;
+        runwayTriangles[tOff++] = vOff+6; 
 
-        MeshFilter playerMF = playerRunway.GetComponent<MeshFilter>();
+        GameObject runway = Instantiate(RunwayPrefab, Vector3.zero, Quaternion.identity);
+
+        Mesh runwayMesh = new Mesh();
+
+        MeshFilter meshFilter = runway.GetComponent<MeshFilter>();
         
-        playerRunwayMesh.vertices = cappedPlayerRunwayVertices;
-        playerRunwayMesh.triangles = playerRunwayTriangles;
-        playerRunwayMesh.uv = cappedRunwayUvs;
+        runwayMesh.vertices = cappedRunwayVertices;
+        runwayMesh.triangles = runwayTriangles;
+        runwayMesh.uv = cappedRunwayUvs;
 
-        playerRunwayMesh.RecalculateNormals();
-        playerRunwayMesh.RecalculateTangents();
-        playerRunwayMesh.RecalculateBounds();
+        runwayMesh.RecalculateNormals();
+        runwayMesh.RecalculateTangents();
+        runwayMesh.RecalculateBounds();
 
-        playerMF.sharedMesh = playerRunwayMesh;
+        meshFilter.sharedMesh = runwayMesh;
     }
 }
