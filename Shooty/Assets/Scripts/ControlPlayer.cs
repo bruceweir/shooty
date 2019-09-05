@@ -54,8 +54,10 @@ public class ControlPlayer : MonoBehaviour
             Application.Quit();
         }   
     }
+
     void FixedUpdate()
     {
+        
         FlightState flightState = GetFlightState();
         
         float attackAngleChange = 0;
@@ -145,7 +147,6 @@ public class ControlPlayer : MonoBehaviour
             playerVelocity.y = maxVerticalSpeed;
         }
 
-        Debug.Log(playerVelocity.y + " " + maxVerticalSpeed);
         //angular velocity is horizontal projection of playerVelocity
 
         angularVelocity = -playerVelocity.x;
@@ -203,6 +204,11 @@ public class ControlPlayer : MonoBehaviour
         }
 
         return FlightState.OK;
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.gameObject.name);
     }
 
 }

@@ -31,15 +31,13 @@ public class GenerateTerrain : MonoBehaviour
     private int nTerrainSegmentsForRunway;
     private float xOffset;
     private float zOffset;
-    private MeshFilter mf;
+    private MeshFilter meshFilter;
 
     private MeshCollider meshCollider;
 
     //private Vector3[] terrainCoordinates;
     void Start()
     {
-        Vector3 test = GetOffRingCoordinate(new Vector3(0, 34.7f, 1000f), 10);
-        Debug.Log("test " + test);
 
         xOffset = UnityEngine.Random.Range(-1000f, 1000f);
         zOffset = UnityEngine.Random.Range(-1000f, 1000f);
@@ -53,14 +51,18 @@ public class GenerateTerrain : MonoBehaviour
 
         terrainCoordinates = FlattenTerrainForRunways(terrainCoordinates);
 
-        mf = gameObject.GetComponent<MeshFilter>();
+        meshFilter = gameObject.GetComponent<MeshFilter>();
         
-        mf.sharedMesh = CreateFlatShadingMeshFromRingCoordinates(terrainCoordinates);
+        meshFilter.mesh = CreateFlatShadingMeshFromRingCoordinates(terrainCoordinates);
 
-        meshCollider = gameObject.GetComponent<MeshCollider>();
+        //meshFilter.mesh.RecalculateBounds();
+
+        meshCollider = gameObject.AddComponent<MeshCollider>();
+        //
         meshCollider.sharedMesh = null;
-        meshCollider.sharedMesh = mf.sharedMesh;
+        meshCollider.sharedMesh = meshFilter.sharedMesh;
 
+        
         AddRunways(terrainCoordinates);
         
         AddDecorations();
@@ -110,7 +112,6 @@ public class GenerateTerrain : MonoBehaviour
 
         int landClearanceSegments = Mathf.CeilToInt(nTerrainSegmentsForRunway * 1.5f);
 
-        Debug.Log(nTerrainSegmentsForRunway + " " + landClearanceSegments);
         for(int s=0; s < landClearanceSegments; s++)
         {
             terrainCoordinates[startSegmentOfPlayerRunway + s - (int)(landClearanceSegments-nTerrainSegmentsForRunway)/2].y = heightOfPlayerRunway;
@@ -184,9 +185,11 @@ public class GenerateTerrain : MonoBehaviour
         RaycastHit hit;
         // Does the ray intersect the ground
         
+        Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.green);
+
         if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
         {
-            Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.green);
+            //Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.green);
 
             return 10000 - hit.distance;
         }
@@ -659,13 +662,11 @@ public class GenerateTerrain : MonoBehaviour
         Vector2[] uncappedRunwayUvs = runwayVerticesAndUVs.uvs;
         Vector2[] cappedRunwayUvs = new Vector2[uncappedRunwayUvs.Length + 8];
 
-        Debug.Log(cappedRunwayVertices.Length + " " + cappedRunwayUvs.Length + " " + uncappedRunwayUvs.Length);
         Vector2 vector2ToCopy = Vector2.zero;
 
         runwayVerticesAndUVs.uvs.CopyTo(cappedRunwayUvs, 0);
         int cappedUVoff = uncappedRunwayUvs.Length;
 
-        Debug.Log("cappedUVoff: " + cappedUVoff);
         
         vector2ToCopy = uncappedRunwayUvs[0];
         cappedRunwayUvs[cappedUVoff++] = new Vector2(vector2ToCopy.x, vector2ToCopy.y);
@@ -728,8 +729,15 @@ public class GenerateTerrain : MonoBehaviour
 
         meshFilter.sharedMesh = runwayMesh;
 
-        return runway;
+        MeshCollider runwayCollider = runway.GetComponent<MeshCollider>();
+        runwayCollider.sharedMesh = runwayMesh;
 
-        
+        return runway;       
     }
+
+    void OnCollision(Collision collision)
+    {
+        Debug.Log("Terrain OnCollision");
+    }
+    
 }

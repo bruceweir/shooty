@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4314390454813890623}
   - component: {fileID: 4314390454813890622}
   - component: {fileID: 4314390454813890621}
-  - component: {fileID: 4314390454813890620}
   - component: {fileID: 4314390454813890619}
   m_Layer: 12
   m_Name: Terrain
@@ -80,20 +79,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &4314390454813890620
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4314390454813890618}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 0}
 --- !u!114 &4314390454813890619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +94,7 @@ MonoBehaviour:
   terrainRadius: 1000
   terrainSegments: 300
   perlinScale: 5
-  heightScale: 180
+  heightScale: 100
   ringThickness: 50
   DecorativeGameObjects:
   - {fileID: 100002, guid: 20b46c387e157e749a3ae5967c749fe2, type: 3}
@@ -125,3 +110,7 @@ MonoBehaviour:
   decorationProbability: 0.3
   minDecorationDistance: 5
   minDecorationDistanceFromCentre: 5
+  runwayLength: 150
+  runwayWidth: 20
+  RunwayPrefab: {fileID: 1929886612248850579, guid: 38ebab9612ed81c4eafa9bf2b3b347b0,
+    type: 3}
