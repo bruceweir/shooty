@@ -295,6 +295,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 948ace138769bc446afc34fdfc9fe4bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &704321699 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4706904494284278408}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6129a6ae7bcb42b48855899cded5c20a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1121049242
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,6 +434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d29667b2a45f66408da80b1d68c3d97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controlPlayer: {fileID: 704321699}
 --- !u!64 &1571379608
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -604,6 +617,11 @@ PrefabInstance:
       propertyPath: terrain
       value: 
       objectReference: {fileID: 519878283}
+    - target: {fileID: 1453042934268017237, guid: 4f694de1c0165234fa286b80a66f46ba,
+        type: 3}
+      propertyPath: cameraDollySpeed
+      value: 0.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f694de1c0165234fa286b80a66f46ba, type: 3}
 --- !u!1001 &4314390454779522736
@@ -617,6 +635,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Terrain
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314390454813890619, guid: 93108bea98f9321428519aa4ba6fea25,
+        type: 3}
+      propertyPath: runwayLength
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 4314390454813890623, guid: 93108bea98f9321428519aa4ba6fea25,
         type: 3}

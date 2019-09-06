@@ -15,6 +15,7 @@ public class ControlCamera : MonoBehaviour
     private Vector3 previousPosition;
     public float framesOfPrediction = 1f; 
     public float predictionFilterCoeff = 0.9f;
+    public float cameraDollySpeed = 0.2f;
     Camera activeCamera;
     void Start()
     {
@@ -46,13 +47,13 @@ public class ControlCamera : MonoBehaviour
 
         if(distanceFromScreenCentre > 0.45f)
         {
-            distanceFromTarget += 0.2f;
+            distanceFromTarget += cameraDollySpeed;
             return;
         }
     
         if(distanceFromScreenCentre < 0.2f && distanceFromTarget > minimumDistanceFromTarget)
         {
-            distanceFromTarget -= 0.2f;
+            distanceFromTarget -= cameraDollySpeed;
         }
         
 

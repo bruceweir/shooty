@@ -23,10 +23,19 @@ public class ControlPlayer : MonoBehaviour
     private float targetRollRotation  = 0;
     private float totalRollRotation = 0;
     private float rollSpeed = 90f;
+
+    private bool performingLandingTurn = false;
+    private float targetTurnRotation = 0f;
+    private float totalTurnRotation = 0f;
+    private float landingTurnSpeed = 30f;
+    private bool allowAnotherLandingTurn = true;
+    private bool landingTurnComplete = true;
+    private FlightState flightState;
     
     void Start()
     {
         playerSpeed = 5;
+        flightState = FlightState.OK;
         
         player = gameObject.transform.GetChild(0).gameObject;
         playerRoll = gameObject.transform.GetChild(0).GetChild(0).gameObject;
@@ -57,9 +66,141 @@ public class ControlPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
+        //Debug.Log(currentAttackAngle);
+
+        CheckFlightState();
         
-        FlightState flightState = GetFlightState();
+        if(flightState == FlightState.Landed)
+        {
+            GroundControls();
+        }
+        else
+        {
+            AirControls();
+        }
+
+    }
+
+    private void GroundControls()
+    {
+        float runwayHeight = terrain.GetHeightOfRunway(player.transform.position.x, player.transform.position.z);
+
+        if(runwayHeight < 0) //miss, must be not over runway
+        {
+            flightState = FlightState.OK;
+            return;
+        }
+
+        float attackAngleChange;
+
+        if(FlyingToTheRight())
+        {
+            attackAngleChange = -currentAttackAngle;     
+        }
+        else
+        {
+            attackAngleChange = 180 - currentAttackAngle;
+        }  
+
+        currentAttackAngle += attackAngleChange;
+        player.transform.Rotate(Vector3.right, attackAngleChange);   
+
+
+        if(Input.GetKey(KeyCode.D))
+        {
+            if(playerSpeed >= landingSpeed)
+            {
+                flightState = FlightState.OK;
+                return;
+            }
+        }
         
+        if(Input.GetKey(KeyCode.A))
+        {
+            if(playerSpeed >= landingSpeed)
+            {
+                flightState = FlightState.OK;
+                return;
+            }
+        }
+        
+        if(Input.GetKey(KeyCode.W)) //accelerate
+        {
+            if(landingTurnComplete)
+            {
+                playerSpeed += (acceleration * Time.fixedDeltaTime);
+            }
+
+        
+        }
+        
+        if(Input.GetKey(KeyCode.S)) //Decelerate
+        {
+            if(performingLandingTurn)
+            {
+                float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
+                playerRoll.transform.Rotate(Vector3.up, turnAmount, Space.Self);
+                totalTurnRotation += turnAmount;
+                if(totalTurnRotation >= 180f)
+                {
+                    playerRoll.transform.Rotate(Vector3.up, 180f -totalTurnRotation, Space.Self);
+                    currentAttackAngle += 180f;
+                    performingLandingTurn = false;
+                    allowAnotherLandingTurn = false;
+                    landingTurnComplete = true;
+                }
+
+                return;
+            }
+
+            if(playerSpeed == 0 && allowAnotherLandingTurn)
+            {
+                Debug.Log("Turn");
+                performingLandingTurn = true;
+                allowAnotherLandingTurn = false;
+                landingTurnComplete = false;
+                totalTurnRotation = 0f;
+                targetTurnRotation = currentAttackAngle + 180f;
+                //playerRoll.transform.Rotate(Vector3.up, 180, Space.Self);
+                //currentAttackAngle += 180;
+                //performingLandingTurn = false;
+
+            }
+            
+            playerSpeed -= (acceleration * Time.fixedDeltaTime);
+        }
+
+        if(Input.GetKeyUp(KeyCode.S))
+        {
+            allowAnotherLandingTurn = true;
+        }
+
+        playerSpeed = Mathf.Clamp(playerSpeed, 0, maxSpeed);
+      
+        Vector2 playerVelocity;
+
+        playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+        playerVelocity.y = 0;
+
+        
+        //angular velocity is horizontal projection of playerVelocity
+
+        angularVelocity = -playerVelocity.x;
+        
+        //rotate the pivot
+        gameObject.transform.Rotate(0, angularVelocity * Time.fixedDeltaTime, 0, Space.World);
+        
+        Vector3 position = gameObject.transform.position;
+
+        position.y = runwayHeight + 0.44f;
+        
+        gameObject.transform.position = position;
+
+    }
+
+    private void AirControls()
+    {
+
         float attackAngleChange = 0;
 
         if(PlayerUpsideDown() && performingRoll == false)
@@ -191,24 +332,62 @@ public class ControlPlayer : MonoBehaviour
         return currentAttackAngle < 90 || currentAttackAngle > 270;
     }
 
-    public FlightState GetFlightState()
+    public void CheckFlightState()
     {
+
+        if(flightState == FlightState.Landed)
+        {
+            if(playerSpeed >= landingSpeed) //check for takeoff
+            {
+                flightState = FlightState.OK;
+            }
+            return;
+        }
 
         if(playerSpeed < stallSpeed)
         {
-            return FlightState.Stall;
+            flightState = FlightState.Stall;
+            return;
         }
         if(playerSpeed < landingSpeed)
         {
-            return FlightState.Landing;
+            flightState =  FlightState.Landing;
+            return;
         }
 
-        return FlightState.OK;
+        flightState = FlightState.OK;
+        return;
     }
 
-    public void OnTriggerEnter(Collider other)
+    public void HasTouchedRunway()
     {
-        Debug.Log(other.gameObject.name);
+        if(LandingSafely())
+        {
+            flightState = FlightState.Landed;
+        }
+        else
+        {
+            Debug.Log("crashed on runway");
+        }
+    }
+    public bool LandingSafely()
+    {
+        if(playerSpeed > landingSpeed)
+        {
+            return false;
+        }
+
+        if(FlyingToTheRight() && (currentAttackAngle >= 350 || currentAttackAngle == 0f))
+        {
+            return true;
+        }
+
+        if(!FlyingToTheRight() && currentAttackAngle >= 180.0 && currentAttackAngle < 190.0)
+        {
+            return true;
+        }
+
+        return false;
     }
 
 }

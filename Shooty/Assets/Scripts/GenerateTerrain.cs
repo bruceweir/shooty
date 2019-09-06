@@ -202,6 +202,18 @@ public class GenerateTerrain : MonoBehaviour
         return -1f;
     }
 
+    public float GetHeightOfRunway(float xPos, float zPos)
+    {
+        int layerMask = 1 << 14;
+        RaycastHit hit;
+        if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
+        {
+            return 10000 - hit.distance;
+        }
+
+        return -1f;
+    }
+
     VerticesAndUVs GetVertexArrayForFlatShading(Vector3[] ringCircumferenceCoordinates, float ringWidth, float lowerlevelHeight, bool relative)
     {
 

@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerCollisionBehaviour : MonoBehaviour
 {
     // Start is called before the first frame update
+
+    public ControlPlayer controlPlayer;
+
     void Start()
     {
         
@@ -27,11 +30,11 @@ public class PlayerCollisionBehaviour : MonoBehaviour
 
         if(collider.CompareTag("Runway"))
         {
-            Debug.Log("Landing?");
+            controlPlayer.HasTouchedRunway();
         }
         if(collider.CompareTag("Terrain"))
         {
-            Debug.Log("crash");
+ //           Debug.Log("crash");
         }
     }
 }
