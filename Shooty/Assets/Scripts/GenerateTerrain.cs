@@ -27,6 +27,7 @@ public class GenerateTerrain : MonoBehaviour
     public float runwayWidth = 5f;
     public GameObject RunwayPrefab;
     private int startSegmentOfPlayerRunway;
+    private float playerStartAngle;
     private int startSegmentOfEnemyRunway;
     private int nTerrainSegmentsForRunway;
     private float xOffset;
@@ -200,6 +201,13 @@ public class GenerateTerrain : MonoBehaviour
         }
 
         return -1f;
+    }
+
+    public float GetHeightOfRunway(float angle)
+    {
+        Vector3 position = GetPosition(angle);
+
+        return GetHeightOfRunway(position.x, position.z);
     }
 
     public float GetHeightOfRunway(float xPos, float zPos)
@@ -617,6 +625,12 @@ public class GenerateTerrain : MonoBehaviour
             playerRunwayRingCoordinates[s] = new Vector3(playerRunwayVector.x, playerRunwayVector.y+1, playerRunwayVector.z);
         }
 
+
+        //float playerRunwayStartAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.First());
+        //float playerRunwayEndAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.Last());
+        //float playerStartPositionAngle = playerRunwayStartAngle + (0.1f * playerRunwayEndAngle - playerRunwayStartAngle);
+        playerStartAngle = CalculatePlayerStartAngle(playerRunwayRingCoordinates);
+
         GameObject playerRunway = MakeRunwayMesh(playerRunwayRingCoordinates);
         playerRunway.name = "PlayerRunway";
         playerRunway.tag = "Runway";
@@ -634,6 +648,16 @@ public class GenerateTerrain : MonoBehaviour
         enemyRunway.name = "EnemyRunway";
         enemyRunway.tag = "Runway";
         
+    }
+
+    float CalculatePlayerStartAngle(Vector3[] playerRunwayRingCoordinates)
+    {
+        float playerRunwayStartAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.First());
+        float playerRunwayEndAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.Last());
+        float playerStartPositionAngle = playerRunwayStartAngle + (0.1f * (playerRunwayEndAngle - playerRunwayStartAngle));
+        
+        Debug.Log("CalculatePlayerStartAngle: " + playerRunwayStartAngle + " " + playerRunwayEndAngle + " " + playerStartPositionAngle);
+        return playerStartPositionAngle;
     }
 
     GameObject MakeRunwayMesh(Vector3[] runwayRingCoordinates)
@@ -745,6 +769,11 @@ public class GenerateTerrain : MonoBehaviour
         runwayCollider.sharedMesh = runwayMesh;
 
         return runway;       
+    }
+
+    public float GetPlayerStartAngle()
+    {
+        return playerStartAngle;
     }
 
     void OnCollision(Collision collision)

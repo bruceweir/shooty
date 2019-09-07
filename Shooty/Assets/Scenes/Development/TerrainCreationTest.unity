@@ -715,6 +715,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerPivot
       objectReference: {fileID: 0}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: terrain
+      value: 
+      objectReference: {fileID: 519878283}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: heightToSitAboveRunway
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4706904495613178060, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -770,11 +780,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
-        type: 3}
-      propertyPath: terrain
-      value: 
-      objectReference: {fileID: 519878283}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06369f4ad24a6ca40b1649c4a8bf381b, type: 3}
 --- !u!1 &8296172668403905227 stripped

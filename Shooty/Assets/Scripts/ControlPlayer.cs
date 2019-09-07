@@ -25,6 +25,7 @@ public class ControlPlayer : MonoBehaviour
     private float rollSpeed = 90f;
 
     private bool performingLandingTurn = false;
+    public float heightToSitAboveRunway = 1f;
     private float targetTurnRotation = 0f;
     private float totalTurnRotation = 0f;
     private float landingTurnSpeed = 30f;
@@ -34,8 +35,8 @@ public class ControlPlayer : MonoBehaviour
     
     void Start()
     {
-        playerSpeed = 5;
-        flightState = FlightState.OK;
+       // playerSpeed = 5;
+       // flightState = FlightState.OK;
         
         player = gameObject.transform.GetChild(0).gameObject;
         playerRoll = gameObject.transform.GetChild(0).GetChild(0).gameObject;
@@ -45,12 +46,16 @@ public class ControlPlayer : MonoBehaviour
 
     void SetPlayerStartPositions()
     {  
-        Vector3 position = terrain.GetPosition(-gameObject.transform.rotation.eulerAngles.y);
+        playerSpeed = 0;
+        flightState = FlightState.Landed;
+       
+        Vector3 position = terrain.GetPosition(terrain.GetPlayerStartAngle());
         position.y = 0;
         player.transform.position = position;
+        player.transform.Rotate(Vector3.up, -Mathf.Rad2Deg * terrain.GetPlayerStartAngle()); //orient the player correctly
 
-        //player height is determined by height of the pivot arm to which it is apparently attached. 
-        float startHeight = terrain.heightScale + 3;
+        //player height is determined by height of the pivot arm to which it is attached. 
+        float startHeight = terrain.GetHeightOfRunway(terrain.GetPlayerStartAngle()) + heightToSitAboveRunway;
 
         gameObject.transform.position = new Vector3(0, startHeight, 0);   
     }
@@ -122,6 +127,18 @@ public class ControlPlayer : MonoBehaviour
                 flightState = FlightState.OK;
                 return;
             }
+            /*
+            if(playerSpeed < 0.001f)
+            {
+                float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
+
+                float turnRotation = playerRoll.transform.rotation.eulerAngles.y;
+
+                //if(turnRotation < 90 || turnRotation > 270)
+                playerRoll.transform.Rotate(Vector3.up, turnAmount, Space.Self);
+                //Debug.Log("playerroll: " + playerRoll.transform.localRotation.);
+            }
+            */
         }
         
         if(Input.GetKey(KeyCode.W)) //accelerate
@@ -192,7 +209,7 @@ public class ControlPlayer : MonoBehaviour
         
         Vector3 position = gameObject.transform.position;
 
-        position.y = runwayHeight + 0.44f;
+        position.y = runwayHeight + heightToSitAboveRunway;
         
         gameObject.transform.position = position;
 
