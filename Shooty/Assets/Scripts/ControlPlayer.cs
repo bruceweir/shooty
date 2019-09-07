@@ -24,13 +24,9 @@ public class ControlPlayer : MonoBehaviour
     private float totalRollRotation = 0;
     private float rollSpeed = 90f;
 
-    private bool performingLandingTurn = false;
+    private bool clearedForTakeOff = true;
     public float heightToSitAboveRunway = 1f;
-    private float targetTurnRotation = 0f;
-    private float totalTurnRotation = 0f;
     private float landingTurnSpeed = 30f;
-    private bool allowAnotherLandingTurn = true;
-    private bool landingTurnComplete = true;
     private FlightState flightState;
     
     void Start()
@@ -96,27 +92,36 @@ public class ControlPlayer : MonoBehaviour
             return;
         }
 
-        float attackAngleChange;
-
-        if(FlyingToTheRight())
-        {
-            attackAngleChange = -currentAttackAngle;     
-        }
-        else
-        {
-            attackAngleChange = 180 - currentAttackAngle;
-        }  
-
-        currentAttackAngle += attackAngleChange;
-        player.transform.Rotate(Vector3.right, attackAngleChange);   
-
-
         if(Input.GetKey(KeyCode.D))
         {
             if(playerSpeed >= landingSpeed)
             {
                 flightState = FlightState.OK;
                 return;
+            }
+
+            
+            if(playerSpeed < 0.001f)
+            {
+                float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
+
+                float turnAngle = playerRoll.transform.localRotation.eulerAngles.y;
+
+                if(turnAngle - turnAmount < 0 )
+                {
+                    
+                    playerRoll.transform.Rotate(Vector3.up, -turnAngle, Space.Self);
+                    currentAttackAngle = 0;
+                    clearedForTakeOff = true;
+                    
+                }
+                else
+                {
+                    playerRoll.transform.Rotate(Vector3.up, -turnAmount, Space.Self);
+                    clearedForTakeOff = false;
+                    
+                }
+
             }
         }
         
@@ -127,71 +132,49 @@ public class ControlPlayer : MonoBehaviour
                 flightState = FlightState.OK;
                 return;
             }
-            /*
+            
             if(playerSpeed < 0.001f)
             {
                 float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
 
-                float turnRotation = playerRoll.transform.rotation.eulerAngles.y;
+                float turnAngle = playerRoll.transform.localRotation.eulerAngles.y;
 
-                //if(turnRotation < 90 || turnRotation > 270)
-                playerRoll.transform.Rotate(Vector3.up, turnAmount, Space.Self);
-                //Debug.Log("playerroll: " + playerRoll.transform.localRotation.);
+                if(turnAngle < 180)
+                {
+                    clearedForTakeOff = false;
+                
+                    playerRoll.transform.Rotate(Vector3.up, turnAmount, Space.Self);
+                }
+
+                turnAngle = playerRoll.transform.localRotation.eulerAngles.y;
+
+                if(turnAngle > 180)
+                {
+                    playerRoll.transform.Rotate(Vector3.up, -(turnAngle - 180), Space.Self);
+
+                    currentAttackAngle = 180;
+                    clearedForTakeOff = true;
+                }
             }
-            */
+            
         }
         
         if(Input.GetKey(KeyCode.W)) //accelerate
         {
-            if(landingTurnComplete)
+            if(clearedForTakeOff)
             {
                 playerSpeed += (acceleration * Time.fixedDeltaTime);
             }
 
-        
         }
         
         if(Input.GetKey(KeyCode.S)) //Decelerate
         {
-            if(performingLandingTurn)
-            {
-                float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
-                playerRoll.transform.Rotate(Vector3.up, turnAmount, Space.Self);
-                totalTurnRotation += turnAmount;
-                if(totalTurnRotation >= 180f)
-                {
-                    playerRoll.transform.Rotate(Vector3.up, 180f -totalTurnRotation, Space.Self);
-                    currentAttackAngle += 180f;
-                    performingLandingTurn = false;
-                    allowAnotherLandingTurn = false;
-                    landingTurnComplete = true;
-                }
-
-                return;
-            }
-
-            if(playerSpeed == 0 && allowAnotherLandingTurn)
-            {
-                Debug.Log("Turn");
-                performingLandingTurn = true;
-                allowAnotherLandingTurn = false;
-                landingTurnComplete = false;
-                totalTurnRotation = 0f;
-                targetTurnRotation = currentAttackAngle + 180f;
-                //playerRoll.transform.Rotate(Vector3.up, 180, Space.Self);
-                //currentAttackAngle += 180;
-                //performingLandingTurn = false;
-
-            }
             
             playerSpeed -= (acceleration * Time.fixedDeltaTime);
         }
 
-        if(Input.GetKeyUp(KeyCode.S))
-        {
-            allowAnotherLandingTurn = true;
-        }
-
+        
         playerSpeed = Mathf.Clamp(playerSpeed, 0, maxSpeed);
       
         Vector2 playerVelocity;
