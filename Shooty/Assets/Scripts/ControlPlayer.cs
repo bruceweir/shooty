@@ -18,15 +18,17 @@ public class ControlPlayer : MonoBehaviour
     private float currentAttackAngle = 0f;
     private GameObject player;
     private GameObject playerRoll;
-    float inversionCountdownValue;
+    private GameObject playerTurn;
     private bool performingRoll = false;
     private float targetRollRotation  = 0;
     private float totalRollRotation = 0;
     private float rollSpeed = 90f;
 
+    private bool LandedToTheRight = true;
     private bool clearedForTakeOff = true;
     public float heightToSitAboveRunway = 1f;
     private float landingTurnSpeed = 30f;
+    private float landingTurnTarget = 0f;
     private FlightState flightState;
     
     void Start()
@@ -36,6 +38,9 @@ public class ControlPlayer : MonoBehaviour
         
         player = gameObject.transform.GetChild(0).gameObject;
         playerRoll = gameObject.transform.GetChild(0).GetChild(0).gameObject;
+        playerTurn = playerRoll.transform.GetChild(0).gameObject;
+        
+        Debug.Log(playerTurn.name);
 
         SetPlayerStartPositions();
     }
@@ -80,6 +85,7 @@ public class ControlPlayer : MonoBehaviour
             AirControls();
         }
 
+        
     }
 
     private void GroundControls()
@@ -92,6 +98,24 @@ public class ControlPlayer : MonoBehaviour
             return;
         }
 
+        LevelThePlayerAircraft();
+/*
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            if(playerSpeed < 0.001f)
+            {
+                if(FlyingToTheRight())
+                {
+                    turnRotationTarget = 180f;
+                }
+                else
+                {
+                    turnRotationTarget = 0f;
+                }
+                Debug.Log("turnRotationTarget set: " + turnRotationTarget);
+            }
+        }
+        */
         if(Input.GetKey(KeyCode.D))
         {
             if(playerSpeed >= landingSpeed)
@@ -100,31 +124,43 @@ public class ControlPlayer : MonoBehaviour
                 return;
             }
 
+            if(LandedToTheRight)
+            {
+                landingTurnTarget = 0;
+            }
+            else
+            {
+                landingTurnTarget = 180;
+            }
+
+            Debug.Log("landingTurnTarget " + landingTurnTarget + " current: " + playerTurn.transform.localRotation.eulerAngles.y);
             
             if(playerSpeed < 0.001f)
             {
                 float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
 
-                float turnAngle = playerRoll.transform.localRotation.eulerAngles.y;
+                float turnAngle = playerTurn.transform.localRotation.eulerAngles.y;
 
-                if(turnAngle - turnAmount < 0 )
-                {
-                    
-                    playerRoll.transform.Rotate(Vector3.up, -turnAngle, Space.Self);
+                if(Mathf.Abs(turnAmount) > Mathf.Abs(landingTurnTarget-turnAngle))
+                { 
+                    playerTurn.transform.Rotate(Vector3.up, -(turnAngle-landingTurnTarget), Space.Self);
                     currentAttackAngle = 0;
                     clearedForTakeOff = true;
-                    
                 }
                 else
                 {
-                    playerRoll.transform.Rotate(Vector3.up, -turnAmount, Space.Self);
-                    clearedForTakeOff = false;
-                    
+                    playerTurn.transform.Rotate(Vector3.up, -turnAmount, Space.Self);
+                    clearedForTakeOff = false;        
                 }
 
             }
         }
         
+        
+//        Debug.Log(playerRoll.transform.localRotation.eulerAngles.y);
+
+        
+
         if(Input.GetKey(KeyCode.A))
         {
             if(playerSpeed >= landingSpeed)
@@ -137,24 +173,38 @@ public class ControlPlayer : MonoBehaviour
             {
                 float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
 
-                float turnAngle = playerRoll.transform.localRotation.eulerAngles.y;
+                float turnAngle = playerTurn.transform.localRotation.eulerAngles.y;
 
-                if(turnAngle < 180)
+                if(LandedToTheRight)
                 {
-                    clearedForTakeOff = false;
+                    landingTurnTarget = 180;
+                }
+                else
+                {
+                    landingTurnTarget = 0;
+                }
+
+                Debug.Log("landingTurnTarget " + landingTurnTarget);
+
+                //Debug.Log("trgt: " + landingTurnTarget + " " + turnAngle);
+
+                if(turnAngle != landingTurnTarget)
+                {     
+                    if(false)//turnAngle - turnAmount > landingTurnTarget)
+                    {
+                        playerTurn.transform.Rotate(Vector3.up, -(turnAngle-landingTurnTarget), Space.Self);
+                            
+                        currentAttackAngle = 180;//player.transform.localRotation.eulerAngles.y + 90;
+                        clearedForTakeOff = true;   
+                    }
+                    else
+                    {
+                        playerTurn.transform.Rotate(Vector3.up, turnAmount, Space.Self);
+                        clearedForTakeOff = false;
                 
-                    playerRoll.transform.Rotate(Vector3.up, turnAmount, Space.Self);
+                    }
                 }
 
-                turnAngle = playerRoll.transform.localRotation.eulerAngles.y;
-
-                if(turnAngle > 180)
-                {
-                    playerRoll.transform.Rotate(Vector3.up, -(turnAngle - 180), Space.Self);
-
-                    currentAttackAngle = 180;
-                    clearedForTakeOff = true;
-                }
             }
             
         }
@@ -306,6 +356,24 @@ public class ControlPlayer : MonoBehaviour
         gameObject.transform.position = position;
     }
 
+    private void LevelThePlayerAircraft()
+    {
+        float attackAngleChange;
+
+        if(FlyingToTheRight())
+        {
+            attackAngleChange = -currentAttackAngle;
+        }
+        else
+        {
+            attackAngleChange = 180 - currentAttackAngle;
+        }
+
+        currentAttackAngle += attackAngleChange;
+        player.transform.Rotate(Vector3.right, attackAngleChange);
+
+    }
+
     private float GetMaxVerticalSpeed()
     {
         if(playerSpeed > landingSpeed)
@@ -369,6 +437,8 @@ public class ControlPlayer : MonoBehaviour
         {
             Debug.Log("crashed on runway");
         }
+
+        Debug.Log("Landing to the right: " + LandedToTheRight);
     }
     public bool LandingSafely()
     {
@@ -379,11 +449,13 @@ public class ControlPlayer : MonoBehaviour
 
         if(FlyingToTheRight() && (currentAttackAngle >= 350 || currentAttackAngle == 0f))
         {
+            LandedToTheRight = true;
             return true;
         }
 
         if(!FlyingToTheRight() && currentAttackAngle >= 180.0 && currentAttackAngle < 190.0)
         {
+            LandedToTheRight = false;
             return true;
         }
 
