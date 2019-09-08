@@ -44,7 +44,7 @@ public class GenerateTerrain : MonoBehaviour
     private MeshCollider meshCollider;
 
     //private Vector3[] terrainCoordinates;
-    void Start()
+    void Awake()
     {
 
         xOffset = UnityEngine.Random.Range(-1000f, 1000f);
@@ -655,6 +655,7 @@ public class GenerateTerrain : MonoBehaviour
         }
 
         playerStartAngle = CalculatePlayerStartAngle(playerRunwayRingCoordinates);
+        Debug.Log("AddRunways: " + playerStartAngle);
 
         playerRunway = MakeRunwayMesh(playerRunwayRingCoordinates);
         playerRunway.name = "PlayerRunway";

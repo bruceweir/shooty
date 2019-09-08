@@ -56,6 +56,9 @@ public class ControlPlayer : MonoBehaviour
         Vector3 position = terrain.GetPosition(terrain.GetPlayerStartAngle());
         position.y = 0;
         player.transform.position = position;
+
+        Debug.Log("SetPlayerStartPositions: " + terrain.GetPlayerStartAngle() + " " + player.transform.position);
+
         player.transform.Rotate(Vector3.up, -Mathf.Rad2Deg * terrain.GetPlayerStartAngle()); //orient the player correctly
 
         //player height is determined by height of the pivot arm to which it is attached. 
