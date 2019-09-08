@@ -84,8 +84,6 @@ public class ControlPlayer : MonoBehaviour
         {
             AirControls();
         }
-
-        
     }
 
     private void GroundControls()
@@ -196,7 +194,6 @@ public class ControlPlayer : MonoBehaviour
         playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
         playerVelocity.y = 0;
 
-        
         //angular velocity is horizontal projection of playerVelocity
 
         angularVelocity = -playerVelocity.x;
@@ -207,6 +204,8 @@ public class ControlPlayer : MonoBehaviour
         Vector3 position = gameObject.transform.position;
 
         position.y = runwayHeight + heightToSitAboveRunway;
+
+        //Debug.Log(runwayHeight + " " + position.y);
         
         gameObject.transform.position = position;
 
@@ -215,6 +214,7 @@ public class ControlPlayer : MonoBehaviour
     private void AirControls()
     {
 
+        //Debug.Log("distance: " + terrain.DistanceToPlayerRunway(player.transform.position));
         float attackAngleChange = 0;
 
         if(PlayerUpsideDown() && performingRoll == false)

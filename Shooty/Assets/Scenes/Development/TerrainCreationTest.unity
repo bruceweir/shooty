@@ -622,6 +622,11 @@ PrefabInstance:
       propertyPath: cameraDollySpeed
       value: 0.4
       objectReference: {fileID: 0}
+    - target: {fileID: 1453042934268017237, guid: 4f694de1c0165234fa286b80a66f46ba,
+        type: 3}
+      propertyPath: framesOfPrediction
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f694de1c0165234fa286b80a66f46ba, type: 3}
 --- !u!1001 &4314390454779522736

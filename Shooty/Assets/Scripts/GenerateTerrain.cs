@@ -26,6 +26,13 @@ public class GenerateTerrain : MonoBehaviour
     public float runwayLength = 50f;
     public float runwayWidth = 5f;
     public GameObject RunwayPrefab;
+    private GameObject playerRunway;
+    private float playerRunwayStartAngle;
+    private float playerRunwayEndAngle;
+    private GameObject enemyRunway;
+    private float enemyRunwayStartAngle;
+    private float enemyRunwayEndAngle;
+    
     private int startSegmentOfPlayerRunway;
     private float playerStartAngle;
     private int startSegmentOfEnemyRunway;
@@ -186,7 +193,7 @@ public class GenerateTerrain : MonoBehaviour
         RaycastHit hit;
         // Does the ray intersect the ground
         
-        Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.green);
+        //Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.red);
 
         if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
         {
@@ -196,7 +203,7 @@ public class GenerateTerrain : MonoBehaviour
         }
         else
         {
-            Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.red);
+          //  Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.red);
 
         }
 
@@ -216,6 +223,8 @@ public class GenerateTerrain : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
         {
+            Debug.DrawLine(new Vector3(xPos, 10000, zPos), new Vector3(xPos, 10000-hit.distance, zPos));
+
             return 10000 - hit.distance;
         }
 
@@ -572,6 +581,7 @@ public class GenerateTerrain : MonoBehaviour
 
         while(angle < 2*Mathf.PI)
         {
+            
             if(UnityEngine.Random.Range(0f, 1f) < decorationProbability)
             {
                 //select a decoration
@@ -579,7 +589,10 @@ public class GenerateTerrain : MonoBehaviour
 
                 Vector3 decorationPosition = GetSuitableDecorationPosition(angle);
 
-                Instantiate(DecorativeGameObjects[decorationIndex], decorationPosition, Quaternion.identity);
+                if(NotNearRunway(decorationPosition))
+                {
+                    Instantiate(DecorativeGameObjects[decorationIndex], decorationPosition, Quaternion.identity);
+                }
             }
 
             angle += angleStep;
@@ -613,6 +626,22 @@ public class GenerateTerrain : MonoBehaviour
         return ringPosition;
     }
 
+    private bool NotNearRunway(Vector3 position)
+    {
+        float positionAngle = GetAngleRoundTerrain(position);
+
+        if( (positionAngle > playerRunwayStartAngle && 
+            positionAngle < playerRunwayEndAngle) ||
+            (positionAngle > enemyRunwayStartAngle &&
+            positionAngle < enemyRunwayEndAngle))
+            {
+                return false;
+            }
+
+        return true;
+        
+    }
+
     private void AddRunways(Vector3[] terrainCoordinates)
     {
         
@@ -625,13 +654,9 @@ public class GenerateTerrain : MonoBehaviour
             playerRunwayRingCoordinates[s] = new Vector3(playerRunwayVector.x, playerRunwayVector.y+1, playerRunwayVector.z);
         }
 
-
-        //float playerRunwayStartAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.First());
-        //float playerRunwayEndAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.Last());
-        //float playerStartPositionAngle = playerRunwayStartAngle + (0.1f * playerRunwayEndAngle - playerRunwayStartAngle);
         playerStartAngle = CalculatePlayerStartAngle(playerRunwayRingCoordinates);
 
-        GameObject playerRunway = MakeRunwayMesh(playerRunwayRingCoordinates);
+        playerRunway = MakeRunwayMesh(playerRunwayRingCoordinates);
         playerRunway.name = "PlayerRunway";
         playerRunway.tag = "Runway";
 
@@ -644,7 +669,11 @@ public class GenerateTerrain : MonoBehaviour
             enemyRunwayRingCoordinates[s] = new Vector3(enemyRunwayVector.x, enemyRunwayVector.y+1, enemyRunwayVector.z);
         }
 
-        GameObject enemyRunway = MakeRunwayMesh(enemyRunwayRingCoordinates);
+        enemyRunwayStartAngle = GetAngleRoundTerrain(enemyRunwayRingCoordinates.First());
+        enemyRunwayEndAngle = GetAngleRoundTerrain(enemyRunwayRingCoordinates.Last());
+
+
+        enemyRunway = MakeRunwayMesh(enemyRunwayRingCoordinates);
         enemyRunway.name = "EnemyRunway";
         enemyRunway.tag = "Runway";
         
@@ -652,8 +681,9 @@ public class GenerateTerrain : MonoBehaviour
 
     float CalculatePlayerStartAngle(Vector3[] playerRunwayRingCoordinates)
     {
-        float playerRunwayStartAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.First());
-        float playerRunwayEndAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.Last());
+        playerRunwayStartAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.First());
+        playerRunwayEndAngle = GetAngleRoundTerrain(playerRunwayRingCoordinates.Last());
+
         float playerStartPositionAngle = playerRunwayStartAngle + (0.1f * (playerRunwayEndAngle - playerRunwayStartAngle));
         
         Debug.Log("CalculatePlayerStartAngle: " + playerRunwayStartAngle + " " + playerRunwayEndAngle + " " + playerStartPositionAngle);
@@ -752,6 +782,7 @@ public class GenerateTerrain : MonoBehaviour
         GameObject runway = Instantiate(RunwayPrefab, Vector3.zero, Quaternion.identity);
 
         Mesh runwayMesh = new Mesh();
+        runwayMesh.Clear();
 
         MeshFilter meshFilter = runway.GetComponent<MeshFilter>();
         
@@ -763,10 +794,13 @@ public class GenerateTerrain : MonoBehaviour
         runwayMesh.RecalculateTangents();
         runwayMesh.RecalculateBounds();
 
+        
         meshFilter.sharedMesh = runwayMesh;
 
         MeshCollider runwayCollider = runway.GetComponent<MeshCollider>();
         runwayCollider.sharedMesh = runwayMesh;
+
+        
 
         return runway;       
     }
