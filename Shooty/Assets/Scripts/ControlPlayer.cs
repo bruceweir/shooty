@@ -36,8 +36,6 @@ public class ControlPlayer : MonoBehaviour
     
     void Start()
     {
-       // playerSpeed = 5;
-       // flightState = FlightState.OK;
         
         player = gameObject.transform.GetChild(0).gameObject;
         playerRoll = gameObject.transform.GetChild(0).GetChild(0).gameObject;
@@ -45,22 +43,27 @@ public class ControlPlayer : MonoBehaviour
         
         Debug.Log(playerTurn.name);
 
-        SetPlayerStartPositions();
+        SetPlayerStartPosition();
     }
 
-    void SetPlayerStartPositions()
+    void SetPlayerStartPosition()
     {  
         playerSpeed = 0;
         flightState = FlightState.Landed;
-       
-        Vector3 position = terrain.GetPosition(terrain.GetPlayerStartAngle());
-        position.y = 0;
-        player.transform.position = position;
+        currentAttackAngle = 0;
+        player.transform.localRotation = Quaternion.identity;
+        playerRoll.transform.localRotation = Quaternion.identity;
+        playerTurn.transform.localRotation = Quaternion.identity;
 
-        Debug.Log("SetPlayerStartPositions: " + terrain.GetPlayerStartAngle() + " " + player.transform.position);
+        Vector3 startPosition = terrain.GetPosition(terrain.GetPlayerStartAngle());
+        
+        gameObject.transform.SetPositionAndRotation(new Vector3(0, 0, 0), Quaternion.identity);
+       
+        startPosition.y = 0;
+        player.transform.position = startPosition;
 
         player.transform.Rotate(Vector3.up, -Mathf.Rad2Deg * terrain.GetPlayerStartAngle()); //orient the player correctly
-
+        
         //player height is determined by height of the pivot arm to which it is attached. 
         float startHeight = terrain.GetHeightOfRunway(terrain.GetPlayerStartAngle()) + heightToSitAboveRunway;
 
@@ -397,7 +400,7 @@ public class ControlPlayer : MonoBehaviour
         }
         else
         {
-            Debug.Log("crashed on runway");
+            Crashed();
         }
 
         Debug.Log("Landing to the right: " + LandedToTheRight);
@@ -460,6 +463,11 @@ public class ControlPlayer : MonoBehaviour
         }
 
         
+    }
+
+    public void Crashed()
+    {
+        SetPlayerStartPosition();
     }
 
 }

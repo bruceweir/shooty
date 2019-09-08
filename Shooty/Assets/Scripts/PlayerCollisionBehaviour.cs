@@ -35,6 +35,7 @@ public class PlayerCollisionBehaviour : MonoBehaviour
         if(collider.CompareTag("Terrain"))
         {
  //           Debug.Log("crash");
+            controlPlayer.Crashed();
         }
     }
 }
