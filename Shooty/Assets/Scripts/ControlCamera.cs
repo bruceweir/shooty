@@ -83,7 +83,7 @@ public class ControlCamera : MonoBehaviour
             }
         }
        
-        activeCamera.transform.position = desiredCameraPosition;
+        activeCamera.transform.position = Vector3.Lerp(activeCamera.transform.position, desiredCameraPosition, Time.deltaTime*10);
 
         activeCamera.transform.LookAt(Vector3.zero);
 
