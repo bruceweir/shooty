@@ -459,8 +459,6 @@ public class ControlPlayer : MonoBehaviour
             }
         }
 
-        Debug.Log("SetGroundTurnRotationTargetQuaternions: " + turnTargetToTheRight + " " + turnTargetToTheLeft);
-        Debug.Log("SetGroundTurnRotationTarget as euler  : " + turnTargetToTheRight.eulerAngles + " " + turnTargetToTheLeft.eulerAngles);
         
     }
 

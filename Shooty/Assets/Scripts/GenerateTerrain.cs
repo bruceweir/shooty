@@ -19,7 +19,10 @@ public class GenerateTerrain : MonoBehaviour
     public float perlinScale = 1f;
     public float heightScale = 10;
     public float ringThickness = 5f;
-    public GameObject[] DecorativeGameObjects;
+    public GameObject[] DecorativeGroundObjects;
+    public GameObject[] LowClouds;
+    public GameObject[] HighClouds;
+    public int nClouds = 5;
     public float decorationProbability = .3f;
     public float minDecorationDistance = 10f;
     public float minDecorationDistanceFromCentre = 2.0f;
@@ -73,7 +76,9 @@ public class GenerateTerrain : MonoBehaviour
         
         AddRunways(terrainCoordinates);
         
-        AddDecorations();
+        AddGroundDecorations();
+
+        AddClouds();
         
         
     }
@@ -569,7 +574,7 @@ public class GenerateTerrain : MonoBehaviour
         return mesh;
     }
 
-    void AddDecorations()
+    void AddGroundDecorations()
     {
         float terrainCircumference = 2 * Mathf.PI * terrainRadius;
 
@@ -585,13 +590,13 @@ public class GenerateTerrain : MonoBehaviour
             if(UnityEngine.Random.Range(0f, 1f) < decorationProbability)
             {
                 //select a decoration
-                int decorationIndex = UnityEngine.Random.Range(0, DecorativeGameObjects.Length);
+                int decorationIndex = UnityEngine.Random.Range(0, DecorativeGroundObjects.Length);
 
                 Vector3 decorationPosition = GetSuitableDecorationPosition(angle);
 
                 if(NotNearRunway(decorationPosition))
                 {
-                    Instantiate(DecorativeGameObjects[decorationIndex], decorationPosition, Quaternion.identity);
+                    Instantiate(DecorativeGroundObjects[decorationIndex], decorationPosition, Quaternion.identity);
                 }
             }
 
@@ -640,6 +645,55 @@ public class GenerateTerrain : MonoBehaviour
 
         return true;
         
+    }
+
+    private void AddClouds()
+    {
+        float terrainCircumference = 2 * Mathf.PI * terrainRadius;
+        Debug.Log("Addclouds: " + nClouds);
+
+        //low clouds
+        for(int c=0; c < nClouds; c++)
+        {
+            float randomAngle = UnityEngine.Random.Range(0, 2*Mathf.PI);
+            Vector3 position = GetPosition(randomAngle);
+
+            float height = GetHeightOfTerrain(position) + UnityEngine.Random.Range(100, 300);
+
+            position.y = height;
+
+            int cloudIndex = UnityEngine.Random.Range(0, LowClouds.Length);
+
+            float cloudRotation = UnityEngine.Random.Range(0, Mathf.PI * 2);
+
+            GameObject cloud = Instantiate(LowClouds[cloudIndex], position, Quaternion.Euler(0, cloudRotation, 0));
+
+            float scale = UnityEngine.Random.Range(0.8f, 2.5f);
+            cloud.transform.localScale = new Vector3(scale, scale, scale);
+
+        }
+        //high clouds
+        for(int c=0; c < nClouds; c++)
+        {
+            float randomAngle = UnityEngine.Random.Range(0, 2*Mathf.PI);
+            Vector3 position = GetPosition(randomAngle);
+
+            float height = GetHeightOfTerrain(position) + UnityEngine.Random.Range(500, 2000);
+
+            position.y = height;
+
+            int cloudIndex = UnityEngine.Random.Range(0, HighClouds.Length);
+
+            float cloudRotation = UnityEngine.Random.Range(0, Mathf.PI * 2);
+
+            GameObject cloud = Instantiate(HighClouds[cloudIndex], position, Quaternion.Euler(0, cloudRotation, 0));
+
+            float scale = UnityEngine.Random.Range(0.8f, 2.5f);
+            cloud.transform.localScale = new Vector3(scale, scale, scale);
+
+        }
+        
+
     }
 
     private void AddRunways(Vector3[] terrainCoordinates)

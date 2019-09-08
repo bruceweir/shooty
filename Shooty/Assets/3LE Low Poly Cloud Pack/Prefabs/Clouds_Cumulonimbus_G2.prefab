@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3399070}
   - component: {fileID: 2359164}
   - component: {fileID: 6417642}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Cumulus_Fluffy (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 3342924}
   - component: {fileID: 2310212}
   - component: {fileID: 6413776}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Cumulus_Fluffy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 3334514}
   - component: {fileID: 2367564}
   - component: {fileID: 6470606}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Cumulus_Fluffy (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 3313330}
   - component: {fileID: 2309030}
   - component: {fileID: 6474988}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Clouds_cumulonimbus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +384,7 @@ GameObject:
   - component: {fileID: 3341574}
   - component: {fileID: 2310438}
   - component: {fileID: 6454370}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Cumulus_Fluffy (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -477,7 +477,7 @@ GameObject:
   - component: {fileID: 3399496}
   - component: {fileID: 2322340}
   - component: {fileID: 6410146}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Cumulus_Fluffy (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -567,7 +567,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 402026}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Clouds_Cumulonimbus_G2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 3355052}
   - component: {fileID: 2392996}
   - component: {fileID: 6421792}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Cumulus_Fluffy (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

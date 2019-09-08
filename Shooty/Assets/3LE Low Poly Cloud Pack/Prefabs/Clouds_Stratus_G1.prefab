@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3310062}
   - component: {fileID: 2381344}
   - component: {fileID: 6466912}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Clouds_stratus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 3399272}
   - component: {fileID: 2307106}
   - component: {fileID: 6424874}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Clouds_stratus (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 3341192}
   - component: {fileID: 2389584}
   - component: {fileID: 6468680}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Clouds_stratus (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,7 +288,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 456514}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Clouds_Stratus_G1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

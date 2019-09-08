@@ -27,7 +27,7 @@ public class ControlCamera : MonoBehaviour
     void Update()
     {
         SetCameraFraming();
-        activeCamera.farClipPlane = (terrain.terrainRadius * 2.1f) + distanceFromTarget;
+        activeCamera.farClipPlane = 1000000;//(terrain.terrainRadius * 2.1f) + distanceFromTarget;
         
     }
 

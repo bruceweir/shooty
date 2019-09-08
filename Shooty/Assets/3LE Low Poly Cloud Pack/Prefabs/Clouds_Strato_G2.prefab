@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3351100}
   - component: {fileID: 2340022}
   - component: {fileID: 6481402}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Strato
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 3314410}
   - component: {fileID: 2398920}
   - component: {fileID: 6464360}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Strato (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 3319300}
   - component: {fileID: 2345588}
   - component: {fileID: 6499288}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Strato (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 3323960}
   - component: {fileID: 2337120}
   - component: {fileID: 6446902}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Strato (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +384,7 @@ GameObject:
   - component: {fileID: 3396922}
   - component: {fileID: 2361802}
   - component: {fileID: 6488246}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Strato (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,7 +474,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 472720}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Clouds_Strato_G2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -513,7 +513,7 @@ GameObject:
   - component: {fileID: 3390390}
   - component: {fileID: 2395378}
   - component: {fileID: 6450042}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Strato (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3385244}
   - component: {fileID: 2380822}
   - component: {fileID: 6496198}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Swirls (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 3381664}
   - component: {fileID: 2372888}
   - component: {fileID: 6460168}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Swirls_Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 3368660}
   - component: {fileID: 2394708}
   - component: {fileID: 6430326}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Swirls_Small (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,7 +288,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 437224}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Clouds_Swirls_G1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 3330694}
   - component: {fileID: 2330608}
   - component: {fileID: 6490180}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Cloud_Swirls
   m_TagString: Untagged
   m_Icon: {fileID: 0}

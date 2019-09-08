@@ -518,7 +518,7 @@ Transform:
   m_GameObject: {fileID: 1121049242}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 228.73001, y: 1, z: 228.73001}
+  m_LocalScale: {x: 100000, y: 1, z: 100000}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -694,17 +694,17 @@ PrefabInstance:
     - target: {fileID: 8748551245947674815, guid: 4f694de1c0165234fa286b80a66f46ba,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.8962264
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8748551245947674815, guid: 4f694de1c0165234fa286b80a66f46ba,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.83286124
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8748551245947674815, guid: 4f694de1c0165234fa286b80a66f46ba,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.33397114
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f694de1c0165234fa286b80a66f46ba, type: 3}
@@ -722,8 +722,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4314390454813890619, guid: 93108bea98f9321428519aa4ba6fea25,
         type: 3}
-      propertyPath: runwayLength
-      value: 250
+      propertyPath: heightScale
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4314390454813890623, guid: 93108bea98f9321428519aa4ba6fea25,
         type: 3}
