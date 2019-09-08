@@ -725,6 +725,11 @@ PrefabInstance:
       propertyPath: heightToSitAboveRunway
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: landingTurnSpeed
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4706904495613178060, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
       propertyPath: m_LocalPosition.x

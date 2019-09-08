@@ -27,8 +27,8 @@ public class ControlPlayer : MonoBehaviour
     private bool LandedToTheRight = true;
     private bool clearedForTakeOff = true;
     public float heightToSitAboveRunway = 1f;
-    private float landingTurnSpeed = 30f;
-    private float landingTurnTarget = 0f;
+    public float landingTurnSpeed = 3f;
+    private Quaternion landingTurnTarget;
     private FlightState flightState;
     
     void Start()
@@ -99,23 +99,7 @@ public class ControlPlayer : MonoBehaviour
         }
 
         LevelThePlayerAircraft();
-/*
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            if(playerSpeed < 0.001f)
-            {
-                if(FlyingToTheRight())
-                {
-                    turnRotationTarget = 180f;
-                }
-                else
-                {
-                    turnRotationTarget = 0f;
-                }
-                Debug.Log("turnRotationTarget set: " + turnRotationTarget);
-            }
-        }
-        */
+
         if(Input.GetKey(KeyCode.D))
         {
             if(playerSpeed >= landingSpeed)
@@ -126,41 +110,33 @@ public class ControlPlayer : MonoBehaviour
 
             if(LandedToTheRight)
             {
-                landingTurnTarget = 0;
+                landingTurnTarget = Quaternion.Euler(0, 0, 0);
             }
             else
             {
-                landingTurnTarget = 180;
+                landingTurnTarget = Quaternion.Euler(0, 180, 0);
             }
 
-            Debug.Log("landingTurnTarget " + landingTurnTarget + " current: " + playerTurn.transform.localRotation.eulerAngles.y);
-            
             if(playerSpeed < 0.001f)
             {
-                float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
+                
+                playerTurn.transform.localRotation = Quaternion.Lerp(playerTurn.transform.localRotation, landingTurnTarget, Time.fixedDeltaTime * landingTurnSpeed);
 
-                float turnAngle = playerTurn.transform.localRotation.eulerAngles.y;
-
-                if(Mathf.Abs(turnAmount) > Mathf.Abs(landingTurnTarget-turnAngle))
-                { 
-                    playerTurn.transform.Rotate(Vector3.up, -(turnAngle-landingTurnTarget), Space.Self);
-                    currentAttackAngle = 0;
-                    clearedForTakeOff = true;
+                if(Mathf.Abs(Quaternion.Dot(playerTurn.transform.localRotation, landingTurnTarget)) > 0.999)
+                {
+                   playerTurn.transform.localRotation = landingTurnTarget;
+                   clearedForTakeOff = true;
+                   currentAttackAngle = 0;
                 }
                 else
                 {
-                    playerTurn.transform.Rotate(Vector3.up, -turnAmount, Space.Self);
-                    clearedForTakeOff = false;        
+                    clearedForTakeOff = false;
+                    
                 }
-
             }
         }
         
-        
-//        Debug.Log(playerRoll.transform.localRotation.eulerAngles.y);
-
-        
-
+       
         if(Input.GetKey(KeyCode.A))
         {
             if(playerSpeed >= landingSpeed)
@@ -168,41 +144,29 @@ public class ControlPlayer : MonoBehaviour
                 flightState = FlightState.OK;
                 return;
             }
+
+            if(LandedToTheRight)
+            {
+                landingTurnTarget = Quaternion.Euler(0, 180, 0);
+            }
+            else
+            {
+                landingTurnTarget = Quaternion.Euler(0, 0, 0);
+            }
             
             if(playerSpeed < 0.001f)
             {
-                float turnAmount = landingTurnSpeed * Time.fixedDeltaTime;
+                playerTurn.transform.localRotation = Quaternion.Lerp(playerTurn.transform.localRotation, landingTurnTarget, Time.fixedDeltaTime * landingTurnSpeed);
 
-                float turnAngle = playerTurn.transform.localRotation.eulerAngles.y;
-
-                if(LandedToTheRight)
+                if(Mathf.Abs(Quaternion.Dot(playerTurn.transform.localRotation, landingTurnTarget)) > 0.999)
                 {
-                    landingTurnTarget = 180;
+                   playerTurn.transform.localRotation = landingTurnTarget;
+                   clearedForTakeOff = true;
+                   currentAttackAngle = 180;
                 }
                 else
                 {
-                    landingTurnTarget = 0;
-                }
-
-                Debug.Log("landingTurnTarget " + landingTurnTarget);
-
-                //Debug.Log("trgt: " + landingTurnTarget + " " + turnAngle);
-
-                if(turnAngle != landingTurnTarget)
-                {     
-                    if(false)//turnAngle - turnAmount > landingTurnTarget)
-                    {
-                        playerTurn.transform.Rotate(Vector3.up, -(turnAngle-landingTurnTarget), Space.Self);
-                            
-                        currentAttackAngle = 180;//player.transform.localRotation.eulerAngles.y + 90;
-                        clearedForTakeOff = true;   
-                    }
-                    else
-                    {
-                        playerTurn.transform.Rotate(Vector3.up, turnAmount, Space.Self);
-                        clearedForTakeOff = false;
-                
-                    }
+                    clearedForTakeOff = false;   
                 }
 
             }
@@ -429,6 +393,11 @@ public class ControlPlayer : MonoBehaviour
 
     public void HasTouchedRunway()
     {
+        if(flightState == FlightState.Landed) //ignore new collisions with runway when landed
+        {
+            return;
+        }
+
         if(LandingSafely())
         {
             flightState = FlightState.Landed;
@@ -442,6 +411,7 @@ public class ControlPlayer : MonoBehaviour
     }
     public bool LandingSafely()
     {
+        
         if(playerSpeed > landingSpeed)
         {
             return false;
