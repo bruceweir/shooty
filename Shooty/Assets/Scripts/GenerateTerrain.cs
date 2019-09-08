@@ -596,7 +596,10 @@ public class GenerateTerrain : MonoBehaviour
 
                 if(NotNearRunway(decorationPosition))
                 {
-                    Instantiate(DecorativeGroundObjects[decorationIndex], decorationPosition, Quaternion.identity);
+                    GameObject decoration = Instantiate(DecorativeGroundObjects[decorationIndex], decorationPosition, Quaternion.identity);
+                    float scale = UnityEngine.Random.Range(0.8f, 2.5f);
+                    decoration.transform.localScale = new Vector3(scale, scale, scale);
+
                 }
             }
 
