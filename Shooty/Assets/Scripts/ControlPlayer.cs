@@ -25,6 +25,9 @@ public class ControlPlayer : MonoBehaviour
     private float rollSpeed = 90f;
 
     private bool LandedToTheRight = true;
+    private Quaternion turnTargetToTheRight;
+    private Quaternion turnTargetToTheLeft;
+    
     private bool clearedForTakeOff = true;
     public float heightToSitAboveRunway = 1f;
     public float landingTurnSpeed = 3f;
@@ -59,6 +62,8 @@ public class ControlPlayer : MonoBehaviour
         float startHeight = terrain.GetHeightOfRunway(terrain.GetPlayerStartAngle()) + heightToSitAboveRunway;
 
         gameObject.transform.position = new Vector3(0, startHeight, 0);   
+
+        SetGroundTurnRotationTargetQuaternions();
     }
 
     // Update is called once per frame
@@ -106,23 +111,14 @@ public class ControlPlayer : MonoBehaviour
                 return;
             }
 
-            if(LandedToTheRight)
-            {
-                landingTurnTarget = Quaternion.Euler(0, 0, 0);
-            }
-            else
-            {
-                landingTurnTarget = Quaternion.Euler(0, 180, 0);
-            }
-
             if(playerSpeed < 0.001f)
             {
                 
-                playerTurn.transform.localRotation = Quaternion.Lerp(playerTurn.transform.localRotation, landingTurnTarget, Time.fixedDeltaTime * landingTurnSpeed);
+                playerTurn.transform.localRotation = Quaternion.Lerp(playerTurn.transform.localRotation, turnTargetToTheRight, Time.fixedDeltaTime * landingTurnSpeed);
 
-                if(Mathf.Abs(Quaternion.Dot(playerTurn.transform.localRotation, landingTurnTarget)) > 0.999)
+                if(Mathf.Abs(Quaternion.Dot(playerTurn.transform.localRotation, turnTargetToTheRight)) > 0.999)
                 {
-                   playerTurn.transform.localRotation = landingTurnTarget;
+                   playerTurn.transform.localRotation = turnTargetToTheRight;
                    clearedForTakeOff = true;
                    currentAttackAngle = 0;
                 }
@@ -143,22 +139,13 @@ public class ControlPlayer : MonoBehaviour
                 return;
             }
 
-            if(LandedToTheRight)
-            {
-                landingTurnTarget = Quaternion.Euler(0, 180, 0);
-            }
-            else
-            {
-                landingTurnTarget = Quaternion.Euler(0, 0, 0);
-            }
-            
             if(playerSpeed < 0.001f)
             {
-                playerTurn.transform.localRotation = Quaternion.Lerp(playerTurn.transform.localRotation, landingTurnTarget, Time.fixedDeltaTime * landingTurnSpeed);
+                playerTurn.transform.localRotation = Quaternion.Lerp(playerTurn.transform.localRotation, turnTargetToTheLeft, Time.fixedDeltaTime * landingTurnSpeed);
 
-                if(Mathf.Abs(Quaternion.Dot(playerTurn.transform.localRotation, landingTurnTarget)) > 0.999)
+                if(Mathf.Abs(Quaternion.Dot(playerTurn.transform.localRotation, turnTargetToTheLeft)) > 0.999)
                 {
-                   playerTurn.transform.localRotation = landingTurnTarget;
+                   playerTurn.transform.localRotation = turnTargetToTheLeft;
                    clearedForTakeOff = true;
                    currentAttackAngle = 180;
                 }
@@ -401,6 +388,9 @@ public class ControlPlayer : MonoBehaviour
         if(LandingSafely())
         {
             flightState = FlightState.Landed;
+            Debug.Log("currentAttackAngle: " + currentAttackAngle);
+            Debug.Log("player turn " + playerTurn.transform.localRotation);
+            SetGroundTurnRotationTargetQuaternions();
         }
         else
         {
@@ -413,6 +403,11 @@ public class ControlPlayer : MonoBehaviour
     {
         
         if(playerSpeed > landingSpeed)
+        {
+            return false;
+        }
+
+        if(performingRoll)
         {
             return false;
         }
@@ -430,6 +425,40 @@ public class ControlPlayer : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void SetGroundTurnRotationTargetQuaternions()
+    {
+        if(FlyingToTheRight())
+        {
+            turnTargetToTheRight = playerTurn.transform.localRotation;
+            turnTargetToTheLeft = playerTurn.transform.localRotation;
+            if(turnTargetToTheLeft.y > .99f)
+            {
+                turnTargetToTheLeft = Quaternion.Euler(0, 0, 0);
+            }else
+            {
+                turnTargetToTheLeft = Quaternion.Euler(0, 180, 0);
+            }
+            
+        }
+        else
+        {
+            turnTargetToTheLeft = playerTurn.transform.localRotation;
+            turnTargetToTheRight = playerTurn.transform.localRotation;
+
+            if(turnTargetToTheRight.y > 0.99f)
+            {
+                turnTargetToTheRight = Quaternion.Euler(0, 0, 0);
+            }else
+            {
+                turnTargetToTheRight = Quaternion.Euler(0, 180, 0);
+            }
+        }
+
+        Debug.Log("SetGroundTurnRotationTargetQuaternions: " + turnTargetToTheRight + " " + turnTargetToTheLeft);
+        Debug.Log("SetGroundTurnRotationTarget as euler  : " + turnTargetToTheRight.eulerAngles + " " + turnTargetToTheLeft.eulerAngles);
+        
     }
 
 }
