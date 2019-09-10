@@ -51,6 +51,7 @@ public class ControlPlayer : MonoBehaviour
         playerSpeed = 0;
         flightState = FlightState.Landed;
         currentAttackAngle = 0;
+        performingRoll = false;
         player.transform.localRotation = Quaternion.identity;
         playerRoll.transform.localRotation = Quaternion.identity;
         playerTurn.transform.localRotation = Quaternion.identity;
