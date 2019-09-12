@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 //[ExecuteInEditMode]
-public class GenerateTerrain : MonoBehaviour
+public class GeneratedTerrain : MonoBehaviour
 {
     // Start is called before the first frame update
     public struct VerticesAndUVs
@@ -43,13 +43,14 @@ public class GenerateTerrain : MonoBehaviour
     private float xOffset;
     private float zOffset;
     private MeshFilter meshFilter;
-
     private MeshCollider meshCollider;
+    private float twoPi;
 
     //private Vector3[] terrainCoordinates;
     void Awake()
     {
 
+        twoPi = Mathf.PI * 2f;
         xOffset = UnityEngine.Random.Range(-1000f, 1000f);
         zOffset = UnityEngine.Random.Range(-1000f, 1000f);
 
@@ -159,10 +160,10 @@ public class GenerateTerrain : MonoBehaviour
 
     }
 
-    public Vector3 GetPosition(float angleAroundTerrain)
+    public Vector3 GetPosition(float angleAroundTerrainInRadians)
     {
-        float xPos = Mathf.Cos(angleAroundTerrain) * terrainRadius;
-        float zPos = Mathf.Sin(angleAroundTerrain) * terrainRadius;
+        float xPos = Mathf.Cos(angleAroundTerrainInRadians) * terrainRadius;
+        float zPos = Mathf.Sin(angleAroundTerrainInRadians) * terrainRadius;
         float height = GetHeightOfTerrain(xPos, zPos);
 
         return new Vector3(xPos, height, zPos);
@@ -170,7 +171,13 @@ public class GenerateTerrain : MonoBehaviour
 
     public float GetAngleRoundTerrain(Vector3 position)
     {
-        return Mathf.Atan2(position.z, position.x);
+        float angle = Mathf.Atan2(position.z, position.x);
+
+        while(angle < 0)
+        {
+            angle += twoPi;
+        } 
+        return angle;
     }
 
     public float GetPerlinValue(float xPos, float zPos)

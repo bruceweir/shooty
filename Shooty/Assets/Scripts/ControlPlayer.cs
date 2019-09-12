@@ -6,7 +6,7 @@ using UnityEngine;
 public enum FlightState {Stall, Landing, Landed, OK};
 public class ControlPlayer : MonoBehaviour
 {
-    public GenerateTerrain terrain;
+    public GeneratedTerrain terrain;
     public float angularVelocity = 1f;
     public float acceleration = .1f;
     public float maxSpeed = 5.0f;

@@ -6,7 +6,7 @@ public class ControlCamera : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject targetGameObject;
-    public GenerateTerrain terrain;
+    public GeneratedTerrain terrain;
     public float minimumHeightAboveGround;
     public float distanceFromTarget;
     public float minimumDistanceFromTarget = 10;
