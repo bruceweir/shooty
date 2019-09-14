@@ -56,7 +56,7 @@ public class ControlPlayer : MonoBehaviour
         playerRoll.transform.localRotation = Quaternion.identity;
         playerTurn.transform.localRotation = Quaternion.identity;
 
-        Vector3 startPosition = terrain.GetPosition(terrain.GetPlayerStartAngle());
+        Vector3 startPosition = terrain.GetPositionOnTerrainSurface(terrain.GetPlayerStartAngle());
         
         gameObject.transform.SetPositionAndRotation(new Vector3(0, 0, 0), Quaternion.identity);
        

@@ -8,17 +8,33 @@ public class TestUtils : MonoBehaviour
     public GeneratedTerrain terrain;
     public GameObject testObjectOne;
     public GameObject testObjectTwo;
+    private GameObject marker;
     void Start()
     {
-        TestHalfAngles();
-        TestCreateObjectBetween();
+        marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        marker.transform.localScale = new Vector3(200, 200, 200);
+
+//        TestHalfAngles();
+//        TestCreateObjectBetween();
         //TestWithinRing();
         //test the path creation in utils
 
-//        TestPathCreation();
+        //TestPathCreation();
         
 
     }
+
+    // Update is called once per frame
+    void Update()
+    {
+        TestHasLineOfSight();
+    }
+
+    void TestHasLineOfSight()
+    {
+        Debug.Log(Utils.HasLineOfSight(testObjectOne, testObjectTwo, terrain));
+    }
+
 
     void TestHalfAngles()
     {
@@ -30,13 +46,10 @@ public class TestUtils : MonoBehaviour
     {
         float halfAngle = Utils.GetAngleBetweenPoints(testObjectOne.transform.position, testObjectTwo.transform.position, terrain) / 2f;
 
-        Vector3 position = terrain.GetPosition(terrain.GetAngleRoundTerrain(testObjectOne.transform.position) + halfAngle);
+        Vector3 position = terrain.GetPositionOnTerrainSurface(terrain.GetAngleRoundTerrain(testObjectOne.transform.position) + halfAngle);
 
-        GameObject halfway = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        halfway.transform.position = position;
-        halfway.transform.localScale = new Vector3(200, 200, 200);
-        halfway.name = "halfway";
-
+        marker.transform.position = position;
+        
         
     }
 
@@ -58,23 +71,22 @@ public class TestUtils : MonoBehaviour
     }
     void TestPathCreation()
     {
-        //Vector3 testPositionOne = terrain.GetPosition(testAngleOne);
-        //Vector3 testPositionTwo = terrain.GetPosition(testAngleTwo);
         
-
         LinkedList<Vector3> path = Utils.CreatePathWithinRing(testObjectOne.transform.position, testObjectTwo.transform.position, terrain);
 
         Debug.Log("ring path");
+        int count = 0;
         foreach(Vector3 position in path)
         {
             Debug.Log(position);
+            GameObject pathMarker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            pathMarker.transform.position = position;
+            pathMarker.transform.localScale = new Vector3(10, 10, 10);
+            pathMarker.name = "pathMarker " + count.ToString();
+            count++;
         }
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

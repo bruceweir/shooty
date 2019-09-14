@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-//using System.Collections.Generic.LinkedList;
+using System;
 using UnityEngine;
 
 public static class Utils
@@ -10,6 +10,26 @@ public static class Utils
     {
         LinkedList<Vector3> path = CreatePathWithinRing(one.transform.position, two.transform.position, terrain);
 
+        if(path.Count == 0)
+        {
+            return false;
+        }
+
+        LinkedListNode<Vector3> step = path.First;
+        
+        int layerMask = (1 << 12) | (1 << 15); //terrain and cloud
+        RaycastHit hit;
+            
+        while(step.Next != null)
+        {
+            //check if the terrain is in between these steps on the path
+            Vector3 vectorToNext = step.Next.Value - step.Value;
+            if (Physics.Raycast(step.Value, step.Next.Value - step.Value, out hit, vectorToNext.magnitude, layerMask))
+            {
+                return false;
+            }
+            step = step.Next;
+        }
 
         return true;
     }
@@ -33,13 +53,18 @@ public static class Utils
             else
             {
                 float halfAngle = GetAngleBetweenPoints(step.Value, step.Next.Value, terrain) / 2;
-                Vector3 inbetweenPoint = terrain.GetPosition(halfAngle);
+                Vector3 inbetweenPoint = terrain.GetPositionOnTerrainSurface(terrain.GetAngleRoundTerrain(step.Value) + halfAngle);
+                
+                //set height of new point to be average of neighbours (since they will be evenly spaced)
+                inbetweenPoint.y = (step.Value.y + step.Next.Value.y)/2f;
+
                 path.AddAfter(step, inbetweenPoint);
             }
 
             if(path.Count > 100)
             {
                 Debug.Log("path too long");
+                path.Clear();
                 return path;
             }
 
@@ -72,7 +97,13 @@ public static class Utils
         float angleOne = terrain.GetAngleRoundTerrain(one);
         float angleTwo = terrain.GetAngleRoundTerrain(two);
 
-        Debug.Log("angleOne: " + angleOne + " angleTwo: " + angleTwo);
-        return angleTwo - angleOne;
+        float angleBetween = angleTwo - angleOne;
+
+        if(Math.Abs(angleBetween) > Mathf.PI)
+        {
+            angleBetween = (angleBetween - Mathf.PI) - Mathf.PI;
+        }
+
+        return angleBetween;
     }
 }

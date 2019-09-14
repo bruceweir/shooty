@@ -160,7 +160,7 @@ public class GeneratedTerrain : MonoBehaviour
 
     }
 
-    public Vector3 GetPosition(float angleAroundTerrainInRadians)
+    public Vector3 GetPositionOnTerrainSurface(float angleAroundTerrainInRadians)
     {
         float xPos = Mathf.Cos(angleAroundTerrainInRadians) * terrainRadius;
         float zPos = Mathf.Sin(angleAroundTerrainInRadians) * terrainRadius;
@@ -195,7 +195,7 @@ public class GeneratedTerrain : MonoBehaviour
 
     public float GetHeightOfTerrain(float angle)
     {
-        Vector3 position = GetPosition(angle);
+        Vector3 position = GetPositionOnTerrainSurface(angle);
 
         return position.y;
     }
@@ -224,7 +224,7 @@ public class GeneratedTerrain : MonoBehaviour
 
     public float GetHeightOfRunway(float angle)
     {
-        Vector3 position = GetPosition(angle);
+        Vector3 position = GetPositionOnTerrainSurface(angle);
 
         return GetHeightOfRunway(position.x, position.z);
     }
@@ -617,7 +617,7 @@ public class GeneratedTerrain : MonoBehaviour
 
     Vector3 GetSuitableDecorationPosition(float angle)
     {
-        Vector3 ringPosition = GetPosition(angle);
+        Vector3 ringPosition = GetPositionOnTerrainSurface(angle);
 
         Vector3 directionToCentre = (ringPosition - new Vector3(0, ringPosition.y, 0)).normalized;
 
@@ -666,7 +666,7 @@ public class GeneratedTerrain : MonoBehaviour
         for(int c=0; c < nClouds; c++)
         {
             float randomAngle = UnityEngine.Random.Range(0, 2*Mathf.PI);
-            Vector3 position = GetPosition(randomAngle);
+            Vector3 position = GetPositionOnTerrainSurface(randomAngle);
 
             float height = GetHeightOfTerrain(position) + UnityEngine.Random.Range(100, 300);
 
@@ -686,7 +686,7 @@ public class GeneratedTerrain : MonoBehaviour
         for(int c=0; c < nClouds; c++)
         {
             float randomAngle = UnityEngine.Random.Range(0, 2*Mathf.PI);
-            Vector3 position = GetPosition(randomAngle);
+            Vector3 position = GetPositionOnTerrainSurface(randomAngle);
 
             float height = GetHeightOfTerrain(position) + UnityEngine.Random.Range(500, 2000);
 
