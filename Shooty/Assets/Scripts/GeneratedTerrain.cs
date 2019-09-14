@@ -22,6 +22,7 @@ public class GeneratedTerrain : MonoBehaviour
     public GameObject[] DecorativeGroundObjects;
     public GameObject[] LowClouds;
     public GameObject[] HighClouds;
+    public GameObject CloudPivot;
     public int nClouds = 5;
     public float decorationProbability = .3f;
     public float minDecorationDistance = 10f;
@@ -591,6 +592,9 @@ public class GeneratedTerrain : MonoBehaviour
 
         float angle = 0.0f;
 
+        GameObject Decorations = new GameObject();
+        Decorations.name = "Decorations";
+
         while(angle < 2*Mathf.PI)
         {
             
@@ -606,7 +610,7 @@ public class GeneratedTerrain : MonoBehaviour
                     GameObject decoration = Instantiate(DecorativeGroundObjects[decorationIndex], decorationPosition, Quaternion.identity);
                     float scale = UnityEngine.Random.Range(0.8f, 2.5f);
                     decoration.transform.localScale = new Vector3(scale, scale, scale);
-
+                    decoration.transform.parent = Decorations.transform;
                 }
             }
 
@@ -661,7 +665,10 @@ public class GeneratedTerrain : MonoBehaviour
     {
         float terrainCircumference = 2 * Mathf.PI * terrainRadius;
         Debug.Log("Addclouds: " + nClouds);
-
+       
+        
+        GameObject Clouds = new GameObject();
+        Clouds.name = "Clouds";
         //low clouds
         for(int c=0; c < nClouds; c++)
         {
@@ -670,13 +677,19 @@ public class GeneratedTerrain : MonoBehaviour
 
             float height = GetHeightOfTerrain(position) + UnityEngine.Random.Range(100, 300);
 
-            position.y = height;
+            position.y = 0;//height;
 
             int cloudIndex = UnityEngine.Random.Range(0, LowClouds.Length);
 
             float cloudRotation = UnityEngine.Random.Range(0, Mathf.PI * 2);
 
             GameObject cloud = Instantiate(LowClouds[cloudIndex], position, Quaternion.Euler(0, cloudRotation, 0));
+
+            GameObject pivot = Instantiate(CloudPivot, Vector3.zero, Quaternion.identity);
+            pivot.transform.parent = Clouds.transform;
+            cloud.transform.parent = pivot.transform;
+            pivot.transform.position = new Vector3(0, height, 0);
+            pivot.GetComponent<CloudPivot>().rotationSpeed = Random.Range(.1f, .5f);
 
             float scale = UnityEngine.Random.Range(0.8f, 2.5f);
             cloud.transform.localScale = new Vector3(scale, scale, scale);
@@ -690,13 +703,19 @@ public class GeneratedTerrain : MonoBehaviour
 
             float height = GetHeightOfTerrain(position) + UnityEngine.Random.Range(500, 2000);
 
-            position.y = height;
+            position.y = 0;//height;
 
             int cloudIndex = UnityEngine.Random.Range(0, HighClouds.Length);
 
             float cloudRotation = UnityEngine.Random.Range(0, Mathf.PI * 2);
 
             GameObject cloud = Instantiate(HighClouds[cloudIndex], position, Quaternion.Euler(0, cloudRotation, 0));
+
+            GameObject pivot = Instantiate(CloudPivot, Vector3.zero, Quaternion.identity);
+            pivot.transform.parent = Clouds.transform;
+            cloud.transform.parent = pivot.transform;
+            pivot.transform.position = new Vector3(0, height, 0);
+            pivot.GetComponent<CloudPivot>().rotationSpeed = Random.Range(.1f, .5f);
 
             float scale = UnityEngine.Random.Range(0.8f, 2.5f);
             cloud.transform.localScale = new Vector3(scale, scale, scale);

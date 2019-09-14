@@ -95,7 +95,7 @@ MonoBehaviour:
   terrainSegments: 300
   perlinScale: 5
   heightScale: 100
-  ringThickness: 50
+  ringThickness: 100
   DecorativeGroundObjects:
   - {fileID: 100002, guid: f14de2ab2136d0f41bda30388b851607, type: 3}
   - {fileID: 100002, guid: 129f0517e7d826844b87c8c15735d4c9, type: 3}
@@ -120,6 +120,8 @@ MonoBehaviour:
   - {fileID: 167220, guid: 20822131f7a068849967c4eb0328c80d, type: 3}
   - {fileID: 184318, guid: 01bebc0732355504095ed95d90508654, type: 3}
   - {fileID: 115170, guid: bcea47ee6f529ae49bd4e17c7203013a, type: 3}
+  CloudPivot: {fileID: 2112283103042463065, guid: c5cfdfd215eb65347b09fe4fc5ac5103,
+    type: 3}
   nClouds: 5
   decorationProbability: 0.3
   minDecorationDistance: 5
