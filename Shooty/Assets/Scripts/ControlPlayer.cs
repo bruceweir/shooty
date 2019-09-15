@@ -11,7 +11,7 @@ public class ControlPlayer : MonoBehaviour
     public float acceleration = .1f;
     public float maxSpeed = 5.0f;
     public float turnRate = 1.0f;
-    private float playerSpeed;
+    public float playerSpeed;
     public float landingSpeed = 2.0f;
     public float stallSpeed = 1.0f;
     public float minSpeed = 1.0f;
@@ -383,6 +383,11 @@ public class ControlPlayer : MonoBehaviour
 
         flightState = FlightState.OK;
         return;
+    }
+
+    public FlightState GetFlightState()
+    {
+        return flightState;
     }
 
     public void HasTouchedRunway()

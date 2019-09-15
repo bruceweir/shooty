@@ -5,6 +5,7 @@ using UnityEngine;
 public class AltimeterControl : MonoBehaviour
 {
     public GameObject ObjectToDisplay;
+    public float scaleMultiplier = 1;
     private GameObject littleHand;
     private GameObject bigHand;
     private float zeroAngle;
@@ -31,6 +32,9 @@ public class AltimeterControl : MonoBehaviour
     public void SetAltimeter(float altitude)
     {
 
+        altitude *= scaleMultiplier;
+
+        
         float thousandMetres = altitude / 1000f;
         float metres = altitude - (Mathf.Floor(thousandMetres) * 1000);
 
