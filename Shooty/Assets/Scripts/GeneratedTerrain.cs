@@ -170,6 +170,11 @@ public class GeneratedTerrain : MonoBehaviour
         return new Vector3(xPos, height, zPos);
     }
 
+    public float GetAngleRoundTerrain(GameObject gO)
+    {
+        return GetAngleRoundTerrain(gO.transform.position);
+    }
+
     public float GetAngleRoundTerrain(Vector3 position)
     {
         float angle = Mathf.Atan2(position.z, position.x);
@@ -194,9 +199,9 @@ public class GeneratedTerrain : MonoBehaviour
         return GetHeightOfTerrain(position.x, position.z);
     }
 
-    public float GetHeightOfTerrain(float angle)
+    public float GetHeightOfTerrain(float angleInRadians)
     {
-        Vector3 position = GetPositionOnTerrainSurface(angle);
+        Vector3 position = GetPositionOnTerrainSurface(angleInRadians);
 
         return position.y;
     }
@@ -210,7 +215,7 @@ public class GeneratedTerrain : MonoBehaviour
 
         if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
         {
-            //Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.green);
+            Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.green);
 
             return 10000 - hit.distance;
         }
