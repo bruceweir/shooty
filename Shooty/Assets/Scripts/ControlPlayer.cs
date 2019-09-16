@@ -6,6 +6,7 @@ using UnityEngine;
 public enum FlightState {Stall, Landing, Landed, OK};
 public class ControlPlayer : MonoBehaviour
 {
+    public GameObject playerModel;
     public GeneratedTerrain terrain;
     public float angularVelocity = 1f;
     public float acceleration = .1f;
@@ -15,6 +16,7 @@ public class ControlPlayer : MonoBehaviour
     public float landingSpeed = 2.0f;
     public float stallSpeed = 1.0f;
     public float minSpeed = 1.0f;
+    public GameObject destructionEffect;
     private float currentAttackAngle = 0f;
     private GameObject player;
     private GameObject playerRoll;
@@ -36,18 +38,39 @@ public class ControlPlayer : MonoBehaviour
     
     void Start()
     {
-        
+        /*
+        player = Instantiate(playerModel, Vector3.zero, Quaternion.identity);
+
         player = gameObject.transform.GetChild(0).gameObject;
         playerRoll = gameObject.transform.GetChild(0).GetChild(0).gameObject;
         playerTurn = playerRoll.transform.GetChild(0).gameObject;
-        
-        Debug.Log(playerTurn.name);
+        */
 
-        SetPlayerStartPosition();
+        StartNewPlayer();
     }
 
-    void SetPlayerStartPosition()
+    void StartNewPlayer()
     {  
+        if(player != null)
+        {
+            Destroy(player);
+        }
+
+        player = Instantiate(playerModel, Vector3.zero, Quaternion.identity);
+        player.name = "Player";
+        //PlayerCollisionBehaviour pcb = player.GetComponent<PlayerCollisionBehaviour>();
+        //pcb.controlPlayer = gameObject.GetComponent<ControlPlayer>();
+
+        player.transform.parent = gameObject.transform;
+        playerRoll = player.transform.GetChild(0).gameObject;
+        playerTurn = playerRoll.transform.GetChild(0).gameObject;
+        GameObject fighterModel = playerTurn.transform.GetChild(0).gameObject;
+        PlayerCollisionBehaviour pcb = fighterModel.GetComponent<PlayerCollisionBehaviour>();
+        pcb.controlPlayer = gameObject.GetComponent<ControlPlayer>();
+
+        
+
+
         playerSpeed = 0;
         flightState = FlightState.Landed;
         currentAttackAngle = 0;
@@ -84,6 +107,10 @@ public class ControlPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(player == null)
+        {
+            return;
+        }
         //Debug.Log(currentAttackAngle);
 
         CheckFlightState();
@@ -473,7 +500,19 @@ public class ControlPlayer : MonoBehaviour
 
     public void Crashed()
     {
-        SetPlayerStartPosition();
+        GameObject explosion = Instantiate(destructionEffect, player.transform.position, player.transform.rotation);
+        explosion.transform.localScale = new Vector3(10, 10, 10);
+
+        Destroy(player);
+
+        StartCoroutine(RespawnAfterTime(3));
+    }
+
+    IEnumerator RespawnAfterTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+    
+        StartNewPlayer();
     }
 
 }

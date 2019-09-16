@@ -10,7 +10,7 @@ public class PlayerCollisionBehaviour : MonoBehaviour
 
     void Start()
     {
-        
+        Debug.Log("PlayerCollisionBehaviour");
     }
 
     // Update is called once per frame

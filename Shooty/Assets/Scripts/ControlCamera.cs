@@ -21,7 +21,8 @@ public class ControlCamera : MonoBehaviour
     {
         activeCamera = Camera.main;
         positionChange = Vector3.zero;
-        previousPosition = targetGameObject.transform.position;
+        
+        //previousPosition = targetGameObject.transform.position;
     }
 
     void Update()
@@ -33,6 +34,11 @@ public class ControlCamera : MonoBehaviour
 
     void SetCameraFraming()
     {
+        if(targetGameObject == null)
+        {
+            return;
+        }
+        
         Vector3 screenPos = activeCamera.WorldToScreenPoint(targetGameObject.transform.position);
         Vector3 viewPortCoords = activeCamera.ScreenToViewportPoint(screenPos);
 
@@ -61,6 +67,16 @@ public class ControlCamera : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(targetGameObject == null)
+        {
+            targetGameObject = GameObject.Find("Player");
+
+            if(targetGameObject == null)
+            {
+                return;
+            }
+        }
+
         positionChange = targetGameObject.transform.position - previousPosition;
 
         predictedTargetPosition = targetGameObject.transform.position + (positionChange * framesOfPrediction);

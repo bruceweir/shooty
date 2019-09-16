@@ -1173,7 +1173,7 @@ PrefabInstance:
         type: 3}
       propertyPath: targetGameObject
       value: 
-      objectReference: {fileID: 8296172668403905227}
+      objectReference: {fileID: 0}
     - target: {fileID: 1453042934268017237, guid: 4f694de1c0165234fa286b80a66f46ba,
         type: 3}
       propertyPath: terrain
@@ -1292,6 +1292,18 @@ PrefabInstance:
       propertyPath: maxSpeed
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: playerModel
+      value: 
+      objectReference: {fileID: 7413340024531936246, guid: a4714bbe0886e51469a780f8db5375b6,
+        type: 3}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: destructionEffect
+      value: 
+      objectReference: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
+        type: 3}
     - target: {fileID: 4706904495613178060, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1349,9 +1361,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06369f4ad24a6ca40b1649c4a8bf381b, type: 3}
---- !u!1 &8296172668403905227 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3635431453279778883, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
-    type: 3}
-  m_PrefabInstance: {fileID: 4706904494284278408}
-  m_PrefabAsset: {fileID: 0}
