@@ -38,7 +38,7 @@ public class ControlCamera : MonoBehaviour
         {
             return;
         }
-        
+
         Vector3 screenPos = activeCamera.WorldToScreenPoint(targetGameObject.transform.position);
         Vector3 viewPortCoords = activeCamera.ScreenToViewportPoint(screenPos);
 
@@ -71,6 +71,10 @@ public class ControlCamera : MonoBehaviour
         {
             targetGameObject = GameObject.Find("Player");
 
+            if(targetGameObject == null)
+            {
+                targetGameObject = GameObject.Find("PlayerExplosion");
+            }
             if(targetGameObject == null)
             {
                 return;

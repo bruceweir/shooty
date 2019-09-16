@@ -502,6 +502,7 @@ public class ControlPlayer : MonoBehaviour
     {
         GameObject explosion = Instantiate(destructionEffect, player.transform.position, player.transform.rotation);
         explosion.transform.localScale = new Vector3(10, 10, 10);
+        explosion.name = "PlayerExplosion";
 
         Destroy(player);
 
