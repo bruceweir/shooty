@@ -21,6 +21,7 @@ public class ControlPlayer : MonoBehaviour
     private GameObject player;
     private GameObject playerRoll;
     private GameObject playerTurn;
+    private GameObject fighterAudio;
     private bool performingRoll = false;
     private float targetRollRotation  = 0;
     private float totalRollRotation = 0;
@@ -35,6 +36,7 @@ public class ControlPlayer : MonoBehaviour
     public float landingTurnSpeed = 3f;
     private Quaternion landingTurnTarget;
     private FlightState flightState;
+    private float startHeight;
     
     void Start()
     {
@@ -63,6 +65,8 @@ public class ControlPlayer : MonoBehaviour
 
         player.transform.parent = gameObject.transform;
         playerRoll = player.transform.GetChild(0).gameObject;
+        fighterAudio = player.transform.GetChild(1).gameObject;
+        Debug.Log(fighterAudio.name);
         playerTurn = playerRoll.transform.GetChild(0).gameObject;
         GameObject fighterModel = playerTurn.transform.GetChild(0).gameObject;
         PlayerCollisionBehaviour pcb = fighterModel.GetComponent<PlayerCollisionBehaviour>();
@@ -89,7 +93,7 @@ public class ControlPlayer : MonoBehaviour
         player.transform.Rotate(Vector3.up, -Mathf.Rad2Deg * terrain.GetPlayerStartAngle()); //orient the player correctly
         
         //player height is determined by height of the pivot arm to which it is attached. 
-        float startHeight = terrain.GetHeightOfRunway(terrain.GetPlayerStartAngle()) + heightToSitAboveRunway;
+        startHeight = terrain.GetHeightOfRunway(terrain.GetPlayerStartAngle()) + heightToSitAboveRunway;
 
         gameObject.transform.position = new Vector3(0, startHeight, 0);   
 
@@ -123,6 +127,13 @@ public class ControlPlayer : MonoBehaviour
         {
             AirControls();
         }
+
+        AudioLowPassFilter lpf = fighterAudio.GetComponent<AudioLowPassFilter>();
+        lpf.cutoffFrequency = Mathf.Clamp((200 + (Mathf.Abs(angularVelocity) * 50)), 200, 900);
+        lpf.lowpassResonanceQ = Mathf.Clamp(1 + ((transform.position.y-startHeight) / 300), 1f, 2.5f);
+
+        AudioEchoFilter Aef = fighterAudio.GetComponent<AudioEchoFilter>();
+        Aef.delay = Mathf.Max(10, transform.position.y - terrain.GetHeightOfTerrain(player.transform.position));
     }
 
     private void GroundControls()
@@ -506,7 +517,7 @@ public class ControlPlayer : MonoBehaviour
 
         Destroy(player);
 
-        StartCoroutine(RespawnAfterTime(3));
+        StartCoroutine(RespawnAfterTime(8));
     }
 
     IEnumerator RespawnAfterTime(float time)
