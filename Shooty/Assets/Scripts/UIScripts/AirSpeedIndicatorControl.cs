@@ -42,7 +42,7 @@ public class AirSpeedIndicatorControl : MonoBehaviour
         }
         if(player.GetFlightState() == FlightState.Landing)
         {
-            rend.SetColor(Color.Lerp(Color.black, Color.red,  Mathf.PingPong(Time.time, 2)));
+            rend.SetColor(Color.Lerp(Color.black, Color.yellow,  Mathf.PingPong(Time.time, 2)));
         }
         if(player.GetFlightState() == FlightState.OK)
         {
