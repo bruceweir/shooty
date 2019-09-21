@@ -253,7 +253,7 @@ PrefabInstance:
       objectReference: {fileID: 992446598}
     - target: {fileID: 774541992, guid: 1d68d76e123342d4889cfb7c2eeef4af, type: 3}
       propertyPath: stepSizePerSpeed
-      value: 0.0038
+      value: 1.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d68d76e123342d4889cfb7c2eeef4af, type: 3}

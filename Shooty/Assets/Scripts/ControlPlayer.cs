@@ -72,6 +72,17 @@ public class ControlPlayer : MonoBehaviour
         PlayerCollisionBehaviour pcb = fighterModel.GetComponent<PlayerCollisionBehaviour>();
         pcb.controlPlayer = gameObject.GetComponent<ControlPlayer>();
 
+        GameObject engine1 = fighterModel.transform.GetChild(0).gameObject;
+        GameObject engine2 = fighterModel.transform.GetChild(1).gameObject;
+
+        EngineFlame ef1 = engine1.GetComponent<EngineFlame>();
+        EngineFlame ef2 = engine2.GetComponent<EngineFlame>();
+        
+        ef1.controlPlayer = gameObject.GetComponent<ControlPlayer>();
+        ef2.controlPlayer = gameObject.GetComponent<ControlPlayer>();
+        
+
+        
         
 
 
@@ -322,7 +333,6 @@ public class ControlPlayer : MonoBehaviour
 
         playerSpeed = Mathf.Clamp(playerSpeed, minSpeed, maxSpeed);
       
-        Debug.Log(playerSpeed);
         Vector2 playerVelocity;
 
         playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
@@ -341,7 +351,6 @@ public class ControlPlayer : MonoBehaviour
 
         angularVelocity = 360/((terrain.terrainRadius * 2 * Mathf.PI) / -playerVelocity.x);
 
-        Debug.Log(playerSpeed + " " + playerVelocity.x + " " + angularVelocity);
         //rotate the pivot
         gameObject.transform.Rotate(0, angularVelocity * Time.fixedDeltaTime, 0, Space.World);
         
