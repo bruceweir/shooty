@@ -301,11 +301,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1762160723420877233, guid: ec83d06dae3df874583db9564474c196,
-        type: 3}
-      propertyPath: gain
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8169392423043215959, guid: ec83d06dae3df874583db9564474c196,
         type: 3}
       propertyPath: m_DecayRatio
@@ -315,6 +310,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Delay
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762160723420877235, guid: ec83d06dae3df874583db9564474c196,
+        type: 3}
+      propertyPath: rolloffMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762160723420877235, guid: ec83d06dae3df874583db9564474c196,
+        type: 3}
+      propertyPath: DopplerLevel
+      value: 3.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762160723420877233, guid: ec83d06dae3df874583db9564474c196,
+        type: 3}
+      propertyPath: gain
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec83d06dae3df874583db9564474c196, type: 3}

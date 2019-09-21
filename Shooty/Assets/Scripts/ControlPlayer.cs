@@ -228,7 +228,7 @@ public class ControlPlayer : MonoBehaviour
 
         //angular velocity is horizontal projection of playerVelocity
 
-        angularVelocity = -playerVelocity.x;
+        angularVelocity = 360 / ((terrain.terrainRadius * 2 * Mathf.PI) / -playerVelocity.x);
         
         //rotate the pivot
         gameObject.transform.Rotate(0, angularVelocity * Time.fixedDeltaTime, 0, Space.World);
@@ -322,13 +322,16 @@ public class ControlPlayer : MonoBehaviour
 
         playerSpeed = Mathf.Clamp(playerSpeed, minSpeed, maxSpeed);
       
+        Debug.Log(playerSpeed);
         Vector2 playerVelocity;
 
         playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
         playerVelocity.y = -Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
         
+        
         float maxVerticalSpeed = GetMaxVerticalSpeed();
         
+        //Debug.Log("maxVerticalSpeed: " + maxVerticalSpeed);
         if(playerVelocity.y > maxVerticalSpeed)
         {
             playerVelocity.y = maxVerticalSpeed;
@@ -336,8 +339,9 @@ public class ControlPlayer : MonoBehaviour
 
         //angular velocity is horizontal projection of playerVelocity
 
-        angularVelocity = -playerVelocity.x;
-        
+        angularVelocity = 360/((terrain.terrainRadius * 2 * Mathf.PI) / -playerVelocity.x);
+
+        Debug.Log(playerSpeed + " " + playerVelocity.x + " " + angularVelocity);
         //rotate the pivot
         gameObject.transform.Rotate(0, angularVelocity * Time.fixedDeltaTime, 0, Space.World);
         
@@ -347,7 +351,7 @@ public class ControlPlayer : MonoBehaviour
         Vector3 position = gameObject.transform.position;
 
         
-        position.y += playerVelocity.y * Time.fixedDeltaTime * terrain.terrainRadius * Mathf.Deg2Rad;//height;
+        position.y += playerVelocity.y * Time.fixedDeltaTime;
         
         gameObject.transform.position = position;
     }
@@ -378,7 +382,7 @@ public class ControlPlayer : MonoBehaviour
         }
         else
         {
-            return (10/landingSpeed) * playerSpeed + -10;
+            return ((10/(landingSpeed)) * playerSpeed) + -10;
         }
     }
 

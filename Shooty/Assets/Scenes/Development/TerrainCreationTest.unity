@@ -251,6 +251,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 992446598}
+    - target: {fileID: 774541992, guid: 1d68d76e123342d4889cfb7c2eeef4af, type: 3}
+      propertyPath: stepSizePerSpeed
+      value: 0.0038
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d68d76e123342d4889cfb7c2eeef4af, type: 3}
 --- !u!43 &113601844
@@ -1208,6 +1212,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Terrain
       objectReference: {fileID: 0}
+    - target: {fileID: 4314390454813890619, guid: 93108bea98f9321428519aa4ba6fea25,
+        type: 3}
+      propertyPath: terrainRadius
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314390454813890619, guid: 93108bea98f9321428519aa4ba6fea25,
+        type: 3}
+      propertyPath: terrainSegments
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 4314390454813890623, guid: 93108bea98f9321428519aa4ba6fea25,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1290,7 +1304,7 @@ PrefabInstance:
     - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
       propertyPath: maxSpeed
-      value: 40
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
@@ -1304,6 +1318,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
         type: 3}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: acceleration
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: landingSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: stallSpeed
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 4706904495613178060, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
       propertyPath: m_LocalPosition.x
