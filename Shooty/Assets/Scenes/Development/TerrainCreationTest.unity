@@ -170,7 +170,7 @@ PrefabInstance:
     - target: {fileID: 6628752253046871182, guid: 1d68d76e123342d4889cfb7c2eeef4af,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6628752253046871182, guid: 1d68d76e123342d4889cfb7c2eeef4af,
         type: 3}
@@ -945,7 +945,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1201317474
 GameObject:
@@ -993,7 +993,7 @@ Transform:
   - {fileID: 354199075}
   - {fileID: 361506685}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1478356033 stripped
 Camera:
@@ -1091,7 +1091,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 7.85, y: 0, z: 0}
 --- !u!114 &1711356111
 MonoBehaviour:
@@ -1156,7 +1156,7 @@ PrefabInstance:
     - target: {fileID: 1453042934268017242, guid: 4f694de1c0165234fa286b80a66f46ba,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1453042934268017242, guid: 4f694de1c0165234fa286b80a66f46ba,
         type: 3}
@@ -1308,6 +1308,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
+      propertyPath: destructionEffects.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
       propertyPath: terrain
       value: 
       objectReference: {fileID: 519878283}
@@ -1343,6 +1348,18 @@ PrefabInstance:
       propertyPath: stallSpeed
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: destructionEffects.Array.data[0]
+      value: 
+      objectReference: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
+        type: 3}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: destructionEffects.Array.data[1]
+      value: 
+      objectReference: {fileID: 1273915125232972, guid: 73767e07adddc394d82b994801f89bbb,
+        type: 3}
     - target: {fileID: 4706904495613178060, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1381,7 +1398,7 @@ PrefabInstance:
     - target: {fileID: 4706904495613178060, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4706904495613178060, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}

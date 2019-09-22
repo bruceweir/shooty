@@ -16,7 +16,7 @@ public class ControlPlayer : MonoBehaviour
     public float landingSpeed = 2.0f;
     public float stallSpeed = 1.0f;
     public float minSpeed = 1.0f;
-    public GameObject destructionEffect;
+    public GameObject[] destructionEffects;
     private float currentAttackAngle = 0f;
     private GameObject player;
     private GameObject playerRoll;
@@ -126,8 +126,7 @@ public class ControlPlayer : MonoBehaviour
         {
             return;
         }
-        //Debug.Log(currentAttackAngle);
-
+        
         CheckFlightState();
         
         if(flightState == FlightState.Landed)
@@ -524,10 +523,17 @@ public class ControlPlayer : MonoBehaviour
 
     public void Crashed()
     {
-        GameObject explosion = Instantiate(destructionEffect, player.transform.position, player.transform.rotation);
+        
+        GameObject explosion = Instantiate(destructionEffects[0], player.transform.position, player.transform.rotation);
         explosion.transform.localScale = new Vector3(10, 10, 10);
         explosion.name = "PlayerExplosion";
 
+        if(destructionEffects[1] != null)
+        {
+            GameObject smoke = Instantiate(destructionEffects[1], player.transform.position -= new Vector3(0, -1, 0), Quaternion.Euler(-90, 0, 0));
+            smoke.transform.localScale = new Vector3(1, 1, 1);
+            smoke.name = "PlayerExplosionSmoke";
+        }
         Destroy(player);
 
         StartCoroutine(RespawnAfterTime(8));

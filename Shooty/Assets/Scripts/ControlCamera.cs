@@ -67,7 +67,7 @@ public class ControlCamera : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(targetGameObject == null)
+        if(targetGameObject == null || targetGameObject.name == "PlayerExplosion")
         {
             targetGameObject = GameObject.Find("Player");
 
@@ -80,7 +80,7 @@ public class ControlCamera : MonoBehaviour
                 return;
             }
         }
-
+        
         positionChange = targetGameObject.transform.position - previousPosition;
 
         predictedTargetPosition = targetGameObject.transform.position + (positionChange * framesOfPrediction);
