@@ -22,10 +22,12 @@ public class ControlPlayer : MonoBehaviour
     private GameObject playerRoll;
     private GameObject playerTurn;
     private GameObject fighterAudio;
+    private AudioSource stallAlarm;
     private bool performingRoll = false;
     private float targetRollRotation  = 0;
     private float totalRollRotation = 0;
     private float rollSpeed = 90f;
+    private float stallDescentRate = 0f;
 
     private bool LandedToTheRight = true;
     private Quaternion turnTargetToTheRight;
@@ -66,6 +68,8 @@ public class ControlPlayer : MonoBehaviour
         player.transform.parent = gameObject.transform;
         playerRoll = player.transform.GetChild(0).gameObject;
         fighterAudio = player.transform.GetChild(1).gameObject;
+        stallAlarm = player.transform.GetChild(2).gameObject.GetComponent<AudioSource>();
+
         Debug.Log(fighterAudio.name);
         playerTurn = playerRoll.transform.GetChild(0).gameObject;
         GameObject fighterModel = playerTurn.transform.GetChild(0).gameObject;
@@ -90,6 +94,7 @@ public class ControlPlayer : MonoBehaviour
         flightState = FlightState.Landed;
         currentAttackAngle = 0;
         performingRoll = false;
+        stallDescentRate = 0;
         player.transform.localRotation = Quaternion.identity;
         playerRoll.transform.localRotation = Quaternion.identity;
         playerTurn.transform.localRotation = Quaternion.identity;
@@ -268,11 +273,28 @@ public class ControlPlayer : MonoBehaviour
 
         if(flightState == FlightState.Stall)
         {
+            stallDescentRate += 1f;
+            
             attackAngleChange = (1 - Vector3.Dot(player.transform.forward, Vector3.down)) * Time.fixedDeltaTime * 20;
 
             if(!FlyingToTheRight())
             {
                 attackAngleChange *= -1;
+            }
+
+            if(!stallAlarm.isPlaying)
+            {
+                stallAlarm.Play();
+            }
+            
+        }
+        else
+        {
+            stallDescentRate = Mathf.Max(0, stallDescentRate-1f);
+            
+            if(stallDescentRate < 0.01) 
+            {
+                stallAlarm.Stop();
             }
         }
         
@@ -335,7 +357,7 @@ public class ControlPlayer : MonoBehaviour
         Vector2 playerVelocity;
 
         playerVelocity.x = Mathf.Cos(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
-        playerVelocity.y = -Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed;
+        playerVelocity.y = -Mathf.Sin(Mathf.Deg2Rad * currentAttackAngle) * playerSpeed - stallDescentRate;
         
         
         float maxVerticalSpeed = GetMaxVerticalSpeed();

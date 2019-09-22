@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 28152872729549451}
   - component: {fileID: 5030122924189570717}
   - component: {fileID: 4052406756095850551}
+  - component: {fileID: 4579485969157518821}
+  - component: {fileID: -301292588011519418}
   m_Layer: 0
   m_Name: CrashDecal
   m_TagString: Untagged
@@ -93,3 +95,35 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &4579485969157518821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5234052301659134727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3acd4a55a17057a42b089560682f64aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyOnAwake: 1
+  awakeDestroyDelay: 60
+  findChild: 0
+  namedChild: 
+--- !u!114 &-301292588011519418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5234052301659134727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3acd4a55a17057a42b089560682f64aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyOnAwake: 1
+  awakeDestroyDelay: 60
+  findChild: 0
+  namedChild: 
