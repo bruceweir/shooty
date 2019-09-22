@@ -13,14 +13,9 @@ public class EngineFlame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
         if(controlPlayer.maxSpeed - controlPlayer.minSpeed != 0)
         {
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, Random.Range(0f, .25f) + Mathf.Lerp(scaleAtMinSpeed, scaleAtMaxSpeed, (controlPlayer.playerSpeed-controlPlayer.minSpeed)/(controlPlayer.maxSpeed-controlPlayer.minSpeed)));
-            Debug.Log("Engineflame: " + transform.localScale.z);
-            
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, Random.Range(0f, .25f) + Mathf.Lerp(scaleAtMinSpeed, scaleAtMaxSpeed, (controlPlayer.playerSpeed-controlPlayer.minSpeed)/(controlPlayer.maxSpeed-controlPlayer.minSpeed)));            
         }
-
-        
     }
 }
