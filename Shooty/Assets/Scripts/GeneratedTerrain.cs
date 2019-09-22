@@ -228,6 +228,31 @@ public class GeneratedTerrain : MonoBehaviour
         return -1f;
     }
 
+        public Vector3 GetTerrainNormal(Vector3 position)
+    {
+        return GetTerrainNormal(position.x, position.z);
+    }
+
+    public Vector3 GetTerrainNormal(float xPos, float zPos)
+    {
+        int layerMask = 1 << 12;
+        RaycastHit hit;
+       
+        if (Physics.Raycast(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
+        {
+            Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.green);
+
+            return hit.normal;
+        }
+        else
+        {
+          //  Debug.DrawRay(new Vector3(xPos, 10000, zPos), transform.TransformDirection(Vector3.down) * 10000, Color.red);
+
+        }
+
+        return Vector3.zero;
+    }
+
     public float GetHeightOfRunway(float angle)
     {
         Vector3 position = GetPositionOnTerrainSurface(angle);

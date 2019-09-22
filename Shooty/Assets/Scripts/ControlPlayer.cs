@@ -530,10 +530,25 @@ public class ControlPlayer : MonoBehaviour
 
         if(destructionEffects[1] != null)
         {
-            GameObject smoke = Instantiate(destructionEffects[1], player.transform.position -= new Vector3(0, -1, 0), Quaternion.Euler(-90, 0, 0));
-            smoke.transform.localScale = new Vector3(1, 1, 1);
-            smoke.name = "PlayerExplosionSmoke";
+            GameObject decals = GameObject.Find("Decals");
+            if(decals == null)
+            {
+                decals = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+                decals.name = "Decals";
+            }
+           
+            float groundHeight = terrain.GetHeightOfTerrain(player.transform.position);
+           
+            GameObject crashDecal = Instantiate(destructionEffects[1], new Vector3(player.transform.position.x, groundHeight+0.05f, player.transform.position.z), Quaternion.Euler(90, 0, 0));
+           
+            crashDecal.transform.forward = terrain.GetTerrainNormal(player.transform.position) * -1f;
+            crashDecal.transform.localScale = new Vector3(20, 20, 20);
+            crashDecal.transform.parent = decals.transform;
+            crashDecal.name = "PlayerExplosionDecal";
+
+            
         }
+
         Destroy(player);
 
         StartCoroutine(RespawnAfterTime(8));
