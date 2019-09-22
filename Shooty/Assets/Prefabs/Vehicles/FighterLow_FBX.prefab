@@ -428,6 +428,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.4000001
       objectReference: {fileID: 0}
+    - target: {fileID: 1804416637484462544, guid: 91aec66214f47a548a15065d8dbc1d57,
+        type: 3}
+      propertyPath: scaleAtMaxSpeed
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
