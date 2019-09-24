@@ -16,6 +16,9 @@ public class ControlPlayer : MonoBehaviour
     public float landingSpeed = 2.0f;
     public float stallSpeed = 1.0f;
     public float minSpeed = 1.0f;
+    public GameObject primaryWeapon;
+    public float primaryWeaponFireRate;
+    private float nextPrimaryWeaponFiring;
     public GameObject[] destructionEffects;
     private float currentAttackAngle = 0f;
     private GameObject player;
@@ -314,6 +317,10 @@ public class ControlPlayer : MonoBehaviour
                 attackAngleChange *= -1;
             }   
         }
+        if(Input.GetKey(KeyCode.Space))
+        {
+            Fire();
+        }
 
         currentAttackAngle += attackAngleChange;
 
@@ -541,6 +548,26 @@ public class ControlPlayer : MonoBehaviour
         }
 
         
+    }
+
+    private void Fire()
+    {
+        //Debug.Log("Fire");
+        if(Time.realtimeSinceStartup < nextPrimaryWeaponFiring)
+        {
+            return;
+        }
+
+        GameObject weapon = Instantiate(primaryWeapon, Vector3.zero, Quaternion.identity);
+        ProjectilePivot p =  weapon.GetComponent<ProjectilePivot>();
+        p.angleOfAttack = currentAttackAngle;
+        p.startHeight =  gameObject.transform.position.y;
+        p.startAngleAroundTerrain = terrain.GetAngleRoundTerrain(player.transform.position + (player.transform.forward * 1.5f));
+        p.initialForward = player.transform.forward;
+        p.terrain = terrain;
+
+        nextPrimaryWeaponFiring = Time.realtimeSinceStartup + 1/primaryWeaponFireRate;
+
     }
 
     public void Crashed()

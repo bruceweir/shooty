@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 454398}
   m_Layer: 15
   m_Name: Clouds_Cumulus_G1
-  m_TagString: Untagged
+  m_TagString: Cloud
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 6880401152991651637}
   m_Layer: 0
   m_Name: Jet
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -348,12 +348,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
@@ -437,12 +437,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
@@ -470,6 +470,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Jet
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 4cda9264c9ccc70479b6a2a07f02c409,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 4cda9264c9ccc70479b6a2a07f02c409,
         type: 3}

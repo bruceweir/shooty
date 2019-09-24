@@ -1319,7 +1319,7 @@ PrefabInstance:
     - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
       propertyPath: maxSpeed
-      value: 200
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}
@@ -1364,6 +1364,17 @@ PrefabInstance:
         type: 3}
       propertyPath: heightToSitAboveRunway
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: primaryWeapon
+      value: 
+      objectReference: {fileID: 6860597658602895609, guid: 732222a03d05e6e49862015fa125c9c4,
+        type: 3}
+    - target: {fileID: 4706904495613178061, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
+        type: 3}
+      propertyPath: primaryWeaponFireRate
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4706904495613178060, guid: 06369f4ad24a6ca40b1649c4a8bf381b,
         type: 3}

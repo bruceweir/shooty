@@ -747,7 +747,7 @@ public class GeneratedTerrain : MonoBehaviour
             pivot.transform.position = new Vector3(0, height, 0);
             pivot.GetComponent<CloudPivot>().rotationSpeed = Random.Range(.1f, .5f);
 
-            float scale = UnityEngine.Random.Range(0.8f, 2.5f);
+            float scale = UnityEngine.Random.Range(3f, 6f);
             cloud.transform.localScale = new Vector3(scale, scale, scale);
 
         }
