@@ -10,7 +10,23 @@ PrefabInstance:
     - target: {fileID: 4387146898894568867, guid: 327bb9099cb2ecd43b26c261e8b9317f,
         type: 3}
       propertyPath: m_Name
-      value: BulletPivot Variant
+      value: HotBulletPivot Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 9118816090422467772, guid: 327bb9099cb2ecd43b26c261e8b9317f,
+        type: 3}
+      propertyPath: projectile
+      value: 
+      objectReference: {fileID: 7245300972776205829, guid: 54f48ef2f2a436448bf22cc66aa09f89,
+        type: 3}
+    - target: {fileID: 9118816090422467772, guid: 327bb9099cb2ecd43b26c261e8b9317f,
+        type: 3}
+      propertyPath: projectileSpeed
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 9118816090422467772, guid: 327bb9099cb2ecd43b26c261e8b9317f,
+        type: 3}
+      propertyPath: lifetime
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3994205447874081439, guid: 327bb9099cb2ecd43b26c261e8b9317f,
         type: 3}
@@ -66,17 +82,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9118816090422467772, guid: 327bb9099cb2ecd43b26c261e8b9317f,
-        type: 3}
-      propertyPath: projectile
-      value: 
-      objectReference: {fileID: 7245300972776205829, guid: 54f48ef2f2a436448bf22cc66aa09f89,
-        type: 3}
-    - target: {fileID: 9118816090422467772, guid: 327bb9099cb2ecd43b26c261e8b9317f,
-        type: 3}
-      propertyPath: projectileSpeed
-      value: 400
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 327bb9099cb2ecd43b26c261e8b9317f, type: 3}

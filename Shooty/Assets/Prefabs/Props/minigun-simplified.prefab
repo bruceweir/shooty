@@ -428,6 +428,7 @@ Transform:
   - {fileID: 9132943651751410590}
   - {fileID: 131958220506174953}
   - {fileID: 8186869118636291038}
+  - {fileID: 2200427531074650792}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -445,8 +446,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePivotPrefab: {fileID: 6860597658602895609, guid: 732222a03d05e6e49862015fa125c9c4,
     type: 3}
+  muzzleFlash: {fileID: 1743301284569550, guid: ad2ab49d0a2a17148bd51c93d977bdbc,
+    type: 3}
+  projectileOrigin: {fileID: 4707017032867272173}
   projectileSpeed: 400
-  rateOfFire: 12
+  rateOfFire: 8
 --- !u!82 &550506780459957895
 AudioSource:
   m_ObjectHideFlags: 0
@@ -543,6 +547,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &4707017032867272173
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2200427531074650792}
+  m_Layer: 0
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2200427531074650792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4707017032867272173}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.105, z: 2.68}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 646200746747367737}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4987477099285499161
 GameObject:
   m_ObjectHideFlags: 0

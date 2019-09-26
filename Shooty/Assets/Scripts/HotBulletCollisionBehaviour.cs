@@ -5,6 +5,7 @@ using UnityEngine;
 public class HotBulletCollisionBehaviour : MonoBehaviour
 {
     // Start is called before the first frame update
+    public GameObject bulletStrikePrefab;
     void Start()
     {
         
@@ -31,6 +32,7 @@ public class HotBulletCollisionBehaviour : MonoBehaviour
             return;
         }
 
+        Instantiate(bulletStrikePrefab, gameObject.transform.position, Quaternion.identity);
         //destroy the parent pivot
         Destroy(gameObject.transform.parent.gameObject);
 

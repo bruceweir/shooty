@@ -6,6 +6,8 @@ public class Weapon : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject projectilePivotPrefab;
+    public GameObject muzzleFlash;
+    public GameObject projectileOrigin;
     public float projectileSpeed;
     public float rateOfFire;
     private float nextShotTime;
@@ -50,11 +52,14 @@ public class Weapon : MonoBehaviour
         ProjectilePivot p = ppp.GetComponent<ProjectilePivot>();
 
         p.angleOfAttack = -Mathf.Rad2Deg * CalcAngleOfAttack();
-        p.startHeight = gameObject.transform.position.y;
-        p.startAngleAroundTerrain = terrain.GetAngleRoundTerrain(gameObject.transform.position);
-        p.initialForward = gameObject.transform.forward;
+        p.startHeight = projectileOrigin.transform.position.y;
+        p.startAngleAroundTerrain = terrain.GetAngleRoundTerrain(projectileOrigin.transform.position);
+        p.initialForward = projectileOrigin.transform.forward;
         p.projectileSpeed = projectileSpeed;
 
+        GameObject flash = Instantiate(muzzleFlash, projectileOrigin.transform.position, projectileOrigin.transform.rotation);
+        flash.transform.parent = gameObject.transform;
+        
         shotNoise.Play();
 
         nextShotTime = Time.realtimeSinceStartup + 1/rateOfFire;
