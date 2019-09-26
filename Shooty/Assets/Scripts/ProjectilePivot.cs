@@ -10,11 +10,15 @@ public class ProjectilePivot : MonoBehaviour
     public float startHeight;
     public float startAngleAroundTerrain;
     public float lifetime = 8;
-    public GeneratedTerrain terrain;
+    
     public Vector3 initialForward;
     public GameObject projectile;
+
+    private GeneratedTerrain terrain;
     void Start()
     {
+        terrain = GameObject.Find("Terrain").GetComponent<GeneratedTerrain>();
+
         gameObject.transform.position = new Vector3(0, 0, 0);
         gameObject.transform.rotation = Quaternion.identity;
 

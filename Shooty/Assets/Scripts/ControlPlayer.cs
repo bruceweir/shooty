@@ -89,10 +89,6 @@ public class ControlPlayer : MonoBehaviour
         ef2.controlPlayer = gameObject.GetComponent<ControlPlayer>();
         
 
-        
-        
-
-
         playerSpeed = 0;
         flightState = FlightState.Landed;
         currentAttackAngle = 0;
@@ -317,10 +313,11 @@ public class ControlPlayer : MonoBehaviour
                 attackAngleChange *= -1;
             }   
         }
-        if(Input.GetKey(KeyCode.Space))
-        {
-            Fire();
-        }
+
+        //if(Input.GetKey(KeyCode.Space))
+        //{
+        //    Fire();
+       // }
 
         currentAttackAngle += attackAngleChange;
 
@@ -552,8 +549,9 @@ public class ControlPlayer : MonoBehaviour
 
     private void Fire()
     {
+        return;
         //Debug.Log("Fire");
-        if(Time.realtimeSinceStartup < nextPrimaryWeaponFiring)
+/*        if(Time.realtimeSinceStartup < nextPrimaryWeaponFiring)
         {
             return;
         }
@@ -567,7 +565,7 @@ public class ControlPlayer : MonoBehaviour
         p.terrain = terrain;
 
         nextPrimaryWeaponFiring = Time.realtimeSinceStartup + 1/primaryWeaponFireRate;
-
+*/
     }
 
     public void Crashed()
