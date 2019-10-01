@@ -6,7 +6,7 @@ public class PlayerCollisionBehaviour : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    public ControlPlayer controlPlayer;
+    public ControlJet controlJet;
 
     void Start()
     {
@@ -30,12 +30,12 @@ public class PlayerCollisionBehaviour : MonoBehaviour
 
         if(collider.CompareTag("Runway"))
         {
-            controlPlayer.HasTouchedRunway();
+            controlJet.HasTouchedRunway();
         }
         if(collider.CompareTag("Terrain"))
         {
  //           Debug.Log("crash");
-            controlPlayer.Crashed();
+            controlJet.Crashed();
         }
     }
 }

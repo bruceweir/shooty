@@ -42,7 +42,9 @@ public class ControlJet : MonoBehaviour
     private Quaternion landingTurnTarget;
     private FlightState flightState;
     private float startHeight;
-    private GameObject pivot;
+    private GameObject playerPivot;
+    private Pivot pivot;
+   
     
     void Start()
     {
@@ -54,13 +56,15 @@ public class ControlJet : MonoBehaviour
 
     void InitialiseJetParts()
     {  
-        pivot = Instantiate(pivotPrefab, Vector3.zero, Quaternion.identity);
+        playerPivot = Instantiate(pivotPrefab, Vector3.zero, Quaternion.identity);
+        playerPivot.name = "PlayerPivot";
+        pivot = playerPivot.GetComponent<Pivot>();
 
         gameObject.name = "Player";
         //PlayerCollisionBehaviour pcb = player.GetComponent<PlayerCollisionBehaviour>();
         //pcb.controlPlayer = gameObject.GetComponent<ControlPlayer>();
 
-        gameObject.transform.parent = pivot.transform;
+        gameObject.transform.parent = playerPivot.transform;
         playerRoll = gameObject.transform.GetChild(0).gameObject;
         fighterAudio = gameObject.transform.GetChild(1).gameObject;
         stallAlarm = gameObject.transform.GetChild(2).gameObject.GetComponent<AudioSource>();
@@ -69,7 +73,7 @@ public class ControlJet : MonoBehaviour
         playerTurn = playerRoll.transform.GetChild(0).gameObject;
         GameObject fighterModel = playerTurn.transform.GetChild(0).gameObject;
         PlayerCollisionBehaviour pcb = fighterModel.GetComponent<PlayerCollisionBehaviour>();
-        pcb.controlPlayer = gameObject.GetComponent<ControlPlayer>();
+        pcb.controlJet = gameObject.GetComponent<ControlJet>();
 
         GameObject engine1 = fighterModel.transform.GetChild(0).gameObject;
         GameObject engine2 = fighterModel.transform.GetChild(1).gameObject;
@@ -77,8 +81,8 @@ public class ControlJet : MonoBehaviour
         EngineFlame ef1 = engine1.GetComponent<EngineFlame>();
         EngineFlame ef2 = engine2.GetComponent<EngineFlame>();
         
-        ef1.controlPlayer = gameObject.GetComponent<ControlPlayer>();
-        ef2.controlPlayer = gameObject.GetComponent<ControlPlayer>();
+        ef1.controlJet = gameObject.GetComponent<ControlJet>();
+        ef2.controlJet = gameObject.GetComponent<ControlJet>();
         
 
         playerSpeed = 0;
@@ -92,7 +96,7 @@ public class ControlJet : MonoBehaviour
 
         Vector3 startPosition = terrain.GetPositionOnTerrainSurface(terrain.GetPlayerStartAngle());
         
-        pivot.transform.SetPositionAndRotation(new Vector3(0, 0, 0), Quaternion.identity);
+        playerPivot.transform.SetPositionAndRotation(new Vector3(0, 0, 0), Quaternion.identity);
        
         startPosition.y = 0;
         gameObject.transform.position = startPosition;
@@ -102,7 +106,7 @@ public class ControlJet : MonoBehaviour
         //player height is determined by height of the pivot arm to which it is attached. 
         startHeight = terrain.GetHeightOfRunway(terrain.GetPlayerStartAngle()) + heightToSitAboveRunway;
 
-        pivot.GetComponent<Pivot>().SetHeight(startHeight);   
+        pivot.SetHeight(startHeight);   
 
         SetGroundTurnRotationTargetQuaternions();
     }
@@ -232,9 +236,9 @@ public class ControlJet : MonoBehaviour
 
         angularVelocity = 360 / ((terrain.terrainRadius * 2 * Mathf.PI) / -playerVelocity.x);
         
-        pivot.GetComponent<Pivot>().angularVelocity = angularVelocity;
+        pivot.angularVelocity = angularVelocity;
         
-        pivot.GetComponent<Pivot>().SetHeight(runwayHeight + heightToSitAboveRunway);
+        pivot.SetHeight(runwayHeight + heightToSitAboveRunway);
 
     }
 
@@ -357,16 +361,9 @@ public class ControlJet : MonoBehaviour
 
         angularVelocity = 360/((terrain.terrainRadius * 2 * Mathf.PI) / -playerVelocity.x);
 
-        pivot.GetComponent<Pivot>().angularVelocity = angularVelocity;
+        pivot.angularVelocity = angularVelocity;
         
-        //vertical motion is the vertical component of the playerVelocity 
-        //move the pivot vertically        
-
-        //Vector3 position = gameObject.transform.position;
-
-        
-        //position.y += playerVelocity.y * Time.fixedDeltaTime;
-        pivot.GetComponent<Pivot>().AdjustHeight(playerVelocity.y * Time.fixedDeltaTime);
+        pivot.AdjustHeight(playerVelocity.y * Time.fixedDeltaTime);
 
         //gameObject.transform.position = position;
     }
@@ -417,7 +414,6 @@ public class ControlJet : MonoBehaviour
 
     public void CheckFlightState()
     {
-        Debug.Log(playerSpeed);
 
         if(flightState == FlightState.Landed)
         {
@@ -520,7 +516,8 @@ public class ControlJet : MonoBehaviour
             if(turnTargetToTheRight.y > 0.99f)
             {
                 turnTargetToTheRight = Quaternion.Euler(0, 0, 0);
-            }else
+            }
+            else
             {
                 turnTargetToTheRight = Quaternion.Euler(0, 180, 0);
             }
@@ -529,26 +526,7 @@ public class ControlJet : MonoBehaviour
         
     }
 
-    private void Fire()
-    {
-        return;
-        //Debug.Log("Fire");
-/*        if(Time.realtimeSinceStartup < nextPrimaryWeaponFiring)
-        {
-            return;
-        }
-
-        GameObject weapon = Instantiate(primaryWeapon, Vector3.zero, Quaternion.identity);
-        ProjectilePivot p =  weapon.GetComponent<ProjectilePivot>();
-        p.angleOfAttack = currentAttackAngle;
-        p.startHeight =  gameObject.transform.position.y;
-        p.startAngleAroundTerrain = terrain.GetAngleRoundTerrain(player.transform.position + (player.transform.forward * 1.5f));
-        p.initialForward = player.transform.forward;
-        p.terrain = terrain;
-
-        nextPrimaryWeaponFiring = Time.realtimeSinceStartup + 1/primaryWeaponFireRate;
-*/
-    }
+    
 
     public void Crashed()
     {
@@ -577,17 +555,12 @@ public class ControlJet : MonoBehaviour
 
             
         }
+        
+        GameManager.Instance.PlayerDestroyed();
 
-        Destroy(player);
-
-        StartCoroutine(RespawnAfterTime(8));
-    }
-
-    IEnumerator RespawnAfterTime(float time)
-    {
-        yield return new WaitForSeconds(time);
+        Destroy(playerPivot);
     
-        InitialiseJetParts();
+
     }
 
 }

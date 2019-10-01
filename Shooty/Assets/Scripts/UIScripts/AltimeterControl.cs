@@ -26,6 +26,16 @@ public class AltimeterControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(ObjectToDisplay == null)
+        {
+            ObjectToDisplay = GameObject.Find("PlayerPivot");
+
+            if(ObjectToDisplay == null)
+            {
+                return;
+            }
+        }
+        
         SetAltimeter(ObjectToDisplay.transform.position.y);
     }
 

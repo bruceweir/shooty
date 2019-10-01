@@ -77,7 +77,7 @@ public class ControlPlayer : MonoBehaviour
         playerTurn = playerRoll.transform.GetChild(0).gameObject;
         GameObject fighterModel = playerTurn.transform.GetChild(0).gameObject;
         PlayerCollisionBehaviour pcb = fighterModel.GetComponent<PlayerCollisionBehaviour>();
-        pcb.controlPlayer = gameObject.GetComponent<ControlPlayer>();
+        pcb.controlJet = gameObject.GetComponent<ControlJet>();
 
         GameObject engine1 = fighterModel.transform.GetChild(0).gameObject;
         GameObject engine2 = fighterModel.transform.GetChild(1).gameObject;
@@ -85,8 +85,8 @@ public class ControlPlayer : MonoBehaviour
         EngineFlame ef1 = engine1.GetComponent<EngineFlame>();
         EngineFlame ef2 = engine2.GetComponent<EngineFlame>();
         
-        ef1.controlPlayer = gameObject.GetComponent<ControlPlayer>();
-        ef2.controlPlayer = gameObject.GetComponent<ControlPlayer>();
+        ef1.controlJet = gameObject.GetComponent<ControlJet>();
+        ef2.controlJet = gameObject.GetComponent<ControlJet>();
         
 
         playerSpeed = 0;

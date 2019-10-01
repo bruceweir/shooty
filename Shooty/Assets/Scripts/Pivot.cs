@@ -18,7 +18,7 @@ public class Pivot : MonoBehaviour
 
     void FixedUpdate()
     {
-        Debug.Log(angularVelocity);
+//        Debug.Log(angularVelocity);
         gameObject.transform.Rotate(0, angularVelocity * Time.fixedDeltaTime, 0, Space.World);
     }
 

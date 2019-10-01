@@ -35,11 +35,12 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		CreateTerrain();
 
-		CreatePlayer();
+		StartCoroutine(SpawnPlayer(0));
+		// CreatePlayer();
 
-		SetCameraToFollow(player);
+		// SetCameraToFollow(player);
 
-		SwitchToFollowCamera();
+		// SwitchToFollowCamera();
 	}
 	
 	// Update is called once per frame
@@ -93,6 +94,23 @@ public class GameManager : MonoBehaviour {
 	{
 		overheadCamera.enabled = true;
 		sideFollowCamera.enabled = false;
+	}
+
+	private IEnumerator SpawnPlayer(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+
+		CreatePlayer();
+
+		SetCameraToFollow(player);
+
+		SwitchToFollowCamera();
+
+	}
+
+	public void PlayerDestroyed()
+	{
+		StartCoroutine(SpawnPlayer(8));
 	}
 
 	public void UpdateScoreBy(int value)

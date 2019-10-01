@@ -5,7 +5,7 @@ using UnityEngine;
 public class AirSpeedIndicatorControl : MonoBehaviour
 {
     
-    public ControlPlayer player;
+    public ControlJet player;
     private GameObject airSpeedHand;
     private GameObject warningLight;
     private float angleMax = -311;
@@ -20,6 +20,18 @@ public class AirSpeedIndicatorControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(player == null)
+        {
+            GameObject p = GameObject.Find("Player");
+
+            if(p == null)
+            {
+                return;
+            }
+
+            player = p.GetComponent<ControlJet>();
+        }
+
         SetAirspeedHand(player.playerSpeed);
         SetWarningLightState(player.playerSpeed);
     }
@@ -33,6 +45,7 @@ public class AirSpeedIndicatorControl : MonoBehaviour
 
     public void SetWarningLightState(float speed)
     {
+        
         
         CanvasRenderer rend = warningLight.GetComponent<CanvasRenderer>();
         
