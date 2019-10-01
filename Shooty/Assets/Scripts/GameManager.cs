@@ -9,9 +9,15 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	public static GameManager Instance { get; private set; }
 
+	public GameObject terrainGenerationPrefab;
+	public GameObject playerVehiclePrefab;
+	private GameObject player;
+	private GeneratedTerrain terrain = null;
 	private GameObject scoreTextObject;
 	private TMP_Text scoreText;
 	private Animator scoreAnimator;
+	public Camera overheadCamera;
+	public Camera sideFollowCamera;
 
 
 	private int score=0;
@@ -27,11 +33,66 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	void Start () {
+		CreateTerrain();
+
+		CreatePlayer();
+
+		SetCameraToFollow(player);
+
+		SwitchToFollowCamera();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	public void CreateTerrain()
+	{
+		if(terrain != null)
+		{
+			Destroy(terrain);
+		}
+
+		GameObject t = Instantiate(terrainGenerationPrefab, Vector3.zero, Quaternion.identity);
+		t.name = "Terrain";
+		terrain = t.GetComponent<GeneratedTerrain>();
+	}
+
+	private void CreatePlayer()
+	{
+		if(player != null)
+		{
+			Destroy(player);
+		}
+		if(terrain == null)
+		{
+			CreateTerrain();
+		}
+		
+
+		player = Instantiate(playerVehiclePrefab, Vector3.zero, Quaternion.identity);
+		//player.GetComponent<ControlJet>().terrain = terrain;
+	}
+
+	private void SetCameraToFollow(GameObject targetGameObject)
+	{
+		ControlCamera controlCamera = sideFollowCamera.GetComponent<ControlCamera>();
+		controlCamera.targetGameObject = targetGameObject;
+		controlCamera.terrain = terrain;
+
+	}
+
+	private void SwitchToFollowCamera()
+	{
+		overheadCamera.enabled = false;
+		sideFollowCamera.enabled = true;
+	}
+
+	private void SwitchToOverheadCamera()
+	{
+		overheadCamera.enabled = true;
+		sideFollowCamera.enabled = false;
 	}
 
 	public void UpdateScoreBy(int value)

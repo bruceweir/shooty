@@ -256,6 +256,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1184396112094541345}
   - component: {fileID: 6880401152991651637}
+  - component: {fileID: -1574365388164000334}
   m_Layer: 0
   m_Name: Jet
   m_TagString: Player
@@ -295,6 +296,34 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &-1574365388164000334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7902078308212943604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ad772d5ed07ac4a864a6efd1f8f4d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pivotPrefab: {fileID: 3161926315566604820, guid: 9379287e97caa99448bc70df52541b47,
+    type: 3}
+  angularVelocity: 1
+  acceleration: 20
+  maxSpeed: 250
+  turnRate: 45
+  playerSpeed: 0
+  landingSpeed: 50
+  stallSpeed: 20
+  minSpeed: 1
+  primaryWeapon: {fileID: 4516158245507621674, guid: 3136ec11acfd9724da017f9437b2ceec,
+    type: 3}
+  primaryWeaponFireRate: 7
+  destructionEffects: []
+  heightToSitAboveRunway: 1
+  landingTurnSpeed: 3
 --- !u!1 &8858243028543226611
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,12 +422,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
@@ -482,12 +511,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 

@@ -715,11 +715,13 @@ public class GeneratedTerrain : MonoBehaviour
 
             GameObject cloud = Instantiate(LowClouds[cloudIndex], position, Quaternion.Euler(0, cloudRotation, 0));
 
-            GameObject pivot = Instantiate(CloudPivot, Vector3.zero, Quaternion.identity);
-            pivot.transform.parent = Clouds.transform;
-            cloud.transform.parent = pivot.transform;
-            pivot.transform.position = new Vector3(0, height, 0);
-            pivot.GetComponent<CloudPivot>().rotationSpeed = Random.Range(.1f, .5f);
+            GameObject cloudPivot = Instantiate(CloudPivot, Vector3.zero, Quaternion.identity);
+            cloudPivot.transform.parent = Clouds.transform;
+            cloud.transform.parent = cloudPivot.transform;
+            
+            Pivot p = cloudPivot.GetComponent<Pivot>();
+            p.angularVelocity = Random.Range(.1f, .5f);
+            p.SetHeight(height);
 
             float scale = UnityEngine.Random.Range(0.8f, 2.5f);
             cloud.transform.localScale = new Vector3(scale, scale, scale);
@@ -741,11 +743,13 @@ public class GeneratedTerrain : MonoBehaviour
 
             GameObject cloud = Instantiate(HighClouds[cloudIndex], position, Quaternion.Euler(0, cloudRotation, 0));
 
-            GameObject pivot = Instantiate(CloudPivot, Vector3.zero, Quaternion.identity);
-            pivot.transform.parent = Clouds.transform;
-            cloud.transform.parent = pivot.transform;
-            pivot.transform.position = new Vector3(0, height, 0);
-            pivot.GetComponent<CloudPivot>().rotationSpeed = Random.Range(.1f, .5f);
+            GameObject cloudPivot = Instantiate(CloudPivot, Vector3.zero, Quaternion.identity);
+            cloudPivot.transform.parent = Clouds.transform;
+            cloud.transform.parent = cloudPivot.transform;
+            
+            Pivot p = cloudPivot.GetComponent<Pivot>();
+            p.angularVelocity = Random.Range(.1f, .5f);
+            p.SetHeight(height);
 
             float scale = UnityEngine.Random.Range(3f, 6f);
             cloud.transform.localScale = new Vector3(scale, scale, scale);

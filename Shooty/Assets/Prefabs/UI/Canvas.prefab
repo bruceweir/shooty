@@ -232,7 +232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  stepSizePerSpeed: 16
+  stepSizePerSpeed: 1.25
 --- !u!1 &6628752252630277127
 GameObject:
   m_ObjectHideFlags: 0

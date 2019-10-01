@@ -120,7 +120,7 @@ MonoBehaviour:
   - {fileID: 167220, guid: 20822131f7a068849967c4eb0328c80d, type: 3}
   - {fileID: 184318, guid: 01bebc0732355504095ed95d90508654, type: 3}
   - {fileID: 115170, guid: bcea47ee6f529ae49bd4e17c7203013a, type: 3}
-  CloudPivot: {fileID: 2112283103042463065, guid: c5cfdfd215eb65347b09fe4fc5ac5103,
+  CloudPivot: {fileID: 3161926315566604820, guid: 9379287e97caa99448bc70df52541b47,
     type: 3}
   nClouds: 5
   decorationProbability: 0.3
