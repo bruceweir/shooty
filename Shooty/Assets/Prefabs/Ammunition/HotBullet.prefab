@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7245300972776205830}
   - component: {fileID: 8155153795646299700}
   - component: {fileID: 2715081691344033788}
+  - component: {fileID: 3521520125651198963}
   m_Layer: 0
   m_Name: HotBullet
   m_TagString: Untagged
@@ -125,3 +126,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &3521520125651198963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7245300972776205829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0197c4e40f285284dbdb74b81e9d7d66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pivotPrefab: {fileID: 3161926315566604820, guid: 9379287e97caa99448bc70df52541b47,
+    type: 3}
+  speed: 400
+  angleOfAttack: 0
+  lifetime: 8

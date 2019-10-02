@@ -444,7 +444,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0387ea8948030884ea0c22e4154cf911, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePivotPrefab: {fileID: 6860597658602895609, guid: 732222a03d05e6e49862015fa125c9c4,
+  PivotPrefab: {fileID: 3161926315566604820, guid: 9379287e97caa99448bc70df52541b47,
+    type: 3}
+  projectilePrefab: {fileID: 7245300972776205829, guid: 54f48ef2f2a436448bf22cc66aa09f89,
     type: 3}
   muzzleFlash: {fileID: 1743301284569550, guid: ad2ab49d0a2a17148bd51c93d977bdbc,
     type: 3}
