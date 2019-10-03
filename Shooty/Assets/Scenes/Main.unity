@@ -236,6 +236,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 281199156519300596, guid: 2ea00d53280340b4cb00e91694f5cf74,
+        type: 3}
+      propertyPath: dayCycleDurationMins
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ea00d53280340b4cb00e91694f5cf74, type: 3}
 --- !u!1 &417702620
