@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6538348701137031427}
   - component: {fileID: 652086869651097985}
+  - component: {fileID: 6909707668107177912}
   m_Layer: 10
   m_Name: TestGroundVehicle
   m_TagString: Enemy
@@ -49,6 +50,20 @@ MonoBehaviour:
   angularVelocity: 0.5
   maxAngularVelocity: 1
   acceleration: 0.2
+--- !u!114 &6909707668107177912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6538348701137031426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8815742e1e7e2404dbaf87a9ddabfc1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pivotPrefab: {fileID: 3161926315566604820, guid: 9379287e97caa99448bc70df52541b47,
+    type: 3}
 --- !u!1 &6538348701456264595
 GameObject:
   m_ObjectHideFlags: 0

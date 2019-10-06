@@ -424,12 +424,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
@@ -513,12 +513,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1919057050280986890, guid: 91aec66214f47a548a15065d8dbc1d57,
+    - target: {fileID: 1622203025185813027, guid: 91aec66214f47a548a15065d8dbc1d57,
         type: 3}
       propertyPath: m_Mesh
       value: 
@@ -688,38 +688,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8169392423043215959, guid: ec83d06dae3df874583db9564474c196,
-        type: 3}
-      propertyPath: m_Delay
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8169392423043215959, guid: ec83d06dae3df874583db9564474c196,
-        type: 3}
-      propertyPath: m_DecayRatio
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1762160723420877235, guid: ec83d06dae3df874583db9564474c196,
-        type: 3}
-      propertyPath: DopplerLevel
-      value: 3.85
-      objectReference: {fileID: 0}
-    - target: {fileID: 1762160723420877235, guid: ec83d06dae3df874583db9564474c196,
-        type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 46b5633f08a983944b1d703b30508a5a, type: 3}
-    - target: {fileID: 1762160723420877233, guid: ec83d06dae3df874583db9564474c196,
-        type: 3}
-      propertyPath: gain
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1762160723420877233, guid: ec83d06dae3df874583db9564474c196,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1762160723420877233, guid: ec83d06dae3df874583db9564474c196, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec83d06dae3df874583db9564474c196, type: 3}
 --- !u!4 &9101882941772231193 stripped
 Transform:

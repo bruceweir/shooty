@@ -194,6 +194,11 @@ public class GeneratedTerrain : MonoBehaviour
         return height;
     }
 
+    public float GetHeightOfTerrain(GameObject go)
+    {
+        return GetHeightOfTerrain(go.transform.position);
+    }
+
     public float GetHeightOfTerrain(Vector3 position)
     {
         return GetHeightOfTerrain(position.x, position.z);
@@ -228,7 +233,11 @@ public class GeneratedTerrain : MonoBehaviour
         return -1f;
     }
 
-        public Vector3 GetTerrainNormal(Vector3 position)
+    public Vector3 GetTerrainNormal(GameObject go)
+    {
+        return GetTerrainNormal(go.transform.position);
+    }
+    public Vector3 GetTerrainNormal(Vector3 position)
     {
         return GetTerrainNormal(position.x, position.z);
     }
@@ -272,6 +281,23 @@ public class GeneratedTerrain : MonoBehaviour
         }
 
         return -1f;
+    }
+
+    public float GetEnemySpawnLocationAngle(Direction direction)
+    {
+        if(direction == Direction.ClockWise)
+        {
+            return Mathf.Deg2Rad * -5;
+        }
+        else
+        {
+            return Mathf.Deg2Rad * 5;
+        }
+    }
+
+    public float HorizontalSpeedToAngularVelocity(float horizontalSpeed)
+    {
+        return 360 / ((terrainRadius * 2 * Mathf.PI) / -horizontalSpeed);
     }
 
     VerticesAndUVs GetVertexArrayForFlatShading(Vector3[] ringCircumferenceCoordinates, float ringWidth, float lowerlevelHeight, bool relative)

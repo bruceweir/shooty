@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject terrainGenerationPrefab;
 	public GameObject playerVehiclePrefab;
+	public GameObject[] friendlyGroundVehicles;
+	public GameObject[] enemyGroundVehicles;
 	private GameObject player;
 	private GeneratedTerrain terrain = null;
 	private GameObject scoreTextObject;
@@ -36,11 +38,10 @@ public class GameManager : MonoBehaviour {
 		CreateTerrain();
 
 		StartCoroutine(SpawnPlayer(0));
-		// CreatePlayer();
-
-		// SetCameraToFollow(player);
-
-		// SwitchToFollowCamera();
+		
+		SpawnEnemyVehicle(Direction.ClockWise);
+		SpawnEnemyVehicle(Direction.Anticlockwise);
+		
 	}
 	
 	// Update is called once per frame
@@ -131,5 +132,24 @@ public class GameManager : MonoBehaviour {
 		scoreText.text = "Score " + score.ToString();
 
 		scoreAnimator.SetTrigger("Pop");
+	}
+
+	public void SpawnEnemyVehicle(Direction direction)
+	{
+		if(enemyGroundVehicles.Length == 0)
+		{
+			Debug.Log("No enemy vehicle prefabs set in GameManager");
+			return;
+		}
+
+		int vehicleIndex = Random.Range(0, enemyGroundVehicles.Length);
+
+		GameObject v = Instantiate(enemyGroundVehicles[vehicleIndex], Vector3.zero, Quaternion.identity);
+
+		ControlGroundVehicle cgv = v.GetComponent<ControlGroundVehicle>();
+
+		cgv.InitialiseGroundVehicle(terrain.GetEnemySpawnLocationAngle(direction), direction);
+
+		Debug.Log("Spawn: " + direction + " " + terrain.GetEnemySpawnLocationAngle(direction));
 	}
 }

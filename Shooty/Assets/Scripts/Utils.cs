@@ -106,4 +106,33 @@ public static class Utils
 
         return angleBetween;
     }
+
+    /* Returns the first child of an object with the specified tag, null otherwise */
+    public static GameObject GetChildWithTag(GameObject go, string tag)
+    {
+        foreach(Transform child in go.transform)
+        {
+            if(child.gameObject.tag == tag)
+            {
+                return child.gameObject;
+            }
+        }
+
+        return null;
+    }
+
+    /* Returns the first child of an object with the specified name, null otherwise */
+    
+    public static GameObject GetChildWithName(GameObject go, string name)
+    {
+        foreach(Transform child in go.transform)
+        {
+            if(child.gameObject.name == name)
+            {
+                return child.gameObject;
+            }
+        }
+
+        return null;
+    }
 }
