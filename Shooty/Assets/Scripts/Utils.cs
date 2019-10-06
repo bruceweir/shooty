@@ -112,6 +112,12 @@ public static class Utils
     {
         foreach(Transform child in go.transform)
         {
+            GameObject recurse = GetChildWithTag(child.gameObject, tag);
+            if(recurse != null)
+            {
+                return recurse;
+            }
+            
             if(child.gameObject.tag == tag)
             {
                 return child.gameObject;
@@ -127,6 +133,13 @@ public static class Utils
     {
         foreach(Transform child in go.transform)
         {
+            GameObject recurse = GetChildWithName(child.gameObject, name);
+            
+            if(recurse != null)
+            {
+                return recurse;
+            }
+
             if(child.gameObject.name == name)
             {
                 return child.gameObject;

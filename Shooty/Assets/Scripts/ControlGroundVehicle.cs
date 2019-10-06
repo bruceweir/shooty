@@ -26,12 +26,13 @@ public class ControlGroundVehicle : MonoBehaviour
 
     private GameObject groundPivot;
     private Pivot pivot;
+    private GameObject directionRotation;
 
     void Start()
     {
         terrain = GameObject.Find("Terrain").GetComponent<GeneratedTerrain>();  
         groundVehicleProperties = gameObject.GetComponent<GroundVehicleProperties>();
-
+        
     }
 
     // Update is called once per frame
@@ -77,7 +78,7 @@ public class ControlGroundVehicle : MonoBehaviour
 
         axleLength = Mathf.Abs((frontWheel.transform.position - rearWheel.transform.position).magnitude);
 
-
+        
         groundPivot = Instantiate(pivotPrefab, Vector3.zero, Quaternion.identity);
         groundPivot.name = "GroundPivot";
         pivot = groundPivot.GetComponent<Pivot>();
@@ -99,6 +100,18 @@ public class ControlGroundVehicle : MonoBehaviour
         pivot.SetHeight(startHeight);
 
         direction = directionOfTravel;
+
+        directionRotation = Utils.GetChildWithName(gameObject, "DirectionRotation");
+
+        if(directionRotation == null)
+        {
+            Debug.Log("The ground vehicle needs a child called DirectionRotation that control the orientation of the vehicle around its y-axis");
+        }
+        
+        if(direction == Direction.ClockWise)
+        {
+            directionRotation.transform.localRotation = Quaternion.Euler(0, 180, 0);
+        }
 
         
     }
